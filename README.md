@@ -1,39 +1,52 @@
-# AIPI 510: Data Sourcing & Analytics (Fall 2024)
+# Team Assignment #8
+## Data Engineering
 
-This is the accompanying GitHub to the Fall 2024 section of AIPI 510, taught by Dr. Brinnae Bent. Teaching assistance from XX and XX. 
+## Instructions
+Design and implement a serverless ETL data pipeline using AWS Lambda and Step Functions to process data from a source, transform it, and load it into a destination.
+### Requirements:
+* Use AWS Lambda functions for each step of the ETL process
+* Orchestrate the pipeline using AWS Step Functions
+* Implement error handling and logging
 
-## Course Description
-Course introduces students to the technical and non-technical aspects of collecting, cleaning and preparing data for use in machine learning applications. Technical aspects covered will include the types of data, methods of sourcing data via the web, APIs and from domain-specific sensors and hardware, an increasingly common source of analytics data in technical industries. The course also introduces methods and tools for evaluating the quality of data, performing basic exploratory data analysis, and pre-processing data for use in analytics. Non-technical aspects covered include an introduction to data privacy, GDPR, regulatory issues, bias and industry-specific concerns regarding data usage.
+### Steps:
+#### Extract:
+* Create a Lambda function to extract data from a source (e.g., S3 bucket, DynamoDB table, or external API)
+* The function should retrieve the data and pass it to the next step
+#### Transform:
+* Create a Lambda function to transform the extracted data
+* Implement data transformation of your choice (ie data cleaning, formatting, or aggregation)
+#### Load:
+* Create a Lambda function to load the transformed data into a destination (e.g., another S3 bucket, DynamoDB table, or RDS instance)
+#### Orchestration:
+* Design a Step Functions state machine to coordinate the three Lambda function
+* Implement error handling and retry logic
+#### Testing and Validation:
+* Test the pipeline with sample data
+* Verify that the data is correctly processed and loaded
 
-## Installation
+## Submission
+### Part 1:
+Submit your Lambda function code for each step (Extract, Transform, Load) and your step functions state machine definition (JSON or YAML). 
+To submit your code, make a PR into the etl-ta8 branch and add me and the TA as reviewers. 
+### Part 2:
+Submit a video (<3 mins) demonstrating that your Lambda functions work as expected. In the video, you should test the pipeline with sample data and verify that the data is correctly processed and loaded.
 
-1. Clone the repository:
-   ```
-   git clone https://github.com/AIPI510/aipi510-fall24.git
-   cd aipi510-fall24
-   ```
+## Rubric
+### Video (25 points)
+* Video is <3 minutes
+* Video walks through process clearly
+* The pipeline is tested with sample data
+* The Lambda functions works as expected
+* The data is correctly processed and loaded
 
-2. Recommended: Use a virtual environment, using venv or conda
+### Code (20 points)
+* Code is clean and well organized
+* Code is documented with docstrings and comments 
+* Code is free of commented out code (ie debug print statements)
+* Branching and PRs were done appropriately
+* Steps taken for Extract are documented
+* Steps taken for Transform are documented
+* Steps taken for Load are documented
+* The Step Functions state machine is documented
 
-3. Install the required dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
-
-## How to use this GitHub:
-
-For each assignment:
-
-1. Create a feature branch in the class GitHub repository for your team. We recommend branching off of the assignment branch for each assignment. Feature branch naming convention: ta#-teamname. If individual team members create their own feature branches, ensure these branches are PR'd into your team feature branch, merged, and deleted prior to submission. 
-
-2. Each assignment has its own branch. To submit your code, make a PR into the branch specified in the rubric and add me and the TAs as reviewers. In your PR, add any requirements (and versions) that are not currently in the requirements.txt file to the text of your PR.
-
-## Assignment Branches
-* [hello-world-ta0]()
-* [data-sourcing-ta1]()
-* [sql-ta2]()
-* [data-eda-ta4]()
-* [statistical-analysis-ta5]()
-* [feature-engineering-ta7]()
-* [etl-ta8]()
 
