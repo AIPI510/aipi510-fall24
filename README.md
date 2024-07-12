@@ -1,39 +1,55 @@
-# AIPI 510: Data Sourcing & Analytics (Fall 2024)
+# Team Assignment #2
+## Data Storage and Access
 
-This is the accompanying GitHub to the Fall 2024 section of AIPI 510, taught by Dr. Brinnae Bent. Teaching assistance from XX and XX. 
+## Instructions
+### CREATE
+You have been provided with a sample .csv file. Create a SQLite database in Python using the data in this sample .csv file.
 
-## Course Description
-Course introduces students to the technical and non-technical aspects of collecting, cleaning and preparing data for use in machine learning applications. Technical aspects covered will include the types of data, methods of sourcing data via the web, APIs and from domain-specific sensors and hardware, an increasingly common source of analytics data in technical industries. The course also introduces methods and tools for evaluating the quality of data, performing basic exploratory data analysis, and pre-processing data for use in analytics. Non-technical aspects covered include an introduction to data privacy, GDPR, regulatory issues, bias and industry-specific concerns regarding data usage.
+### READ
+Answer the following questions (must show your work via SQL queries):
+1. Retrieve the average tip percentage for each day of the week 
+2. Find the maximum and minimum total bull amounts
+3. Count the number of parties for each size
+4. Retrieve the total bill and tip for parties of size 4 or more, where the tip percentage is greater than 15%
+5. Retrieve the total bill, tip amount, and tip percentage for each combination of day and time, sorted by tip percentage in descending order
+6. Find the average tip percentage for each combination of day, time, and smoker status
+7. Retrieve the total bill, tip amount, and tip percentage for each sex, sorted by total bill in descending order, and limit the results to the top 5 records
+8. Find the maximum and minimum tip percentage for each day and time combination, along with the corresponding total bill and tip amount
+9. Retrieve the total bill, tip amount, and tip percentage for parties of size 4 or more, where the tip percentage is greater than 15%, and the total bill is between $50 and $100
+10. Find the average tip percentage for each combination of day, time, and smoker status, but only include combinations with more than 5 records
 
-## Installation
+Come up with your own SQL queries for the table. You must show 5 additional queries beyond the 10 outlined above. 
 
-1. Clone the repository:
-   ```
-   git clone https://github.com/AIPI510/aipi510-fall24.git
-   cd aipi510-fall24
-   ```
+**After you have performed the above queries:**
 
-2. Recommended: Use a virtual environment, using venv or conda
+### UPDATE
+It was determined that there was an error in the database. Please update the record that corresponds to id=10 and set smoker to Yes. 
 
-3. Install the required dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
+### DELETE
+Delete records from the database that have a total bill that is less than $10. 
 
-## How to use this GitHub:
+### Follow best practices:
+* Use Context Managers to ensure proper resource handling and automatic closing of connections
+* Use Parameterized Queries- named parameters offer better readability and maintainability
+* Use Error Handling - wrap database operations within try-except blocks to handle errors
 
-For each assignment:
+## Submission
+To submit your code, make a PR into the sql-ta2 branch and add me and the TA as reviewers. Your code can be in the form of scripts or a notebook. Follow the naming convention teamname-sql-ta2.ipynb / teamname-sql-ta2.py. 
 
-1. Create a feature branch in the class GitHub repository for your team. We recommend branching off of the assignment branch for each assignment. Feature branch naming convention: ta#-teamname. If individual team members create their own feature branches, ensure these branches are PR'd into your team feature branch, merged, and deleted prior to submission. 
+Note: For this assignment, I recommend turning off any autocomplete or copilot code services you are using. SQL queries are a task LLMs are pretty good at. (So, Dr. Bent, why are we learning it? 1. So you know how things work and 2. Because SQL queries are a beloved interview question. You won’t have an LLM helping you during your interview, so I recommend doing this one on your own)
 
-2. Each assignment has its own branch. To submit your code, make a PR into the branch specified in the rubric and add me and the TAs as reviewers. In your PR, add any requirements (and versions) that are not currently in the requirements.txt file to the text of your PR.
-
-## Assignment Branches
-* [hello-world-ta0]()
-* [data-sourcing-ta1]()
-* [sql-ta2]()
-* [data-eda-ta4]()
-* [statistical-analysis-ta5]()
-* [feature-engineering-ta7]()
-* [etl-ta8]()
-
+## Rubric
+### Code (45 points)
+* Code is clean and well organized
+* Code is documented with docstrings and comments 
+* Code is free of commented out code (ie debug print statements)
+* Script has a clear name
+* Branching and PRs were done appropriately
+* Requirements are included in the text of the PR and are correct and versioned
+* The code runs as documented
+* The appropriate steps were taken for CREATE
+* The appropriate steps were taken for READ
+* 5 additional unique queries were added to the READ step
+* The appropriate steps were taken for UPDATE
+* The appropriate steps were taken for DELETE
+* SQL-python best practices were followed (Context Managers used, parameterized queries, and error handling)
