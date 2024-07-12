@@ -24,16 +24,16 @@ Course introduces students to the technical and non-technical aspects of collect
 
 For each assignment:
 
-1. Create a feature branch in the class GitHub repository for your team. Feature branch naming convention: ta#-teamname. If individual team members create their own feature branches, ensure these branches are PR'd into your team feature branch, merged, and deleted prior to submission. 
+1. Create a feature branch in the class GitHub repository for your team. We recommend branching off of the assignment branch for each assignment. Feature branch naming convention: ta#-teamname. If individual team members create their own feature branches, ensure these branches are PR'd into your team feature branch, merged, and deleted prior to submission. 
 
 2. Each assignment has its own branch. To submit your code, make a PR into the branch specified in the rubric and add me and the TAs as reviewers. In your PR, add any requirements (and versions) that are not currently in the requirements.txt file to the text of your PR.
 
 ## Assignment Branches
-[hello-world-ta0]()
-[data-sourcing-ta1]()
-[sql-ta2]()
-[data-eda-ta4]()
-[statistical-analysis-ta5]()
-[feature-engineering-ta7]()
-[etl-ta8]()
+* [hello-world-ta0]()
+* [data-sourcing-ta1]()
+* [sql-ta2]()
+* [data-eda-ta4]()
+* [statistical-analysis-ta5]()
+* [feature-engineering-ta7]()
+* [etl-ta8]()
 
