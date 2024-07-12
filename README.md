@@ -29,11 +29,11 @@ For each assignment:
 2. Each assignment has its own branch. To submit your code, make a PR into the branch specified in the rubric and add me and the TAs as reviewers. In your PR, add any requirements (and versions) that are not currently in the requirements.txt file to the text of your PR.
 
 ## Assignment Branches
-* [hello-world-ta0]()
-* [data-sourcing-ta1]()
-* [sql-ta2]()
-* [data-eda-ta4]()
-* [statistical-analysis-ta5]()
-* [feature-engineering-ta7]()
-* [etl-ta8]()
+* [hello-world-ta0](https://github.com/AIPI510/aipi510-fall24/tree/hello-world-ta0)
+* [data-sourcing-ta1](https://github.com/AIPI510/aipi510-fall24/tree/data-sourcing-ta1)
+* [sql-ta2](sql-ta2)
+* [data-eda-ta4](https://github.com/AIPI510/aipi510-fall24/tree/data-eda-ta4)
+* [statistical-analysis-ta5](https://github.com/AIPI510/aipi510-fall24/tree/statistical-analysis-ta5)
+* [feature-engineering-ta7](https://github.com/AIPI510/aipi510-fall24/tree/feature-engineering-ta7)
+* [etl-ta8](https://github.com/AIPI510/aipi510-fall24/tree/etl-ta8)
 
