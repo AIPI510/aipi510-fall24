@@ -1,39 +1,32 @@
-# AIPI 510: Data Sourcing & Analytics (Fall 2024)
+# Team Assignment #7
+## Feature Engineering
 
-This is the accompanying GitHub to the Fall 2024 section of AIPI 510, taught by Dr. Brinnae Bent. Teaching assistance from XX and XX. 
+## Instructions
+Put together a code demo for a python feature engineering package of your choice. A few examples include: opencv, nltk, and TSfresh, although there are many domain specific ones. 
 
-## Course Description
-Course introduces students to the technical and non-technical aspects of collecting, cleaning and preparing data for use in machine learning applications. Technical aspects covered will include the types of data, methods of sourcing data via the web, APIs and from domain-specific sensors and hardware, an increasingly common source of analytics data in technical industries. The course also introduces methods and tools for evaluating the quality of data, performing basic exploratory data analysis, and pre-processing data for use in analytics. Non-technical aspects covered include an introduction to data privacy, GDPR, regulatory issues, bias and industry-specific concerns regarding data usage.
+For your example, use a built-in dataset if possible or a dataset that can be accessed through a python library. If not possible, add sample data to the data/ repository.  
 
-## Installation
+### Code should be:
+* Clean and well organized script
+* Using best practices (if you aren’t sure, go back to the Premodule content)
+* Well-commented
+* Contains appropriate unit testing
+* Clear name (ie ‘opencv_demo.py’)
 
-1. Clone the repository:
-   ```
-   git clone https://github.com/AIPI510/aipi510-fall24.git
-   cd aipi510-fall24
-   ```
+## Submission
+To submit your code, make a PR into the feature-engineering-ta7 branch and add me and the TA as reviewers. Also, add any requirements (and versions) that are not currently in the requirements.txt file to the text of your PR.
 
-2. Recommended: Use a virtual environment, using venv or conda
+## Rubric
+### Code (45 points)
+* A python package for feature engineering is demonstrated
+* A small dataset for testing purposes is either a built-in dataset, accessible via a python package, or added to the data/ repository
+* Code is a script, not a notebook
+* Code is clean and well organized
+* Code is documented with docstrings and comments 
+* Code is free of commented out code (ie debug print statements)
+* Script has a clear name
+* Branching and PRs were done appropriately
+* Requirements are included in the text of the PR and are correct and versioned
+* The code runs as documented
 
-3. Install the required dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
-
-## How to use this GitHub:
-
-For each assignment:
-
-1. Create a feature branch in the class GitHub repository for your team. We recommend branching off of the assignment branch for each assignment. Feature branch naming convention: ta#-teamname. If individual team members create their own feature branches, ensure these branches are PR'd into your team feature branch, merged, and deleted prior to submission. 
-
-2. Each assignment has its own branch. To submit your code, make a PR into the branch specified in the rubric and add me and the TAs as reviewers. In your PR, add any requirements (and versions) that are not currently in the requirements.txt file to the text of your PR.
-
-## Assignment Branches
-* [hello-world-ta0]()
-* [data-sourcing-ta1]()
-* [sql-ta2]()
-* [data-eda-ta4]()
-* [statistical-analysis-ta5]()
-* [feature-engineering-ta7]()
-* [etl-ta8]()
 
