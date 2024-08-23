@@ -13,7 +13,7 @@ Course introduces students to the technical and non-technical aspects of collect
    cd aipi510-fall24
    ```
 
-2. Recommended: Use a virtual environment, using venv or conda
+2. Recommended: Use a virtual environment, using venv or conda. **USE PYTHON VERSION <3.12**
 
 3. Install the required dependencies:
    ```
