@@ -77,7 +77,6 @@ def main():
     articles = fetch_articles()
     df = convert_and_save_dataframe(articles)
     df = preprocess_df(df)
-    print("Some code snippets were created using the help og the Grepper Google Chrome Extension")
 
 if __name__ == "__main__":
     main()
