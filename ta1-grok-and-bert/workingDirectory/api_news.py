@@ -53,15 +53,15 @@ def fetch_articles():
 
     
 
-def convert_and_save_dataframe(articles):
+def convert_and_save_dataframe(articles, name):
     import pandas as pd
     df = pd.DataFrame(articles[1:], columns=articles[0])
 
     print(df.head())
-    df.to_csv("articles.csv")
+    df.to_csv(name)
     return df
 
-def preprocess_df(df):
+def preprocess_df(df, name):
     import pandas as pd
     print(df)
     #nan_rows = df[df.isna().any(axis=1)]
@@ -70,13 +70,15 @@ def preprocess_df(df):
     nan_rows = df[df.isna().any(axis=1)]
     print(nan_rows)
     print(df)
-    df.to_csv("preprocessed_articles.csv")
+    df.to_csv(name)
+    
+    return df
 
 
 def main():
     articles = fetch_articles()
-    df = convert_and_save_dataframe(articles)
-    df = preprocess_df(df)
+    df = convert_and_save_dataframe(articles,"articles.csv")
+    df = preprocess_df(df,"preprocessed_articles.csv")
 
 if __name__ == "__main__":
     main()
