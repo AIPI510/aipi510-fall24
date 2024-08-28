@@ -48,12 +48,37 @@ def fetch_articles():
         print(f"An error occurred: {req_err}")
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
+    
+    return articles
 
+    
+
+def convert_and_save_dataframe(articles):
+    import pandas as pd
     df = pd.DataFrame(articles[1:], columns=articles[0])
 
     print(df.head())
     df.to_csv("articles.csv")
+    return df
+
+def preprocess_df(df):
+    import pandas as pd
+    print(df)
+    #nan_rows = df[df.isna().any(axis=1)]
+    df.dropna(inplace = True)
+
+    nan_rows = df[df.isna().any(axis=1)]
+    print(nan_rows)
+    print(df)
+    df.to_csv("preprocessed_articles.csv")
+
+
+def main():
+    articles = fetch_articles()
+    df = convert_and_save_dataframe(articles)
+    df = preprocess_df(df)
+
 if __name__ == "__main__":
-    fetch_articles()
+    main()
 
 
