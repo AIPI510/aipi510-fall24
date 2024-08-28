@@ -1,6 +1,8 @@
 # Team Assignment #1
 ## Data Sourcing
 
+Note to all online students: You are awesome!
+
 ## Instructions
 1. Create a feature branch in the class GitHub repository for your team. 
 
