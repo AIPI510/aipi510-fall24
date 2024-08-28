@@ -9,3 +9,4 @@ env/
 venv/
 .DS_Store
 .idea/
+articles.csv
