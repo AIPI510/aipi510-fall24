@@ -10,3 +10,4 @@ venv/
 .DS_Store
 .idea/
 articles.csv
+processed_articles.csv
