@@ -1,6 +1,20 @@
 # Team Assignment #1
-## Data Sourcing
 
+## 0. Author
+Haochen Li & Jesse Warren
+
+## 1. Installation
+1.  Go to the venv you want to use.
+2. Install the application using `pip install .`
+3. The program will be installed with name `xxx`
+4. If other dependencies are needed, run `pip install -r requirements.txt`
+
+## 2. Running Instruction
+
+
+
+# The following is the requirement on github.
+## Data Sourcing
 ## Instructions
 1. Create a feature branch in the class GitHub repository for your team. 
 
