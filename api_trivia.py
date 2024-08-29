@@ -47,7 +47,6 @@ def call_api(arguments):
     if arguments.category is not None:
         URL += f"&category={arguments.category}"
     URL += f"&amount={arguments.n}"
-    print(URL)
     response = requests.get(URL)
     response_json = response.json()
     
