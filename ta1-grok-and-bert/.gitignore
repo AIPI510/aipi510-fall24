@@ -11,3 +11,4 @@ venv/
 .idea/
 articles.csv
 preprocessed_articles.csv
+final_articles_with_sentiment.csv
