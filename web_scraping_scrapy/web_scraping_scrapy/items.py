@@ -13,3 +13,10 @@ class WebScrapingScrapyItem(scrapy.Item):
     authors = scrapy.Field()
     tags = scrapy.Field()
 
+class AmazonScrapingScrapyItem(scrapy.Item):
+    # define the fields for your item here like:
+    # name = scrapy.Field()
+    brand = scrapy.Field()
+    description = scrapy.Field()
+    price = scrapy.Field()
+

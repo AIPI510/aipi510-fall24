@@ -9,7 +9,7 @@
 
 # Import necessary libraries and modules
 import scrapy
-from ..items import WebScrapingScrapyItem
+from ..items import WebScrapingScrapyItem, AmazonScrapingScrapyItem
 
 class ScrapeQuotesSpider(scrapy.Spider):
     # name of the spider to run for scraping the website
@@ -36,6 +36,34 @@ class ScrapeQuotesSpider(scrapy.Spider):
             items['titles'] = title
             items['authors'] = author
             items['tags'] = tag
+            
+            # yield items from the python generator as expected by scrapy
+            yield items
+
+class ScrapeAmazonSpider(scrapy.Spider):
+    # name of the spider to run for scraping the website
+    name = "AmazonScraper"
+
+    # list of websites to scrape
+    start_urls = [
+        "https://www.amazon.com/s?k=women+fashion&crid=3B1XVPEQR4EUE&sprefix=women+fashion%2Caps%2C108&ref=nb_sb_noss_1"
+    ]
+
+    def parse(self, response):
+        # instantiate the class to store scraped data in scrapy item containers for better organization
+        items = AmazonScrapingScrapyItem()
+
+        # inspect the webpage and extract relevant css tags from the source code captured in the response argument
+        brands = response.css(".s-line-clamp-1 .a-color-base::text").extract()
+        descriptions = response.css(".a-color-base.a-text-normal::text").extract()
+        prices = response.css(".a-price-whole::text").extract()
+
+        # Iterate through each quote to extract the corresponding title, author and associated tags from the webpage
+        for brand, desc, price in zip(brands, descriptions, prices):
+
+            items['brand'] = brand
+            items['description'] = desc
+            items['price'] = price
             
             # yield items from the python generator as expected by scrapy
             yield items
