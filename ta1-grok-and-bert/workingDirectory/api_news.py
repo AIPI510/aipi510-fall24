@@ -50,13 +50,13 @@ def fetch_articles():
 
     return articles
 
-def convert_and_save_dataframe(articles):
+def convert_and_save_dataframe(articles, name):
     df = pd.DataFrame(articles)
     print(df.head())
-    df.to_csv("articles.csv")
+    df.to_csv(name)
     return df
 
-def preprocess_df(df):
+def preprocess_df(df, name):
     # ensure the description column exists
     if 'description' in df.columns:
         df['description'] = df['description'].fillna('')
@@ -64,14 +64,14 @@ def preprocess_df(df):
         df['description'] = ''
 
     # drop any rows that are completely empty if necessary
-    df.dropna(how='all', inplace=True)
+    df.dropna( inplace=True)
 
     print(df)
-    df.to_csv("preprocessed_articles.csv")
+    df.to_csv(name)
     return df
 
 
-def sentiment_analysis(df):
+def sentiment_analysis(df, name):
     # init vader
     sia = SentimentIntensityAnalyzer()
 
@@ -85,14 +85,15 @@ def sentiment_analysis(df):
 
     # apply sentiment score to each description
     df['sentiment_score'] = df['description'].apply(get_sentiment_score)
+    df.to_csv(name)
     return df
 
 def main():
     articles = fetch_articles()
-    df = convert_and_save_dataframe(articles)
-    df = preprocess_df(df)
-    df = sentiment_analysis(df)
-    df.to_csv("final_articles_with_sentiment.csv")
+    df = convert_and_save_dataframe(articles, "articles.csv")
+    df = preprocess_df(df, "preprocessed_articles.csv")
+    df = sentiment_analysis(df, "final_articles_with_sentiment.csv")
+    
     print(df.head())
 
 if __name__ == "__main__":
