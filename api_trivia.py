@@ -1,6 +1,11 @@
+# Resources used:
+# Requests API : https://realpython.com/python-requests/
+# Pandas API : https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_csv.html 
+#    (Along with related web-pages in pandas documentation for other references)
+# JSON API : https://www.geeksforgeeks.org/how-to-remove-key-value-pair-from-a-json-file-in-python/
+
 import requests
 import pandas as pd
-
 
 def call_api():
     """
@@ -37,7 +42,6 @@ def save_df_to_csv(dataframe, filename):
     Saves the dataframe to csv format
     """
     dataframe.to_csv(filename, index = False)
-        
 
 
 if __name__ == "__main__":
