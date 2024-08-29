@@ -1,4 +1,5 @@
 # Team Assignment #1
+This is Team Davis: Dave and Siddarth
 ## Data Sourcing
 
 ## Instructions
