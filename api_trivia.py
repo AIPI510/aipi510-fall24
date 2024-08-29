@@ -6,14 +6,49 @@
 
 import requests
 import pandas as pd
+import argparse
+import sys
+import json
 
-def call_api():
+CATEGORY_MAP = {
+    9: "General Knowledge",
+    10: "Entertainment: Books",
+    11: "Entertainment: Film",
+    12: "Entertainment: Music",
+    13: "Entertainment: Musicals & Theatres",
+    14:	"Entertainment: Television",
+    15: "Entertainment: Video Games",
+    16: "Entertainment: Board Games",
+    17: "Science & Nature",
+    18: "Science: Computers",
+	19: "Science: Mathematics",
+    20: "Mythology",
+    21:	"Sports",
+    22: "Geography",
+    23: "History",
+    24: "Politics",
+    25: "Art",
+    26: "Celebrities",
+	27: "Animals",
+	28: "Vehicles",
+	29: "Entertainment: Comics",
+	30: "Science: Gadgets",
+	31: "Entertainment: Japanese Anime & Manga",
+	32: "Entertainment: Cartoon & Animations"
+}
+
+def call_api(arguments):
     """
     Calls the Trivia API
 
     Returns: Results array
     """
-    response = requests.get("https://opentdb.com/api.php?amount=10")
+    URL = "https://opentdb.com/api.php?amount=10"
+    if arguments.category is not None:
+        URL += f"&category={arguments.category}"
+    URL += f"&amount={arguments.n}"
+    print(URL)
+    response = requests.get(URL)
     response_json = response.json()
     
     if response_json.get('response_code') == 0:
@@ -43,8 +78,18 @@ def save_df_to_csv(dataframe, filename):
     """
     dataframe.to_csv(filename, index = False)
 
+def parse_args(args):
+    parser = argparse.ArgumentParser(description = 'Get questions from the Open Trivia API')
+    parser.add_argument('--category', type = int, choices = list(range(9, 33)),
+                help = json.dumps(CATEGORY_MAP), default = None)
+    parser.add_argument('-n', type = int,
+                help = "Number of questions to fetch", default = 10)
+    arguments = parser.parse_args(args)
+    return arguments
+
 
 if __name__ == "__main__":
-    results = call_api()
+    arguments = parse_args(sys.argv[1:])
+    results = call_api(arguments)
     processed_dataframe = make_dataframe(results)
     save_df_to_csv(processed_dataframe, "trivia_questions.csv")
