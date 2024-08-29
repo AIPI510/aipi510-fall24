@@ -21,7 +21,7 @@ CATEGORY_MAP = {
     16: "Entertainment: Board Games",
     17: "Science & Nature",
     18: "Science: Computers",
-	19: "Science: Mathematics",
+    19: "Science: Mathematics",
     20: "Mythology",
     21:	"Sports",
     22: "Geography",
@@ -29,12 +29,12 @@ CATEGORY_MAP = {
     24: "Politics",
     25: "Art",
     26: "Celebrities",
-	27: "Animals",
-	28: "Vehicles",
-	29: "Entertainment: Comics",
-	30: "Science: Gadgets",
-	31: "Entertainment: Japanese Anime & Manga",
-	32: "Entertainment: Cartoon & Animations"
+    27: "Animals",
+    28: "Vehicles",
+    29: "Entertainment: Comics",
+    30: "Science: Gadgets",
+    31: "Entertainment: Japanese Anime & Manga",
+    32: "Entertainment: Cartoon & Animations"
 }
 
 def call_api(arguments):
