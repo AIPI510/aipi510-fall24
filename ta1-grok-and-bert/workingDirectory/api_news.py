@@ -3,6 +3,8 @@ import requests
 from dotenv import load_dotenv
 import pandas as pd
 import json
+import nltk
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 def fetch_articles():
     # load env
@@ -26,18 +28,15 @@ def fetch_articles():
 
         # read json
         articles = response.json().get('articles', [])
-        print(type(articles))
         if articles:
             for i, article in enumerate(articles, start=1):
                 print(f"Article {i}:")
                 print(f"Title: {article['title']}")
                 print(f"Description: {article['description']}")
                 print(f"URL: {article['url']}\n")
-                print(type({article['url']}))
         else:
             print("No articles found.")
 
-    # handle type errors accordingly.
     except requests.exceptions.HTTPError as http_err:
         print(f"HTTP error occurred: {http_err}")
     except requests.exceptions.ConnectionError as conn_err:
@@ -48,39 +47,53 @@ def fetch_articles():
         print(f"An error occurred: {req_err}")
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
-    
+
     return articles
 
-    
-
-def convert_and_save_dataframe(articles, name):
-    import pandas as pd
-    df = pd.DataFrame(articles[1:], columns=articles[0])
-
+def convert_and_save_dataframe(articles):
+    df = pd.DataFrame(articles)
     print(df.head())
-    df.to_csv(name)
+    df.to_csv("articles.csv")
     return df
 
-def preprocess_df(df, name):
-    import pandas as pd
-    print(df)
-    #nan_rows = df[df.isna().any(axis=1)]
-    df.dropna(inplace = True)
+def preprocess_df(df):
+    # ensure the description column exists
+    if 'description' in df.columns:
+        df['description'] = df['description'].fillna('')
+    else:
+        df['description'] = ''
 
-    nan_rows = df[df.isna().any(axis=1)]
-    print(nan_rows)
+    # drop any rows that are completely empty if necessary
+    df.dropna(how='all', inplace=True)
+
     print(df)
-    df.to_csv(name)
-    
+    df.to_csv("preprocessed_articles.csv")
     return df
 
+
+def sentiment_analysis(df):
+    # init vader
+    sia = SentimentIntensityAnalyzer()
+
+    # compute sentiment score
+    def get_sentiment_score(description):
+        if description:
+            score = sia.polarity_scores(description)['compound']
+            return score
+        else:
+            return 0
+
+    # apply sentiment score to each description
+    df['sentiment_score'] = df['description'].apply(get_sentiment_score)
+    return df
 
 def main():
     articles = fetch_articles()
-    df = convert_and_save_dataframe(articles,"articles.csv")
-    df = preprocess_df(df,"preprocessed_articles.csv")
+    df = convert_and_save_dataframe(articles)
+    df = preprocess_df(df)
+    df = sentiment_analysis(df)
+    df.to_csv("final_articles_with_sentiment.csv")
+    print(df.head())
 
 if __name__ == "__main__":
     main()
-
-
