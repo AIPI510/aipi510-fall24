@@ -43,7 +43,7 @@ def call_api(arguments):
 
     Returns: Results array
     """
-    URL = "https://opentdb.com/api.php?amount=10"
+    URL = "https://opentdb.com/api.php?"
     if arguments.category is not None:
         URL += f"&category={arguments.category}"
     URL += f"&amount={arguments.n}"
