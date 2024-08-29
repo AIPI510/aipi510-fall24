@@ -47,6 +47,8 @@ To submit your code, make a PR into the data-sourcing-ta1 branch and add me and 
 
 ### Open Trivia API
 
+#### Team Impasta - Dayeon Kang, Shaunak Badani
+
 How to use:
 ```
 usage: api_trivia.py [-h] [--category {9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32}] [-n N]
