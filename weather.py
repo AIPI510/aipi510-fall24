@@ -101,6 +101,41 @@ class Forecast:
         else: 
             raise Exception("No forecast URL found!")
 
+    # Consider utilty of a/the python geojson library here in decoding API responses
+    # See 
+
+    {'@id': 'https://api.weather.gov/points/35.7919,-78.6541', 
+     '@type': 'wx:Point', 'cwa': 'RAH', 
+     'forecastOffice': 'https://api.weather.gov/offices/RAH', 
+     'gridId': 'RAH', 'gridX': 74, 'gridY': 58, 'forecast': 'https://api.weather.gov/gridpoints/RAH/74,58/forecast', 'forecastHourly': 'https://api.weather.gov/gridpoints/RAH/74,58/forecast/hourly', 'forecastGridData': 'https://api.weather.gov/gridpoints/RAH/74,58', 'observationStations': 'https://api.weather.gov/gridpoints/RAH/74,58/stations', 'relativeLocation': {'type': 'Feature', 'geometry': {'type': 'Point', 'coordinates': [-78.641768, 35.830598]}, 'properties': {'city': 'Raleigh', 'state': 'NC', 'distance': {'unitCode': 'wmoUnit:m', 'value': 4444.3934196161}, 'bearing': {'unitCode': 'wmoUnit:degree_(angle)', 'value': 194}}}, 'forecastZone': 'https://api.weather.gov/zones/forecast/NCZ041', 'county': 'https://api.weather.gov/zones/county/NCC183', 'fireWeatherZone': 'https://api.weather.gov/zones/fire/NCZ041', 'timeZone': 'America/New_York', 'radarStation': 'KRAX'}
+    def fetch_grid(self):
+        """
+        grab the numerical forecast data for a 2.5km area
+
+        See https://weather-gov.github.io/api/gridpoints
+        
+        """
+        if self.forecast_url: 
+            
+            print("Retrieving forecast...")
+            response = requests.get(self.forecast_url) 
+            if response.status_code == 200: 
+                
+                self.forecast = []
+                
+                for period in response.json()['properties']['periods']: 
+                    if period['number'] <= 7:
+                        self.forecast.append(
+                            "Day " 
+                            + str(period['number']) 
+                            + ": " 
+                            + period['detailedForecast']
+                        )
+            else: 
+                raise Exception("Forecast URL (" + self.forecast_url + ") returned unexpected code: " + str(response.status_code))
+
+        else: 
+            raise Exception("No forecast URL found!")
 import datetime
 
 class Precipitation: 
