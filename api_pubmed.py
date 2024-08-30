@@ -1,4 +1,3 @@
-from pubmed_utils.pubmed import PubMed
 from pprint import pprint
 import requests
 
