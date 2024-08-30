@@ -7,7 +7,7 @@ def main():
     
     
     
-    
+
     file = open('data.json', 'w')
     file.write(data)
 
