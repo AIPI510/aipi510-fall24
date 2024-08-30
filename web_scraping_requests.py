@@ -8,24 +8,31 @@ import requests
 website = ""
 
 # GET method - retrieve data
-data = requests.get(website)
+response = requests.get(website)
+
+# send data into url query string
+payload = {'key1': 'value1', 'key2': 'value2'}
+requests.get(website, params=payload)
+print()
 
 # url 
-data.url
+response.url
 
 # Status code
-data.status_code
+response.status_code
 
 # content in bytes
-data.content
+response.content
 
 # convert to string
-data.text
+response.text
 
 # headers
-data.headers
+response.headers
 
 # dictionary
-data.json()
+response.json()
 
 # authentication
+
+# cookies
