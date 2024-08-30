@@ -20,3 +20,9 @@ class AmazonScrapingScrapyItem(scrapy.Item):
     description = scrapy.Field()
     price = scrapy.Field()
 
+class HMScrapingScrapyItem(scrapy.Item):
+    # define the fields for your item here like:
+    # name = scrapy.Field()
+    title = scrapy.Field()
+    price = scrapy.Field()
+
