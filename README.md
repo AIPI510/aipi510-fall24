@@ -1,4 +1,4 @@
-# Team Assignment #1
+# Team Assignment #1 - Jason Lee and Andrew Jin
 ## Data Sourcing
 
 ## Instructions
