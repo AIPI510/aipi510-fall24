@@ -9,7 +9,7 @@ def test_get_forecast():
     forecast = weather.Forecast()
     forecast.resolve_location(geo.lat, geo.lon) 
     assert(type(forecast.forecast_url) is str)
-    assert(type(forecast.station) is str)
+    assert(type(forecast.office) is str)
     assert(type(forecast.location) is str)
     
     forecast.update_forecast()
