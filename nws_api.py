@@ -75,9 +75,6 @@ geo = get_location()
 stations = None
 stream(f'Your IP locates you in **{geo.city}, {geo.state}**')
 
-#35.73324926702723, -78.68876165101868
-#https://maps.google.com
-
 col1, col2 = st.columns(2) 
 lat = None
 lon = None
