@@ -30,7 +30,7 @@ def display_station_map(df):
     Built with help from the streamlit map quickstart: 
     https://docs.streamlit.io/develop/api-reference/charts/st.map
     """
-    st.map(df, size=20, color="#0044ff")
+    st.map(df, size=60, color="#0044ff")
 
 # todo: fix this to render temperatures or something on the map with a color ramp
 def display_observation_map(df): 
@@ -79,6 +79,8 @@ stream(f'Your IP locates you in **{geo.city}, {geo.state}**')
 #https://maps.google.com
 
 col1, col2 = st.columns(2) 
+lat = None
+lon = None
 
 with col1: 
     lat = st.text_input("Latitude", F"{geo.lat}")
@@ -110,8 +112,8 @@ stream("Click below find locate the office associated with your coordinates.")
 st.button("Fetch office...", on_click=click_button1)
 
 if st.session_state.button1: 
-    forecast = get_forecast(geo.lat, geo.lon)
-    stream(f'Weather forecasts for {geo.lat} {geo.lon} are provided by the NWS **{forecast.office}** office, located in **{forecast.location}**.')
+    forecast = get_forecast(lat, lon)
+    stream(f'Weather forecasts for {lat} {lon} are provided by the NWS **{forecast.office}** office, located in **{forecast.location}**.')
 
     st.subheader(":satellite: Regional Weather Stations")
     stream("Forecast information for this area is sourced from numerous regional weather stations, click below to retrieve the locations.")
