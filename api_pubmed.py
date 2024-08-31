@@ -54,38 +54,38 @@ def construct_term(year, month, disease):
 
 
 def create_dataframe(data):
- 
     '''
-    Creating dataframe of scraped pubmed data for visulaization
+    Creating dataframe of scraped PubMed data for visualization
     '''
-    df= pd.DataFrame(data)
-    return df
+    return pd.DataFrame(data)
 
 
 class DataAggregator:
-
+    '''
+    Takes in raw data from PubMed api query and aggregates data in dictionary
+    Creates constructor for data with columns year & month, count, and disease. 
+    '''
     def __init__(self):
-        self.year_month =[]
+      
+        self.year_month=[]
         self.count=[]
         self.disease=[]
 
     def add_raw_data(self,rawdata,year,month,disease):
-
+        '''
+        Rawdata is aggregated into columns: year & month, count, and disease. 
+        '''
         self.count.append(int(rawdata["esearchresult"]["count"]))  
         self.year_month.append(str(year) + "/" + str(month))
         self.disease.append(disease)
 
     def build_data_dictionary(self):
-   
+        '''
+        Data is passed into a dictionary. 
+        '''
         return {"year_month":self.year_month, "count": self.count, "disease":self.disease}
 
-
-
-
 data_aggregator = DataAggregator()
-
-
-
 
 def main():
     '''
@@ -97,7 +97,6 @@ def main():
             for disease in args.diseases.split(','):
                 rawdata=pubmed.query(construct_term(year, month, disease))
                 data_aggregator.add_raw_data(rawdata, year, month,disease)
-                # pprint(pubmed.query(construct_term(year, month, disease)))
                 sleep(1)
 
     data_dictionary = data_aggregator.build_data_dictionary()
