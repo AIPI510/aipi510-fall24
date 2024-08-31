@@ -1,4 +1,5 @@
 numpy==1.24.3
+<<<<<<< Updated upstream
 pandas==2.0.3
 matplotlib==3.7.1
 seaborn==0.12.2
@@ -10,3 +11,7 @@ imbalanced-learn==0.11.0
 scikit-learn==1.2.2
 statsmodels==0.14.0
 transformers==4.31.0
+=======
+praw==7.7.1
+pandas==2.0.3
+>>>>>>> Stashed changes
