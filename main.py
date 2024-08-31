@@ -1,22 +1,25 @@
 import requests
 import pandas as pd
+import json
 
-def main():
+def handling_data():
     
-    data = requests.get("https://openlibrary.org/search.json?q=the+lord+of+the+rings").text
-    
+    data = requests.get("https://openlibrary.org/search/authors.json?q=j%20k%20rowling")
+    data = data.json()
+
+    with open('data.json','w') as file:
+        json.dump(data,file,indent=4,sort_keys=True)
+
     
     
 
-    file = open('data.json', 'w')
-    file.write(data)
+    
 
-    data2 = pd.read_json('data.json')
-    dataframe = pd.DataFrame(data2)
-    return(dataframe)
+    
+
         
     
 
 if __name__ == "__main__":
-    main()
+   handling_data()
     
