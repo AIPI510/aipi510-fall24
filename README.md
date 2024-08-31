@@ -13,22 +13,16 @@ Video: <TODO: URL>
 
 ## install dependencies
 
-using a virtual environment is suggested.
-
 ```bash
-pip install -r requirements.txt
+pip install datasets==2.21.0
 ```
 
 ## How to use it?
 
-for example, if we want convert each line in the `test_main/text_file_for_demo.txt` to acronym and write it to `result_file_for_demo.txt`, we can use the tool like this:
+Just execute the python file:
 
 ```bash
-python ./acronym.py test_cases/input_file_for_test.txt result_file_for_demo.txt
+python ./hugging_face_api.py
 ```
 
-## How to test the code?
-
-```bash
-pytest
-```
+then you will get "hugging_face_api_train.csv" and "hugging_face_api_test.csv" as output files.
