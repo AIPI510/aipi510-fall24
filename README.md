@@ -5,7 +5,7 @@
 
 ## Description
 
-This Python script uses the PRAW library to scrape Reddit posts. It retrieves the title, text body, and comments from a specified Reddit post and saves the data to a CSV file. The script accepts a Reddit post URL as an argument from the command line.
+`reddit_sourcing.py` uses the PRAW library to scrape Reddit posts. It retrieves the title, text body, and comments from a specified Reddit post and saves the data to a CSV file. The script accepts a Reddit post URL as an argument from the command line.
 
 ## Features
 
