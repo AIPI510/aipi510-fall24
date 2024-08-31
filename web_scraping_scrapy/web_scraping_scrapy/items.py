@@ -10,4 +10,5 @@ class HMScrapingScrapyItem(scrapy.Item):
     # name = scrapy.Field()
     title = scrapy.Field()
     price = scrapy.Field()
-
+    page_number = scrapy.Field()
+ 
