@@ -45,3 +45,24 @@ To submit your code, make a PR into the data-sourcing-ta1 branch and add me and 
 * Video is well organized and clear
 * Video documents topic and code effectively
 
+### TMDB Movie Data Exploration and Visualization
+
+This repository contains a set of Python scripts and functions designed to interact with The Movie Database (TMDB) API, perform data analysis, and visualize movie data. The primary focus is on fetching movie details, displaying movie posters, generating word clouds of movie titles etc.
+
+### Contents
+
+* TMDB API Client: A class for interacting with the TMDB API.
+
+  get_top_rated_movies(page=1): Fetches the top-rated movies.
+  get_movie_details(movie_id): Retrieves detailed information about a specific movie.
+  search_movies(query, page=1): Searches for movies based on a keyword.
+  get_movies_by_genre(genre_id, page=1): Fetches movies based on their genre.
+  get_movie_poster(poster_path, save_path=None): Fetches and optionally saves a movie poster.
+  
+* Exploratory Data Analysis (EDA): Preliminary analysis of the movie data to gain insights.
+
+* Visualizations: Included to explore the distribution of movie ratings, identify patterns, and understand relationships within the data.
+
+
+
+
