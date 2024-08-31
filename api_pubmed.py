@@ -3,6 +3,7 @@ from time import sleep
 from argparse import ArgumentParser
 import requests
 import pandas as pd
+import matplotlib.pyplot as plt
 
 class PubMed:
     '''
@@ -103,6 +104,7 @@ def main():
     df = create_dataframe(data_dictionary)
     print(df.head())
     df.plot.scatter( x = 'year_month', y = 'count')
+    plt.show()
 
 if __name__ == '__main__':
     main()
