@@ -2,9 +2,9 @@ import os
 import requests
 from dotenv import load_dotenv
 import pandas as pd
-import json
-import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+import plotly.express as px
+
 
 def fetch_articles():
     # load env
@@ -15,7 +15,7 @@ def fetch_articles():
     base_url = "https://newsapi.org/v2/everything"
     # init param
     params = {
-        'q': 'artificial intelligence',
+        'q': 'Artificial Intelligence' ,
         'apiKey': api_key,
         'language': 'en',
         'sortBy': 'relevancy'
@@ -34,6 +34,7 @@ def fetch_articles():
                 print(f"Title: {article['title']}")
                 print(f"Description: {article['description']}")
                 print(f"URL: {article['url']}\n")
+                print(f"Published At: {article['publishedAt']}\n")
         else:
             print("No articles found.")
 
@@ -57,12 +58,15 @@ def convert_and_save_dataframe(articles, name):
     return df
 
 def preprocess_df(df, name):
-    # ensure the description column exists
+    # ensure the description and date column exists
     if 'description' in df.columns:
         df['description'] = df['description'].fillna('')
     else:
         df['description'] = ''
-
+    if 'publishedAt' in df.columns:
+        df['publishedAt'] = pd.to_datetime(df['publishedAt']).fillna('')
+    else:
+        df['publishedAt'] = ''
     # drop any rows that are completely empty if necessary
     df.dropna( inplace=True)
 
@@ -88,12 +92,34 @@ def sentiment_analysis(df, name):
     df.to_csv(name)
     return df
 
+
+def plot_sentiment(df):
+    # handle publishAt class to conversion to dateTime
+    df['publishedAt'] = pd.to_datetime(df['publishedAt'])
+
+    # create plot and add "hoverable" elements
+    fig = px.scatter(
+        df,
+        x='publishedAt',
+        y='sentiment_score',
+        hover_name='title',
+        hover_data={'url': True},
+        labels={
+            'publishedAt': 'Published Date',
+            'sentiment_score': 'Sentiment Score'
+        },
+        title='Sentiment Analysis of AI Articles Over Time'
+    )
+
+    fig.show()
+
+
 def main():
     articles = fetch_articles()
     df = convert_and_save_dataframe(articles, "articles.csv")
     df = preprocess_df(df, "preprocessed_articles.csv")
     df = sentiment_analysis(df, "final_articles_with_sentiment.csv")
-    
+    plot_sentiment(df)
     print(df.head())
 
 if __name__ == "__main__":
