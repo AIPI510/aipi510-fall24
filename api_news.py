@@ -39,14 +39,11 @@ def fetch_articles():
     Output - the data from the API in a list format
     """
     import os
-    from dotenv import load_dotenv
+
     import requests
 
-    # load env
-    load_dotenv()
-    # get apikey from env
     # TODO: Paste API key from https://newsapi.org/register
-    api_key = os.getenv('API_KEY') #Enter your api key here
+    api_key = "e8fa06999a874cda9bb7496084d51b07" #Enter your api key here
     # base URL
     base_url = "https://newsapi.org/v2/everything"
     # init param
