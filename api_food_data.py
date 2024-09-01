@@ -36,9 +36,9 @@ def get_food_info(food_name):
                 json.dump(food_item, file, indent=4)
             print(f"Found FDC ID: {fdc_id} for food: {food_name}")
             
-            # 提取食品名称和热量信息
+            # extract description of the searched food.
             food_name = food_item.get('description', 'N/A')
-            # 获取热量信息（能量信息）
+            # gain the calories information of the searched food.
             nutrients = food_item.get('foodNutrients', [])
             calories_info = next((nutrient for nutrient in nutrients if nutrient.get('nutrientName') == 'Energy'), {})
             calories = calories_info.get('value', 'N/A')
