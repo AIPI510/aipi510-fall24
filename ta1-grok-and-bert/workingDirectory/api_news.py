@@ -5,6 +5,22 @@ import pandas as pd
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import plotly.express as px
 
+def download_nltk():
+    """
+    Function to fetch articles from the news_api.py
+    Input - a call from the main function
+    Output - The NLTK vader lexicon is downloaded
+    """
+    import ssl
+    import nltk
+
+    # Bypass SSL certificate verification
+    ssl._create_default_https_context = ssl._create_unverified_context
+
+    # Download the VADER lexicon
+    nltk.download('vader_lexicon')
+    return
+
 
 def fetch_articles():
     """
@@ -34,12 +50,15 @@ def fetch_articles():
         # read json
         articles = response.json().get('articles', [])
         if articles:
-            for i, article in enumerate(articles, start=1):
-                print(f"Article {i}:")
-                print(f"Title: {article['title']}")
-                print(f"Description: {article['description']}")
-                print(f"URL: {article['url']}\n")
-                print(f"Published At: {article['publishedAt']}\n")
+            for i, article in enumerate(articles, start=0):
+                if (i < 6):
+                    print(f"Article {i}:")
+                    print(f"Title: {article['title']}")
+                    print(f"Description: {article['description']}")
+                    print(f"URL: {article['url']}\n")
+                    print(f"Published At: {article['publishedAt']}\n")
+                else:
+                    break
         else:
             print("No articles found.")
 
@@ -150,6 +169,7 @@ def main():
     """
     This is a function that handles the processes of each function, calling them synchronously through the run.
     """
+    download_nltk()
     articles = fetch_articles()
     df = convert_and_save_dataframe(articles, "articles.csv")
     df = preprocess_df(df, "preprocessed_articles.csv")
