@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 
 
 def get_cli_argument():
-    """ArgumentParser to accept inputs from user via command line: year [2023], top [10 countries], percapita [false]"""
-    parser = argparse.ArgumentParser(description="Retrieve GDP data from World Bank API, and create a bar chart showing top largest economies by GDP")
+    """ArgumentParser to accept inputs from user via command line: year [2023], top [10 countries], gdptype [0: GDP based on Current USD]"""
+    parser = argparse.ArgumentParser(description="Retrieve GDP data from World Bank API, and create a horizontal bar chart showing top countries by GDP/GDP per capita/GDP Growth")
     parser.add_argument("--year", type=int, dest="year", default = "2023", help="Year for the GDP chart")
     parser.add_argument("--top", type=int, dest="top", default = "10", help="Number of countries to show in the GDP chart (top largest)")
     parser.add_argument("--gdptype", type=int, dest="gdptype", default = "0", help="""0: GDP, Current USD
@@ -70,19 +70,17 @@ def create_pd_dataframe(data, isgdpdata):
         return pd.DataFrame([country_id, country_name], index=["country_id","country_name"]).T
 
 
-def main():
-    """"""
-    # Get all user's arguments
-    args = get_cli_argument()
-    year = args.year
-    top = args.top
-    gdptype = args.gdptype
-
-    # Create an API query for the list of countries, get json data, create dataframe, and remove all Aggregates (group of countries/region) in order to get only the list of individual countries
+def create_countrylist_df():
+    """Create an API query for the list of countries, get json data, create dataframe, 
+        remove all Aggregates (group of countries/region) in order to get only the list of individual countries
+        and return countrylist_df dataframe"""
     countrylist_apicall_url = "https://api.worldbank.org/v2/country?format=json&per_page=1000"
     countrylist_data = request_json(countrylist_apicall_url)
     countrylist_df = create_pd_dataframe(countrylist_data, isgdpdata=False)
+    return countrylist_df
 
+
+def create_gdp_noagg_df(year, top, gdptype, gdpcolumn, countrylist_df):
     # Create an API query for GDP data, get json data, and create dataframe, which still includes Aggregates (such as GDP of Asia, GDP of Europe, etc.)
     gdp_apicall_url = create_world_bank_argumentbased_url(year, gdptype)
     gdp_data = request_json(gdp_apicall_url)
@@ -95,6 +93,19 @@ def main():
     gdp_noagg_df.index = gdp_noagg_df.index + 1
 
     # Rename gdp_value column to "gdp_percapita" or "gdp_growth", if applicable
+    gdp_noagg_df.rename(columns={"gdp_value":gdpcolumn}, inplace=True)
+
+    return gdp_noagg_df
+
+
+def main():
+    """Get user's arguments, create dataframe from API query, print results, and plot a horizontal bar chart"""
+    # Get all user's arguments
+    args = get_cli_argument()
+    year = args.year
+    top = args.top
+    gdptype = args.gdptype
+
     match gdptype:
         case 0:
             gdpcolumn = "gdp_value"
@@ -102,10 +113,18 @@ def main():
             gdpcolumn = "gdp_percapita"
         case 2:
             gdpcolumn = "gdp_growth"
-    gdp_noagg_df.rename(columns={"gdp_value":gdpcolumn}, inplace=True)
+
+    # Create create dataframe for a list of available countries, without Aggregates
+    countrylist_df = create_countrylist_df()
+
+    # Create an API query for GDP data, get json data, and create dataframe, which still includes Aggregates (such as GDP of Asia, GDP of Europe, etc.)
+    gdp_noagg_df = create_gdp_noagg_df(year, top, gdptype, gdpcolumn, countrylist_df)
 
     # Print the resulting table
     print(gdp_noagg_df)
+
+    # Export to csv file
+    gdp_noagg_df.to_csv("gdpstat.csv")
 
     # Plot horizontal bar chart
     ax = gdp_noagg_df.sort_values(by=gdpcolumn, ascending=True).plot(kind="barh", x="country_name", y=gdpcolumn, legend=False, figsize=(16, 8), color='#86bf91')
