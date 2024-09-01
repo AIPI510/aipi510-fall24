@@ -7,6 +7,11 @@ import plotly.express as px
 
 
 def fetch_articles():
+    """
+    Function to fetch articles from the news_api.py
+    Input - a call from the main function
+    Output - the data from the API in a list format
+    """
     # load env
     load_dotenv()
     # get apikey from env
@@ -52,12 +57,23 @@ def fetch_articles():
     return articles
 
 def convert_and_save_dataframe(articles, name):
+    """
+    Function to convert the data from the api and return it in the dataframe format
+    Input - all the data in the list format, name of the csv to be saved as
+    Output - the data data in dataframe format
+    """
     df = pd.DataFrame(articles)
+    print("Printing out all our data from the from the API in the dataframe format")
     print(df.head())
     df.to_csv(name)
     return df
 
 def preprocess_df(df, name):
+    """
+    Function to preprocess the dataframe, and drop the NAN values
+    Input - unprocessed dataframe, name of the csv to be saved as
+    Output - Dropped values which have NAN type
+    """
     # ensure the description and date column exists
     if 'description' in df.columns:
         df['description'] = df['description'].fillna('')
@@ -69,7 +85,7 @@ def preprocess_df(df, name):
         df['publishedAt'] = ''
     # drop any rows that are completely empty if necessary
     df.dropna( inplace=True)
-
+    print("Printing out all our data from the dataframe after pre processing and removing NAN values")
     print(df)
     df.to_csv(name)
     return df
