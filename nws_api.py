@@ -58,9 +58,11 @@ def parse_forecast_json(json_data):
     periods = json_data['properties']['periods']
     data = []
     for period in periods:
+        farenheight = period['temperature']
+        celsius = (farenheight - 32) * (5.0/9.0)
         data.append({
             'time': pd.to_datetime(period['startTime']),
-            'temperature': period['temperature']
+            'temperature': celsius
         })
     
     df = pd.DataFrame(data)
@@ -172,6 +174,7 @@ if st.session_state.button1:
             # @todo: render some time series data from teh get_forecast method which I think is brokwn at the moment
             stream("Click the button to see temperature forecast data for your local station.")
 
+            st.subheader("🌡️ Temperature forecast")
             st.button("Get forecast", on_click=click_button4)
             if st.session_state.button4:
                 forecast_url = forecast.data['forecastHourly']  
