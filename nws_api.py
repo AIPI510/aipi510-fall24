@@ -42,11 +42,19 @@ def display_observation_map(df):
     st.map(df, size=20, color="#0044ff")
 
 def fetch_forecast_data(url):
+    """
+    get the forecast data given url
+    input: url
+    output: json
+    """
     response = requests.get(url)
     response.raise_for_status()  
     return response.json()  
 
 def parse_forecast_json(json_data):
+    """parse the data into df suitable for plotting
+    input: json
+    output: pandas df"""
     periods = json_data['properties']['periods']
     data = []
     for period in periods:
@@ -162,7 +170,7 @@ if st.session_state.button1:
             display_chart(observations, 'temp')
 
             # @todo: render some time series data from teh get_forecast method which I think is brokwn at the moment
-            stream("Click the button to see forecast data for your local station.")
+            stream("Click the button to see temperature forecast data for your local station.")
 
             st.button("Get forecast", on_click=click_button4)
             if st.session_state.button4:
