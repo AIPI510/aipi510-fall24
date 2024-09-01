@@ -1,14 +1,30 @@
-from PyQt5.QtWidgets import QLabel, QComboBox, QMainWindow, QPushButton, QMessageBox, QApplication
+from PyQt5.QtWidgets import QLineEdit, QLabel, QMainWindow, QPushButton, QMessageBox, QApplication
+from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem
+from PyQt5.QtCore import Qt, QUrl
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
+import requests
+from io import BytesIO
+import urllib.request
 
+# for test only, should be replaced by api handler
+import pandas as pd
+
+
+''' Copilot helped to generate the code for main window structure and 
+the code to get the pokemon img and sound; modifications are applied thereafter
+'''
 class MainWindow(QMainWindow):
     def __init__(self, pokemon_list:list):
         super().__init__()
 
+        # set the pokemon list
+        self.pokemon_list = pokemon_list
         # initialize the main window 
-        self.set_main_window(pokemon_list)
+        self.set_main_window()
 
     '''Function to set the main window of the application'''
-    def set_main_window(self, pokemon_list:list):
+    def set_main_window(self):
         self.setWindowTitle("Pokemon Comparison")
         screen_geometry = QApplication.desktop().screenGeometry() # dim of screen
         screen_witdh = screen_geometry.width()
@@ -29,25 +45,149 @@ class MainWindow(QMainWindow):
         font.setPointSize(20)
         font.setBold(True)
         self.plain_text_label.setFont(font)
-        
-        self.plain_text_label.setGeometry(50, 60, width//2, 30)
+        self.plain_text_label.setGeometry(400, 60, 1000, 60)
 
-        # add a pull-down selector
-        self.combo_box = QComboBox(self)
-        self.combo_box.setGeometry(50, 150, 180, 30)
-        self.combo_box.addItems(pokemon_list)
+        # an input textbox and prompt info
+        self.prompt1 = QLabel("Pokemon 1", self)
+        self.prompt1.setGeometry(50, 150, 180, 30)
 
-        # add a pull-down selector
-        self.combo_box = QComboBox(self)
-        self.combo_box.setGeometry(50, 240, 180, 30)
-        self.combo_box.addItems(pokemon_list)
+        self.input_box1 = QLineEdit(self)
+        self.input_box1.setGeometry(50, 180, 200, 40)
+        self.input_box1.setPlaceholderText("Enter here")
+
+        # an input textbox and prompt info 
+        self.prompt2 = QLabel("Pokemon 2", self)
+        self.prompt2.setGeometry(50, 240, 180, 30)
+
+        self.input_box2 = QLineEdit(self)
+        self.input_box2.setGeometry(50, 270, 200, 40)
+        self.input_box2.setPlaceholderText("Enter here")
 
         # set the comparation button
         self.button = QPushButton("Compare!", self)
         self.button.setGeometry(50, 330, 180, 40)
-        self.button.clicked.connect(self.show_message)
+        self.button.clicked.connect(self.comparison)
 
-        return self
+        # set the exit button
+        self.exit_button = QPushButton("Exit", self)
+        self.exit_button.setGeometry(50, 500, 180, 40)
+        self.exit_button.clicked.connect(self.exit_app)
 
-    def show_message(self):
-        QMessageBox.information(self, "Message", "Hello, PyQt!")
+        '''This area would be used to show the comparison result'''
+        self.table = QTableWidget(self)
+        self.table.setGeometry(400, 200, 600, 400)
+        self.table.setRowCount(11)
+        self.table.setColumnCount(2)
+        self.table.setColumnWidth(0, 200)
+        self.table.setColumnWidth(1, 200)
+        self.table.setRowHeight(3, 50)
+        self.table.setVerticalHeaderLabels([
+            "Name", "Types", "Abilities", "Sprite", "Cry", "HP", 
+            "Attack", "Special Attack", "Defense", "Special Defense", "Speed"
+        ])
+        
+
+    '''First function, to make sure the input is correct'''
+    def comparison(self):
+        pokemon1 = self.input_box1.text().lower().replace(" ", "")
+        pokemon2 = self.input_box2.text().lower().replace(" ", "")
+        
+        if pokemon1 in self.pokemon_list and pokemon2 in self.pokemon_list:
+            QMessageBox.information(self, "Information", f"Comparing {pokemon1} and {pokemon2}...")
+            self.show_comparison(pokemon1, pokemon2)
+        elif pokemon1 == "" or pokemon2 == "":
+            QMessageBox.warning(self, "Warning: empty input", "Please enter the pokemon names")
+        else:
+            QMessageBox.warning(self, "Warning: wrong name(s)", "Please enter the pokemon names correctly")
+
+    '''If the input is correct, show the comparison result'''
+    def show_comparison(self, pokemon1:str, pokemon2:str):
+        # clear message box
+        self.input_box1.clear()
+        self.input_box2.clear()
+
+        # to be replaced by the api interface
+        info_list1 = find_pokemon_info(pokemon1)
+        info_list2 = find_pokemon_info(pokemon2)
+
+        # add info to the table
+        item_list = ["Name", "Types", "Abilities", "Sprite", "Cry", "Hp", 
+            "Attack", "Special Attack", "Defense", "Special Defense", "Speed"]
+        for i in range(11):
+            # special case for img
+            if i == 3:
+                response1 = requests.get(info_list1[0][item_list[i]])
+                response2 = requests.get(info_list2[0][item_list[i]])
+                img1 = QLabel(self)
+                img2 = QLabel(self)
+                pixmap1 = QPixmap()
+                pixmap2 = QPixmap()
+                pixmap1.loadFromData(BytesIO(response1.content).read())
+                pixmap2.loadFromData(BytesIO(response2.content).read())
+                img1.setPixmap(pixmap1)
+                img2.setPixmap(pixmap2)
+                img1.setAlignment(Qt.AlignCenter)
+                img2.setAlignment(Qt.AlignCenter)
+                self.table.setCellWidget(i, 0, img1)
+                self.table.setCellWidget(i, 1, img2)
+            # special case for sound
+            elif i == 4:
+                play_button1 = QPushButton("Play Sound", self)
+                play_button1.clicked.connect(lambda: self.play_sound(str(info_list1[0][item_list[i]])))
+                self.table.setCellWidget(i, 0, play_button1)
+
+                play_button2 = QPushButton("Play Sound", self)
+                play_button2.clicked.connect(lambda: self.play_sound(str(info_list2[0][item_list[i]])))
+                self.table.setCellWidget(i, 1, play_button2)
+            else:
+                # row, col, item
+                item1 = QTableWidgetItem(str(info_list1[0][item_list[i]]))
+                item2 = QTableWidgetItem(str(info_list2[0][item_list[i]]))
+                item1.setTextAlignment(Qt.AlignCenter)
+                item2.setTextAlignment(Qt.AlignCenter)
+                self.table.setItem(i, 0, item1)
+                self.table.setItem(i, 1, item2)
+    
+    '''Assistant function to play the sound of the pokemon'''
+    def play_sound(self, url):
+        # test
+        print(url)
+        url = "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/25.ogg"
+        # download the sound file
+        local_sound_file = "src/temp/sound.ogg"
+        self.download_sound(str(url),local_sound_file)
+        
+        # Create a QMediaPlayer object to play
+        url_qt = QUrl.fromLocalFile(local_sound_file)
+        self.player = QMediaPlayer()
+        self.player.setMedia(QMediaContent(url_qt))
+        self.player.play()
+    
+    '''Assistant function to download the sound file (.ogg) of the pokemon'''
+    def download_sound(self, url, local_filename):
+        try:
+            urllib.request.urlretrieve(url, local_filename)
+        except Exception as e:
+            print(f"Error downloading sound: {e}")
+                    
+    '''Function to exit the application'''
+    def exit_app(self):
+        self.close()
+
+# test function only!
+def find_pokemon_info(pokemon_name:str):
+    df = pd.read_csv("src/pokeapi/pokemon_data.csv")
+    pokemon_info = df.query(f"Name == '{pokemon_name}'").to_dict("records")
+    # an example of the return value
+    '''[{'Name': 'pikachu', 
+    'Types': 'electric', 
+    'Abilities': 'static, lightning-rod', 
+    'Sprite': 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png', 
+    'Cry': 'https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/25.ogg', 
+    'Hp': 35, 
+    'Attack': 55, 
+    'Special Attack': 40, 
+    'Defense': 50, 
+    'Special Defense': 50, 
+    'Speed': 90}]'''
+    return pokemon_info
