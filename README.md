@@ -1,5 +1,15 @@
 # Team Assignment #1
+
+* Team: RRKing
+* Members: Ruoxin Wang, Ruonan Shi
+
 ## Data Sourcing
+### Using the USDA FoodData Central API
+
+* Search food items and its information.
+* Get food nutrients content.
+* Visualizaiton and analysis on food that user search.
+
 
 ## Instructions
 1. Create a feature branch in the class GitHub repository for your team. 
