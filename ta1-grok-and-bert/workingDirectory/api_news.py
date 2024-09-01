@@ -76,6 +76,14 @@ def preprocess_df(df, name):
 
 
 def sentiment_analysis(df, name):
+    """
+     The following function is used to analyse the sentiment of the articles. It uses the NLTK toolkit followed by vader
+     tool to compute the sentiment score given the description of each new article.
+
+     Param: Preprocessed Dataframe
+
+     Return: DataFrame with calculated sentiment scores.
+    """
     # init vader
     sia = SentimentIntensityAnalyzer()
 
@@ -94,6 +102,14 @@ def sentiment_analysis(df, name):
 
 
 def plot_sentiment(df):
+    """
+     The following function takes in a df, specifically one that contains preprocessed information containing a sentiment,
+      publishedAt, url and title class to provide a high-level analysis through a scatter plot.
+
+     Param: Preprocessed Dataframe with calculated sentiment scores.
+
+     Return: Interactive Scatter Plot
+    """
     # handle publishAt class to conversion to dateTime
     df['publishedAt'] = pd.to_datetime(df['publishedAt'])
 
@@ -115,6 +131,9 @@ def plot_sentiment(df):
 
 
 def main():
+    """
+    This is a function that handles the processes of each function, calling them synchronously through the run.
+    """
     articles = fetch_articles()
     df = convert_and_save_dataframe(articles, "articles.csv")
     df = preprocess_df(df, "preprocessed_articles.csv")
