@@ -31,9 +31,6 @@ Reference of using from_dict and converting:
 
 TimeSeries= data['Time Series (5min)']
 df = pd.DataFrame.from_dict(TimeSeries, orient='index')
-#print(df)
-print(df['1. open'].dtype)
-
 df['1. open'] = df['1. open'].astype(float)
 
 #Unit Test - Reference: https://docs.python.org/3/library/unittest.html; isinstance: https://www.w3schools.com/python/ref_func_isinstance.asp
@@ -47,7 +44,7 @@ class Testing(unittest.TestCase):
     def test_if_there_is_missing_value(self):
         #Checking if '1. open' column has no null values. 
         self.assertFalse(df['1. open'].isnull().any(),"1. open column has missing value")
-        
+
 if __name__ =='__main__':
     unittest.main()
 
