@@ -20,7 +20,6 @@ def download_nltk():
     nltk.download('vader_lexicon')
     return
 
-
 def fetch_articles():
     """
     Function to fetch articles from the news_api.py
