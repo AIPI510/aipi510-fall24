@@ -1,3 +1,9 @@
+# 1. https://newsapi.org/register
+
+# 2. Enter personal information
+
+# 3. Retrieve key and insert into into #"Enter API KEY" String inside the news_api.py file located on line _____
+
 def download_nltk():
     """
     Function to fetch articles from the news_api.py
@@ -28,7 +34,8 @@ def fetch_articles():
     # load env
     load_dotenv()
     # get apikey from env
-    api_key = os.getenv('API_KEY')
+    # TODO: Paste API key from https://newsapi.org/register
+    api_key = os.getenv('API_KEY') #Enter your api key here
     # base URL
     base_url = "https://newsapi.org/v2/everything"
     # init param
@@ -81,7 +88,7 @@ def convert_and_save_dataframe(articles, name):
     import pandas as pd
     df = pd.DataFrame(articles)
     print("Printing out all our data from the from the API in the dataframe format")
-    print(df.head())
+    print(df)
     df.to_csv(name)
     return df
 
@@ -92,6 +99,7 @@ def preprocess_df(df, name):
     Output - Dropped values which have NAN type
     """
     import pandas as pd
+    print("\n\n\n")
     # ensure the description and date column exists
     if 'description' in df.columns:
         df['description'] = df['description'].fillna('')
