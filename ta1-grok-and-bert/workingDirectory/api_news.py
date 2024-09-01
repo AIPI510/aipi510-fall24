@@ -1,10 +1,3 @@
-import os
-import requests
-from dotenv import load_dotenv
-import pandas as pd
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
-import plotly.express as px
-
 def download_nltk():
     """
     Function to fetch articles from the news_api.py
@@ -28,6 +21,10 @@ def fetch_articles():
     Input - a call from the main function
     Output - the data from the API in a list format
     """
+    import os
+    from dotenv import load_dotenv
+    import requests
+
     # load env
     load_dotenv()
     # get apikey from env
@@ -81,6 +78,7 @@ def convert_and_save_dataframe(articles, name):
     Input - all the data in the list format, name of the csv to be saved as
     Output - the data data in dataframe format
     """
+    import pandas as pd
     df = pd.DataFrame(articles)
     print("Printing out all our data from the from the API in the dataframe format")
     print(df.head())
@@ -93,6 +91,7 @@ def preprocess_df(df, name):
     Input - unprocessed dataframe, name of the csv to be saved as
     Output - Dropped values which have NAN type
     """
+    import pandas as pd
     # ensure the description and date column exists
     if 'description' in df.columns:
         df['description'] = df['description'].fillna('')
@@ -119,6 +118,8 @@ def sentiment_analysis(df, name):
 
      Return: DataFrame with calculated sentiment scores.
     """
+    import pandas as pd
+    from nltk.sentiment.vader import SentimentIntensityAnalyzer
     # init vader
     sia = SentimentIntensityAnalyzer()
 
@@ -145,6 +146,8 @@ def plot_sentiment(df):
 
      Return: Interactive Scatter Plot
     """
+    import pandas as pd
+    import plotly.express as px
     # handle publishAt class to conversion to dateTime
     df['publishedAt'] = pd.to_datetime(df['publishedAt'])
 
