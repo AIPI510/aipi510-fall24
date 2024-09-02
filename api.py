@@ -3,18 +3,6 @@ import argparse
 import json
 
 
-url = "https://api.twitch.tv/helix/search/channels"
-# "https://api.twitch.tv/helix/streams"
-
-params = {"query": "angle",
-          "live_only": "true"}
-
-headers = {"Authorization": "Bearer vp4jwqhdb9apxarpft087karym7z1h",
-           "Client-Id": "g7v34vrphagnz0hldu1yg63jmnilmb"}
-
-response = requests.request("GET", url, headers=headers, params=params)
-print(response.json())
-
 def search_channel(search_query):
     
     # Replace these variables with .env information 
