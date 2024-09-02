@@ -6,14 +6,23 @@
 
 # 4. create a virtual environment 
 
-# Step 1 - clone the github repo -  git clone 
-# Step 2 - navigate to your directory
-# Step 3 - python -m venv venv
-# Step 4 - source venv/bin/activate
+# Step 1 - clone the github repo "git clone --branch "ta1-grok-and-bert" https://github.com/AIPI510/aipi510-fall24.git"
 
-# 5. Install the following python packages via PIP -
-# pip install pip install annotated-types==0.7.0 anyio==4.4.0 beautifulsoup4==4.12.3 boto3==1.34.149 botocore==1.34.149 bs4==0.0.2 certifi==2024.7.4 charset-normalizer==3.3.2 click==8.1.7 distro==1.9.0 filelock==3.15.4 frozendict==2.4.4 fsspec==2024.6.1 h11==0.14.0 html5lib==1.1 httpcore==1.0.5 httpx==0.27.0 huggingface-hub==0.24.5 idna==3.7 iniconfig==2.0.0 Jinja2==3.1.4 jmespath==1.0.1 joblib==1.4.2 lxml==5.2.2 MarkupSafe==2.1.5 mpmath==1.3.0 multitasking==0.0.11 networkx==3.3 nltk==3.9.1 numpy==2.0.1 openai==1.37.1 packaging==24.1 pandas==2.2.2 peewee==3.17.6 platformdirs==4.2.2 plotly==5.24.0 pluggy==1.5.0 pydantic==2.8.2 pydantic_core==2.20.1 pytest==8.3.2 python-dateutil==2.9.0.post0 python-dotenv==1.0.1 pytz==2024.1 PyYAML==6.0.2 regex==2024.7.24 requests==2.32.3 s3transfer==0.10.2 safetensors==0.4.4 sec-api==1.0.18 sentencepiece==0.2.0 setuptools==72.1.0 six==1.16.0 sniffio==1.3.1 soupsieve==2.5 sympy==1.13.1 tenacity==9.0.0 tokenizers==0.19.1 torch==2.4.0 tqdm==4.66.4 transformers==4.44.0 typing_extensions==4.12.2 tzdata==2024.1 urllib3==2.2.2 webencodings==0.5.1 yfinance==0.2.41
+# Step 2 - navigate to your directory "cd aipi510-fall24"
 
+# Step 3 - create python enviroment "python3 -m venv venv"
+
+# Step 4 - On MacOS:
+
+     # "source venv/bin/activate"
+     
+# Step 4 - On Windows:
+
+     # venv\Scripts\activate
+
+# Step 5. Install python packages via PIP - "pip install nltk==3.9.1 requests==2.32.3 pandas==2.2.2 plotly==5.24.0"
+
+# Step 6. Run the script. "python api_news.py"
 
 
 def download_nltk():
