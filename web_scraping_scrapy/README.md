@@ -13,7 +13,7 @@ pip install -r requirements.txt
 
 ### Usage
 
-The spider navigates the first initial url: www.hm.com/dresses and retrives the name and price of each dress. Then it iterates through the next 5 pages automatically.
+The spider navigates the first initial url: [H&M](https://www2.hm.com/en_us/women/products/dresses.html) and retrives the name and price of each dress. Then it iterates through the next 5 pages automatically.
 
 To run the spider and scrape the data:
 
