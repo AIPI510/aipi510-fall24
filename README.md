@@ -1,4 +1,8 @@
 # Team Assignment #1
+
+## Team information
+This is the team Wukong. And the members are Zejun Bai and Yiqing Liu.
+
 ## Data Sourcing
 
 ## Instructions
