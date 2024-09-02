@@ -50,6 +50,10 @@ def get_text(endpoint, kwargs):
         return None, None
     
 def main(args):
+    # Check if directory exists
+    if not os.path.exists(f'./{args.output_dir}'): 
+        # Create the directory 
+        os.makedirs(f'./{args.output_dir}')
     offset = 0
     docs_added = 0
     BASE = 'bill'
@@ -80,7 +84,7 @@ def main(args):
                 if not pdf:
                     print('no pdf found for this bill. continuing to next')
                     continue
-                print(f'SUCCESS! fetched {name} with the following metadata:{'\n'}')
+                print(f'SUCCESS! fetched {name} with the following metadata:')
                 print(f'subject: {subject}')
                 print(f'latest action: {latestAction}')
                 my_pdf = requests.get(pdf)
