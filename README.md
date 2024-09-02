@@ -22,10 +22,11 @@ On other systems:
 ```
 python api_world_bank.py --year <YEAR> --top <TOP> --gdptype <TYPE>
 ```
-
 where   
 `<YEAR>` is the input year for the GDP data [default = 2023]
+
 `<TOP>` is number of top countries to show in the GDP chart (top largest) [default = 10]
+
 `<TYPE>` can be either 0, 1, or 2 [default = 0]
 - 0: GDP, Current USD
 - 1: GDP per capita, Current USD
