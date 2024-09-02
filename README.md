@@ -2,45 +2,51 @@
 ## Data Sourcing
 World Bank API
 
-## Instructions
-1. Create a feature branch in the class GitHub repository for your team. 
+This is a Python script that can request GDP data from World Bank API, print resulting table, draw horizontal bar chart, and save the result as CSV.
 
-2. Put together a code demo for your assigned topic. 
-Code should be:
-* Clean and well organized script
-* Using best practices (if you aren’t sure, go back to the Premodule content)
-* Well-commented
-* Contains appropriate unit testing
-* Clear name (ie ‘web-scraping-selenium.py’)
+## Installation
 
-3. Create a <5 minute video documenting your topic and code demo. 
+1. Install all dependencies
+```
+pip install -r requirements.txt
+```
 
-## Submission
-To submit your code, make a PR into the data-sourcing-ta1 branch and add me and the TA as reviewers. In your PR, add the link to your demo video. Also, add any requirements (and versions) that are not currently in the requirements.txt file to the text of your PR.
+2. To run the code, type the followings in the terminal
+On Windows:
+```
+py api_world_bank.py --year <YEAR> --top <TOP> --gdptyp <TYPE>
+```
+On other systems:
+```
+python api_world_bank.py --year <YEAR> --top <TOP> --gdptyp <TYPE>
+```
 
-## Topics
-* Web scraping with Selenium
-* Web scraping with Beautiful Soup
-* Web scraping using requests
-* Using Hugging Face API for getting datasets
-* Use an API from a social platform (i.e. Strava, Twitter)
-* Use the PubMed API
-* [maybe] Collect sensor data from a Raspberry Pi (temperature sensor may be the easiest, but you can use any sensor)
+where   `<YEAR>` is the input year for the GDP data [default = 2023]
+        `<TOP>` is number of top countries to show in the GDP chart (top largest) [default = 10]
+        `<TYPE>` can be either 0, 1, or 2 [default = 0]
+                0: GDP, Current USD
+                1: GDP per capita, Current USD
+                2: GDP Growth, Constant Local Currency
 
-## Rubric
-### Code (30 points)
-* Code is a script, not a notebook
-* Code is clean and well organized
-* Code is documented with docstrings and comments 
-* Code is free of commented out code (ie debug print statements)
-* Script has a clear name
-* Branching and PRs were done appropriately
-* Requirements are included in the text of the PR and are correct and versioned
-* The code runs as documented
+For example, to get top `5` largest economies in `2020` by GDP:
+```
+py api_world_bank.py --year 2020 --top 5 --gdptyp 0
+```
+You should see output like this:
+```
+  country_id    country_name             gdp_value
+1         US   United States        21322950000000
+2         CN           China        14687744162801
+3         JP           Japan  5055587093501.589844
+4         DE         Germany  3887727161914.410156
+5         GB  United Kingdom  2697806592293.859863
+```
+The horizontal bar chart should pop up automatically
 
-### Video (15 points)
-* < 5 minutes
-* The video is of mid-high production quality and doesn’t contain significant background noise 
-* Video is well organized and clear
-* Video documents topic and code effectively
 
+## Unit Test
+Run `pytest`
+```
+pytest api_world_bank.py
+```
+This will run 4 test functions in api_world_bank.py
