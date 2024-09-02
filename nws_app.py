@@ -5,9 +5,7 @@ import pydeck as pdk
 import time
 import requests
 
-# @todo: bring this utility code into this file, the assignment seems to imply we should
-# only be merging nws_api.py
-from weather import Forecast, IPGeo
+from nws_api import Forecast, IPGeo
 
 # Streamlit application basics courtesy of https://docs.streamlit.io/get-started/fundamentals/main-concepts
 #
@@ -16,8 +14,6 @@ from weather import Forecast, IPGeo
 # the callback will always run before the rest of your script. For details on the Callbacks
 # API, please refer to our Session State API Reference Guide.
 #
-
-
 def display_chart(df, column): 
     """
     

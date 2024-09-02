@@ -1,12 +1,12 @@
-import weather
+import nws_api
 
 def test_resolve_location(): 
-    geo = weather.IPGeo()
+    geo = nws_api.IPGeo()
     assert(geo.data['status'] == 'success')
 
 def test_get_forecast(): 
-    geo = weather.IPGeo()
-    forecast = weather.Forecast()
+    geo = nws_api.IPGeo()
+    forecast = nws_api.Forecast()
     forecast.resolve_location(geo.lat, geo.lon) 
     assert(type(forecast.forecast_url) is str)
     assert(type(forecast.office) is str)
@@ -14,9 +14,3 @@ def test_get_forecast():
     
     forecast.update_forecast()
     assert(type(forecast.forecast) is list)
-
-def test_get_precipitation(): 
-    p = weather.Precipitation()
-    p.update_precipitation('27603', 2)
-
-    assert(type(p.precip) is list)
