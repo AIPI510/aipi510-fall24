@@ -2,7 +2,7 @@
 
 # 2. Enter personal information
 
-# 3. Retrieve key and insert into into #"Enter API KEY" String inside the news_api.py file located on line _____
+# 3. Retrieve key and insert into into #"Enter API KEY" String inside the news_api.py file located on line 58
 
 # 4. create a virtual environment 
 
@@ -10,7 +10,9 @@
 
 # Step 2 - navigate to your directory "cd aipi510-fall24"
 
-# Step 3 - create python enviroment "python3 -m venv venv"
+# Step 3 - create python enviroment on mac "python3 -m venv venv"
+
+# On windows = "python -m venv venv"
 
 # Step 4 - On MacOS:
 
@@ -18,9 +20,10 @@
      
 # Step 4 - On Windows:
 
-     # venv\Scripts\activate
+     # ".\venv\Scripts\activate"
 
-# Step 5. Install python packages via PIP - "pip install nltk==3.9.1 requests==2.32.3 pandas==2.2.2 plotly==5.24.0"
+# Step 5. Install python packages via PIP - 
+#  "pip install nltk==3.9.1 requests==2.32.3 pandas==2.2.2 plotly==5.24.0"
 
 # Step 6. Run the script. "python api_news.py"
 
@@ -52,7 +55,7 @@ def fetch_articles():
     import requests
 
     # TODO: Paste API key from https://newsapi.org/register
-    api_key = "e8fa06999a874cda9bb7496084d51b07" #Enter your api key here
+    api_key = "" #Enter your api key here
     # base URL
     base_url = "https://newsapi.org/v2/everything"
     # init param
