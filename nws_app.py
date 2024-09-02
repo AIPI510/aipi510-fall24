@@ -30,40 +30,53 @@ def display_station_map(df):
     """
     st.map(df, size=60, color="#0044ff")
 
+def display_station_map2(df, lat, lon): 
+    """ 
+    Render the map!
+    """
+    st.map(df, size=60, color="#0044ff")
+
+    import pydeck as pdk
+    from pydeck.types import String
+    import pandas as pd
+
+    TEXT_LAYER_DATA = "https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/bart-stations.json"  # noqa
+    df = pd.read_json(TEXT_LAYER_DATA)
+
+    # Define a layer to display on a map
+    layer = pdk.Layer(
+        "TextLayer",
+        df,
+        pickable=True,
+        get_position="coordinates",
+        get_text="name",
+        get_size=16,
+        get_color=[0, 0, 0],
+        get_angle=0,
+        # Note that string constants in pydeck are explicitly passed as strings
+        # This distinguishes them from columns in a data set
+        get_text_anchor=String("middle"),
+        get_alignment_baseline=String("center"),
+    )
+
+    # Set the viewport location
+    view_state = pdk.ViewState(latitude=37.7749295, longitude=-122.4194155, zoom=10, bearing=0, pitch=45)
+
+    # Render
+    r = pdk.Deck(
+        layers=[layer],
+        initial_view_state=view_state,
+        tooltip={"text": "{name}\n{address}"},
+        map_style=pdk.map_styles.ROAD,
+    )
+    r.to_html("text_layer.html")
+
 # todo: fix this to render temperatures or something on the map with a color ramp
 def display_observation_map(df): 
     """ 
     Render the map!
     """
     st.map(df, size=20, color="#0044ff")
-
-def fetch_forecast_data(url):
-    """
-    get the forecast data given url
-    input: url
-    output: json
-    """
-    response = requests.get(url)
-    response.raise_for_status()  
-    return response.json()  
-
-def parse_forecast_json(json_data):
-    """parse the data into df suitable for plotting
-    input: json
-    output: pandas df"""
-    periods = json_data['properties']['periods']
-    data = []
-    for period in periods:
-        farenheight = period['temperature']
-        celsius = (farenheight - 32) * (5.0/9.0)
-        data.append({
-            'time': pd.to_datetime(period['startTime']),
-            'temperature': celsius
-        })
-    
-    df = pd.DataFrame(data)
-    df.set_index('time', inplace=True)
-    return df
 
 def temp_graph(df):
     st.line_chart(df['temperature'])
@@ -80,16 +93,20 @@ def get_forecast(lat, lon):
 
 @st.cache_data
 def get_stations(_forecast):
-    return forecast.retrieve_serving_stations()
+    return _forecast.retrieve_serving_stations()
 
 @st.cache_data
 def get_observations(_forecast, stations):
-    return forecast.retrieve_observations(stations)
+    return _forecast.retrieve_observations(stations)
+
+@st.cache_data
+def get_hourly_forecast(_forecast):
+    return _forecast.retrieve_hourly_forecast()
 
 def stream_data(text):
     for word in text.split(" "):
         yield word + " "
-        time.sleep(0.05)
+        time.sleep(0.04)
 
 @st.cache_data
 def stream(text): 
@@ -164,8 +181,7 @@ if st.session_state.button1:
             st.subheader('Current observations')
             observations = get_observations(forecast, stations['station'])
             
-            # @todo, this isn't right... we need to display a map 
-            display_chart(observations, 'temp')
+            #display_station_map2(observations, 'temp')
 
             # @todo: render some time series data from teh get_forecast method which I think is brokwn at the moment
             stream("Click the button to see temperature forecast data for your local station.")
@@ -173,14 +189,10 @@ if st.session_state.button1:
             st.subheader("🌡️ Temperature forecast")
             st.button("Get forecast", on_click=click_button4)
             if st.session_state.button4:
-                forecast_url = forecast.data['forecastHourly']  
-                forecast_json = fetch_forecast_data(forecast_url)
-                tempdata = parse_forecast_json(forecast_json)
+                tempdata = get_hourly_forecast(forecast)
                 temp_graph(tempdata)
                 
                 st.subheader("Developer Notes")
-                
-                
                 stream("The NWS API is documented with an OpenAPI UI [here](), however it's use is not straightforward. The most intuitive way\
                     to learn about the API is to visit the [Point Forecast site](https://www.weather.gov/forecastpoints/) and click around \
                     with your browser's developer tools turned on [and monitoring the network traffic](https://developer.chrome.com/docs/devtools/network).")

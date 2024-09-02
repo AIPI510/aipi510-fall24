@@ -101,9 +101,35 @@ class Forecast:
         else: 
             raise Exception("No forecast URL found!")
     
+    def retrieve_hourly_forecast(self):
+        """
+        get the forecast data
+
+        Returns: 
+            pandas.DataFrame: the hourly forecast for temperature
+        """
+        response = requests.get(self.data['forecastHourly'])
+        response.raise_for_status()  
+        data = response.json()
+        periods = data['properties']['periods']
+        data = []
+        for period in periods:
+            farenheight = period['temperature']
+            celsius = (farenheight - 32) * (5.0/9.0)
+            data.append({
+                'time': pd.to_datetime(period['startTime']),
+                'temperature': celsius
+            })
+        
+        df = pd.DataFrame(data)
+        df.set_index('time', inplace=True)
+        return df 
+
     def validate_grid(self, station, x, y):
         """
         test the validity of a grid/station combo, this function has no prerequisites
+
+        returns a bool indiciating wehether or not the NWS reports this as a valid grid
         """
         gridpoint_url = f"{self.gridpoint_base_url}{station}/{x},{y}"
         response = requests.get(gridpoint_url) 
@@ -114,7 +140,6 @@ class Forecast:
         grab the numerical forecast data for a 2.5km area
 
         See https://weather-gov.github.io/api/gridpoints
-        
         """
         if self.forecast_url: 
             
