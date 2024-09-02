@@ -14,6 +14,7 @@ Video: <TODO: insert a URL here>
 
 ```bash
 pip install datasets==2.21.0
+pip install click==8.1.7
 ```
 
 ## How to use it?
