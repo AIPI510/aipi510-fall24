@@ -135,7 +135,7 @@ def get_earthquake_data(args: argparse.Namespace) -> dict:
 
     if args.radius:
         # Maximum radius allowed is 20001.6 km
-        if args.radius < 0 or args.radisu > 20001.6:
+        if args.radius < 0 or args.radius > 20001.6:
             print("Please provide a valid radius in the range 0-20001.6 km")
             return earthquake_data
         
