@@ -1,3 +1,11 @@
+'''
+References used for development:
+* https://ualibweb.github.io/UALIB_ScholarlyAPI_Cookbook/src/python/pubmed.html
+* https://www.ncbi.nlm.nih.gov/books/NBK25500/
+* https://www.ncbi.nlm.nih.gov/books/NBK25497/
+* https://stackoverflow.com/questions/54783160/x-axis-tick-labels-are-too-dense-when-drawing-plots
+'''
+
 from time import sleep
 from argparse import ArgumentParser
 import requests
@@ -96,6 +104,8 @@ def main():
             print(f'Sourcing data for year {year}, month {month}...')
             rawdata=pubmed.query(construct_term(year, month, disease))
             data_aggregator.add_raw_data(rawdata, year, month)
+            # Maximum of 3 requests per second without an API key:
+            # https://www.ncbi.nlm.nih.gov/books/NBK25497/
             sleep(0.34)
 
     data_dictionary = data_aggregator.build_data_dictionary()
