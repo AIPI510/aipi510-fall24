@@ -1,8 +1,28 @@
+
+## Pre-Requisite: 
+"""
+The requirements.txt file from the original repository pretty much contains all the required libraries, 
+but optionally you can run this command to install all the required libraries if you run into dependency errors:
+
+`pip install beautifulsoup4 pandas numpy requests`
+
+We are using the version : 
+-> numpy==2.1.0
+-> pandas==2.2.2
+-> requests==2.32.3
+-> beautifulsoup4==4.12.3
+
+"""
+
+
+## Importing the necessary libraries:
 import os
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import numpy as np
+
+
 
 # List of URLs to scrape faculty information from
 url_list = [
