@@ -1,191 +1,199 @@
-import streamlit as st
-import pandas as pd 
-import numpy as np
-import pydeck as pdk
-import time
+       
 import requests
+import pandas as pd
 
-# @todo: bring this utility code into this file, the assignment seems to imply we should
-# only be merging nws_api.py
-from weather import Forecast, IPGeo
-
-# Streamlit application basics courtesy of https://docs.streamlit.io/get-started/fundamentals/main-concepts
-#
-# NB (from Streamlit docs): 
-# Whenever a callback is passed to a widget via the on_change (or on_click) parameter, 
-# the callback will always run before the rest of your script. For details on the Callbacks
-# API, please refer to our Session State API Reference Guide.
-#
-
-
-def display_chart(df, column): 
+class IPGeo: 
     """
-    
+    Wrapper for a free IP geo API. Assumed to be called from within the US only.     
+
+    Note: this class was repurposed from auto-d's premodule assignment repo 
     """
-    #st.dataframe(df)
-    st.bar_chart(df, y=column)
 
-def display_station_map(df): 
-    """ 
-    Render the map!
+    data = None
+    lat = None
+    lon = None
+    zip = None
+    city = None
+    state = None
 
-    Built with help from the streamlit map quickstart: 
-    https://docs.streamlit.io/develop/api-reference/charts/st.map
+    def __init__(self): 
+        self.geo()
+
+    def geo(self): 
+        """
+        Poke the Internet and geolocate the source (first routable) IP 
+        """
+
+        # Techniknews.net free IP geolocation API, this URI maps your routable Internet address to the 
+        # lat/long of its owner
+        ip_geo_url='https://api.techniknews.net/ipgeo'
+
+        response = requests.get(ip_geo_url)
+        if response.ok: 
+            try: 
+                self.data = response.json()
+                self.lat = self.data['lat']
+                self.lon = self.data['lon']
+                self.zip = self.data['zip']
+                self.city = self.data['city']
+                self.state = self.data['regionName']
+            except KeyError as k:
+                print('Failed to unpack IP geolocation response')
+
+class Forecast: 
     """
-    st.map(df, size=60, color="#0044ff")
+    Wrapper for a US National Weather Service forecast API
 
-# todo: fix this to render temperatures or something on the map with a color ramp
-def display_observation_map(df): 
-    """ 
-    Render the map!
     """
-    st.map(df, size=20, color="#0044ff")
 
-def fetch_forecast_data(url):
-    """
-    get the forecast data given url
-    input: url
-    output: json
-    """
-    response = requests.get(url)
-    response.raise_for_status()  
-    return response.json()  
+    data = None    
+    forecast_url = None
+    office = None
+    location = None
+    forecast = None
 
-def parse_forecast_json(json_data):
-    """parse the data into df suitable for plotting
-    input: json
-    output: pandas df"""
-    periods = json_data['properties']['periods']
-    data = []
-    for period in periods:
-        farenheight = period['temperature']
-        celsius = (farenheight - 32) * (5.0/9.0)
-        data.append({
-            'time': pd.to_datetime(period['startTime']),
-            'temperature': celsius
-        })
-    
-    df = pd.DataFrame(data)
-    df.set_index('time', inplace=True)
-    return df
+    def __init__(self): 
+        pass
 
-def temp_graph(df):
-    st.line_chart(df['temperature'])
+    def resolve_location(self, lat, lon): 
+        """
+        retrieve a US forecast given a lat/lon pair
 
-@st.cache_data
-def get_location(): 
-    return IPGeo()
-
-@st.cache_data
-def get_forecast(lat, lon): 
-    forecast = Forecast()
-    forecast.resolve_location(lat, lon)   
-    return forecast
-
-@st.cache_data
-def get_stations(_forecast):
-    return forecast.retrieve_serving_stations()
-
-@st.cache_data
-def get_observations(_forecast, stations):
-    return forecast.retrieve_observations(stations)
-
-def stream_data(text):
-    for word in text.split(" "):
-        yield word + " "
-        time.sleep(0.05)
-
-@st.cache_data
-def stream(text): 
-    st.write_stream(stream_data(text))
-
-st.title('☀️ National Weather Service API')
-stream('This app demonstrates interactions with the more interesting endpoints of the [NWS API](https://www.weather.gov/documentation/services-web-api).')
-st.divider()
-
-geo = get_location() 
-
-stations = None
-stream(f'Your IP locates you in **{geo.city}, {geo.state}**')
-
-col1, col2 = st.columns(2) 
-lat = None
-lon = None
-
-with col1: 
-    lat = st.text_input("Latitude", F"{geo.lat}")
-
-with col2: 
-    lon = st.text_input("Longitude", F"{geo.lon}")
-
-stream(":information_source: *We'll retrieve weather information for the provided coordinates. Alternative coordinates can be obtained from [Google Maps](https://www.google.com/maps) by right-clicking on the map and selecting the coordinates to copy.*")
-
-if 'button1' not in st.session_state:
-    st.session_state.button1 = False
-    st.session_state.button2 = False
-    st.session_state.button3 = False
-    st.session_state.button4 = False
-
-def click_button1():
-    st.session_state.button1 = True
-
-def click_button2():
-    st.session_state.button2 = True
-
-def click_button3():
-    st.session_state.button3 = True
-
-def click_button4():
-    st.session_state.button4 = True
-
-forecast = None
-st.subheader(":office: Serving NWS Office")
-stream("To retrieve forecast information, we must first find the NWS office that services your location. The NWS offices each have a regional responsibility as outlined in the below image.")
-st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/NWS_Weather_Forecast_Offices.svg/1920px-NWS_Weather_Forecast_Offices.svg.png", caption="NWS Regional Offices")       
-stream("Click below find locate the office associated with your coordinates.")
-st.button("Fetch office...", on_click=click_button1)
-
-if st.session_state.button1: 
-    forecast = get_forecast(lat, lon)
-    stream(f'Weather forecasts for {lat} {lon} are provided by the NWS **{forecast.office}** office, located in **{forecast.location}**.')
-
-    st.subheader(":satellite: Regional Weather Stations")
-    stream("Forecast information for this area is sourced from numerous regional weather stations, click below to retrieve the locations.")
-
-    st.button("Fetch stations...", on_click=click_button2)
-    if st.session_state.button2: 
-        stream(f'Weather stations that contribute to the forecasts the NWS sources for your area are plotted below.')
-        stations = get_stations(forecast)
-        display_station_map(stations)
-
-        st.subheader('Serving Weather Stations')
-        stream("Each weather station sources its own observations, which we can poll through the API...")
-        st.write("")
-        stream("Click the button below to retrieve current observations from the serving weather stations.") 
-
-        st.button("Retrieve weather stations", on_click=click_button3)
-        if st.session_state.button3: 
-            st.subheader('Current observations')
-            observations = get_observations(forecast, stations['station'])
-            
-            # @todo, this isn't right... we need to display a map 
-            display_chart(observations, 'temp')
-
-            # @todo: render some time series data from teh get_forecast method which I think is brokwn at the moment
-            stream("Click the button to see temperature forecast data for your local station.")
-
-            st.subheader("🌡️ Temperature forecast")
-            st.button("Get forecast", on_click=click_button4)
-            if st.session_state.button4:
-                forecast_url = forecast.data['forecastHourly']  
-                forecast_json = fetch_forecast_data(forecast_url)
-                tempdata = parse_forecast_json(forecast_json)
-                temp_graph(tempdata)
-                
-                st.subheader("Developer Notes")
-                
-                
-                stream("The NWS API is documented with an OpenAPI UI [here](), however it's use is not straightforward. The most intuitive way\
-                    to learn about the API is to visit the [Point Forecast site](https://www.weather.gov/forecastpoints/) and click around \
-                    with your browser's developer tools turned on [and monitoring the network traffic](https://developer.chrome.com/docs/devtools/network).")
+        Note: this function was repurposed from auto-d's premodule assignment
+        """
         
+        # Resolve our location ... e.g. https://api.weather.gov/points/39.7456,-97.0892
+        points_base_url = "https://api.weather.gov/points/"
+        points_url = points_base_url + str(lat) + ',' + str(lon)
+
+        response = requests.get(points_url)
+        if response.status_code == 200: 
+            self.data = response.json()['properties']
+            
+            self.forecast_url = self.data['forecast']
+            self.office = self.data['cwa']
+
+            loc = self.data['relativeLocation']['properties']
+            self.location = loc['city'] + ', ' + loc['state']
+
+    def update_forecast(self):
+        """
+        grab the forecast for the cached location, requires location resolution be updated prior
+        """
+        if self.forecast_url: 
+            
+            response = requests.get(self.forecast_url) 
+            if response.status_code == 200: 
+                
+                self.forecast = []
+                
+                for period in response.json()['properties']['periods']: 
+                    if period['number'] <= 7:
+                        self.forecast.append(
+                            "Day " 
+                            + str(period['number']) 
+                            + ": " 
+                            + period['detailedForecast']
+                        )
+            else: 
+                raise Exception("Forecast URL (" + self.forecast_url + ") returned unexpected code: " + str(response.status_code))
+
+        else: 
+            raise Exception("No forecast URL found!")
+    
+    def validate_grid(self, station, x, y):
+        """
+        test the validity of a grid/station combo, this function has no prerequisites
+        """
+        gridpoint_url = f"{self.gridpoint_base_url}{station}/{x},{y}"
+        response = requests.get(gridpoint_url) 
+        return True if response.status_code == 200 else False
+
+    def retrieve_grid_forecast(self):
+        """
+        grab the numerical forecast data for a 2.5km area
+
+        See https://weather-gov.github.io/api/gridpoints
+        
+        """
+        if self.forecast_url: 
+            
+            response = requests.get(self.forecast_url) 
+            if response.status_code == 200: 
+                
+                self.forecast = []
+                
+                # todo refactor this to parse out the time series we need 
+                # for period in response.json()['properties']['periods']: 
+                #     if period['number'] <= 7:
+                #         self.forecast.append(
+                #             "Day " 
+                #             + str(period['number']) 
+                #             + ": " 
+                #             + period['detailedForecast']
+                #         )
+            else: 
+                raise Exception("Forecast URL (" + self.forecast_url + ") returned unexpected code: " + str(response.status_code))
+
+        else: 
+            raise Exception("No forecast URL found!")
+        
+        #@todo pack time series into a dataframe to simplify plotting... 
+
+    def retrieve_serving_stations(self): 
+        """
+        get a list of the stations that service this grid point
+        """ 
+        gridpoint_base_url = 'https://api.weather.gov/gridpoints/'
+        station_url = f"{gridpoint_base_url}{self.office}/{self.data['gridX']},{self.data['gridY']}/stations"
+        response = requests.get(station_url)
+        response.raise_for_status()
+        
+        stations = []
+        try: 
+            for f in response.json()['features']:
+                station = f['properties']['stationIdentifier']
+                name = f['properties']['name']
+                lat = f['geometry']['coordinates'][1]
+                lon = f['geometry']['coordinates'][0]
+                stations.append({ 'station': station, 'name': name, 'lat': lat, 'lon': lon})
+        
+        except KeyError as ke: 
+            raise KeyError('Server response missing expected key: ' + str(ke))
+
+        return pd.DataFrame(stations,columns=['station','name','lat','lon'])
+
+    def retrieve_observations(self, stations): 
+        """
+        given a NWS station, retrieve the latest observations
+
+        returns a dict with current temp and a weather string, e.g. {'temperature': 22.1, 'weather': 'rain'}
+        failures in retrieval may result in empty values
+        """ 
+        stations_base_url = 'https://api.weather.gov/stations/'
+
+        obs = [] 
+        for station in stations: 
+            observation_url = f"{stations_base_url}{station}/observations/latest"
+            response = requests.get(observation_url)
+            response.raise_for_status()
+        
+            ob = {} 
+            try:             
+                properties = response.json()['properties']
+                weather_valid = True if len(properties['presentWeather']) > 0 else False
+                ob = { 
+                    'station': station, 
+                    'temp': properties['temperature']['value'], 
+                    'humidity': properties['relativeHumidity']['value'],
+                    'weather': properties['presentWeather'][0]['weather'] if weather_valid else 'n/a'
+                }
+                
+            except KeyError as ke: 
+                print('Server response missing expected key: ' + str(ke))
+            except IndexError as ie: 
+                print('Failed to locate weather forecast: ' + str(ie))
+
+            obs.append(ob) 
+
+        return pd.DataFrame(obs,columns=['station','temp','humidity', 'weather'])
