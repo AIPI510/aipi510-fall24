@@ -16,10 +16,7 @@
 
 ## Set up
 1. **Clone the Repository**:
-     ```bash
-     git clone https://github.com/KelllyChen/aipi510-fall24-team-assignment1.git
-     cd aipi510-fall24-team-assignment1
-     ```
+
 2. **Create a Virtual Environment** (optional but recommended):
    - Create and activate a virtual environment to manage dependencies:
      ```bash
