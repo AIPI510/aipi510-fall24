@@ -54,18 +54,19 @@ This repository contains a set of Python scripts and functions designed to inter
 
 The TMDBAPIClient class provides methods to interact with the TMDB API.
 
-get_top_rated_movies(page=1): Fetches a list of top-rated movies. Returns movie details including ID, title, release date, popularity, vote average, and genre IDs.<br><br>
+* get_top_rated_movies(page=1): Fetches a list of top-rated movies. Returns movie details including ID, title, release date, popularity, vote average, and genre IDs.<br><br>
 
-get_movie_details(movie_id): Retrieves detailed information about a specific movie by its ID. Returns data including ID, title, language, overview, popularity, release date, revenue, runtime, status, vote average, and vote count.<br><br>
+* get_movie_details(movie_id): Retrieves detailed information about a specific movie by its ID. Returns data including ID, title, language, overview, popularity, release date, revenue, runtime, status, vote average, and vote count.<br><br>
 
-search_movies(query, page=1): Searches for movies based on a query. Returns a list of movies with details such as ID, title, overview, release date, popularity, vote average, vote count, original language, and genre IDs.<br><br>
+* search_movies(query, page=1): Searches for movies based on a query. Returns a list of movies with details such as ID, title, overview, release date, popularity, vote average, vote count, original language, and genre IDs.<br><br>
 
-get_movies_by_genre(genre_id, page=1): Fetches movies by a specific genre ID. Returns a list of movies including ID, title, release date, popularity, vote average, and genre IDs.<br><br>
+* get_movies_by_genre(genre_id, page=1): Fetches movies by a specific genre ID. Returns a list of movies including ID, title, release date, popularity, vote average, and genre IDs.<br><br>
 
-get_movie_poster(poster_path, save_path=None): Retrieves and displays or saves a movie poster image based on its path.
+* get_movie_poster(poster_path, save_path=None): Retrieves and displays or saves a movie poster image based on its path.
 
-  
-.
+### Running the Code
+
+To execute the script and run the functions, use the following command in the CLI: python tmdb_api.py
 
 
 
