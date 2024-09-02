@@ -2,6 +2,7 @@ import argparse
 import requests
 import pandas as pd
 import matplotlib.pyplot as plt
+import pytest
 
 
 def get_cli_argument():
@@ -81,6 +82,10 @@ def create_countrylist_df():
 
 
 def create_gdp_noagg_df(year, top, gdptype, gdpcolumn, countrylist_df):
+    """Create an API query for the GDP data, get json data, create dataframe, 
+        merge the dataframe with countrylist_df in order to get only the list of individual countries
+        and return gdp_noagg_df dataframe"""
+
     # Create an API query for GDP data, get json data, and create dataframe, which still includes Aggregates (such as GDP of Asia, GDP of Europe, etc.)
     gdp_apicall_url = create_world_bank_argumentbased_url(year, gdptype)
     gdp_data = request_json(gdp_apicall_url)
@@ -96,6 +101,28 @@ def create_gdp_noagg_df(year, top, gdptype, gdpcolumn, countrylist_df):
     gdp_noagg_df.rename(columns={"gdp_value":gdpcolumn}, inplace=True)
 
     return gdp_noagg_df
+
+
+# Test Functions
+def test_create_world_bank_argumentbased_url():
+    """Test creating url, with the year 1965 and gdptype = 2"""
+    assert create_world_bank_argumentbased_url(1965, 2) == "https://api.worldbank.org/v2/country/all/indicator/NY.GDP.MKTP.KD.ZG?per_page=1000&&format=json&date=1965"
+
+def test_request_json():
+    """Test requesting json from World Bank API (country information for Thailand/th)"""
+    data = request_json("https://api.worldbank.org/v2/country/th?format=json")
+    assert data[1][0]['name'] == "Thailand"
+
+def test_create_countrylist_df():
+    """Test creating dataframe for the list of countries, by checking if CN (China) is in the list"""
+    countrylist_df = create_countrylist_df()
+    assert "CN" in countrylist_df['country_id'].values
+
+def test_create_gdp_noagg_df():
+    """Test creating dataframe for gdp data, with year 2010, top 1, which should return United States as the only one country in the result"""
+    countrylist_df = create_countrylist_df()
+    gdp_noagg_df = create_gdp_noagg_df(2010, 1, 0, "gdp_value", countrylist_df)
+    assert "United States" in gdp_noagg_df['country_name'].values
 
 
 def main():
