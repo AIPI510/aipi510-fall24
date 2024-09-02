@@ -53,11 +53,11 @@ This repository contains a set of Python scripts and functions designed to inter
 
 * TMDB API Client: A class for interacting with the TMDB API.
 
-  get_top_rated_movies(page=1): Fetches the top-rated movies.
-  get_movie_details(movie_id): Retrieves detailed information about a specific movie.
-  search_movies(query, page=1): Searches for movies based on a keyword.
-  get_movies_by_genre(genre_id, page=1): Fetches movies based on their genre.
-  get_movie_poster(poster_path, save_path=None): Fetches and optionally saves a movie poster.
+  get_top_rated_movies(page=1): Fetches the top-rated movies.<br>
+  get_movie_details(movie_id): Retrieves detailed information about a specific movie.<br>
+  search_movies(query, page=1): Searches for movies based on a keyword.<br>
+  get_movies_by_genre(genre_id, page=1): Fetches movies based on their genre.<br>
+  get_movie_poster(poster_path, save_path=None): Fetches and optionally saves a movie poster.<br>
   
 * Exploratory Data Analysis (EDA): Preliminary analysis of the movie data to gain insights.
 
