@@ -75,14 +75,14 @@ class MainWindow(QMainWindow):
 
         '''This area would be used to show the comparison result'''
         self.table = QTableWidget(self)
-        self.table.setGeometry(400, 200, 600, 400)
-        self.table.setRowCount(11)
+        self.table.setGeometry(400, 200, 800, 600)
+        self.table.setRowCount(10)
         self.table.setColumnCount(2)
         self.table.setColumnWidth(0, 200)
         self.table.setColumnWidth(1, 200)
         self.table.setRowHeight(3, 50)
         self.table.setVerticalHeaderLabels([
-            "Name", "Types", "Abilities", "Sprite", "Cry", "HP", 
+            "Name", "Types", "Abilities", "Sprite", "HP", 
             "Attack", "Special Attack", "Defense", "Special Defense", "Speed"
         ])
         
@@ -111,9 +111,9 @@ class MainWindow(QMainWindow):
         info_list2 = find_pokemon_info(pokemon2)
 
         # add info to the table
-        item_list = ["Name", "Types", "Abilities", "Sprite", "Cry", "Hp", 
+        item_list = ["Name", "Types", "Abilities", "Sprite", "Hp", 
             "Attack", "Special Attack", "Defense", "Special Defense", "Speed"]
-        for i in range(11):
+        for i in range(10):
             # special case for img
             if i == 3:
                 response1 = requests.get(info_list1[0][item_list[i]])
@@ -131,14 +131,6 @@ class MainWindow(QMainWindow):
                 self.table.setCellWidget(i, 0, img1)
                 self.table.setCellWidget(i, 1, img2)
             # special case for sound
-            elif i == 4:
-                play_button1 = QPushButton("Play Sound", self)
-                play_button1.clicked.connect(lambda: self.play_sound(str(info_list1[0][item_list[i]])))
-                self.table.setCellWidget(i, 0, play_button1)
-
-                play_button2 = QPushButton("Play Sound", self)
-                play_button2.clicked.connect(lambda: self.play_sound(str(info_list2[0][item_list[i]])))
-                self.table.setCellWidget(i, 1, play_button2)
             else:
                 # row, col, item
                 item1 = QTableWidgetItem(str(info_list1[0][item_list[i]]))
@@ -147,28 +139,6 @@ class MainWindow(QMainWindow):
                 item2.setTextAlignment(Qt.AlignCenter)
                 self.table.setItem(i, 0, item1)
                 self.table.setItem(i, 1, item2)
-    
-    '''Assistant function to play the sound of the pokemon'''
-    def play_sound(self, url):
-        # test
-        print(url)
-        url = "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/25.ogg"
-        # download the sound file
-        local_sound_file = "src/temp/sound.ogg"
-        self.download_sound(str(url),local_sound_file)
-        
-        # Create a QMediaPlayer object to play
-        url_qt = QUrl.fromLocalFile(local_sound_file)
-        self.player = QMediaPlayer()
-        self.player.setMedia(QMediaContent(url_qt))
-        self.player.play()
-    
-    '''Assistant function to download the sound file (.ogg) of the pokemon'''
-    def download_sound(self, url, local_filename):
-        try:
-            urllib.request.urlretrieve(url, local_filename)
-        except Exception as e:
-            print(f"Error downloading sound: {e}")
                     
     '''Function to exit the application'''
     def exit_app(self):
