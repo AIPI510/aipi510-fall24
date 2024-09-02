@@ -1,4 +1,4 @@
-Team Members - Abhishek Bhatnagar & Aaditya Pillai
+Team Members - Abhishek Bhatnagar & Aaditey Pillai
 
 # Team Assignment #1
 ## Data Sourcing
