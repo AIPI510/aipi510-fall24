@@ -1,4 +1,6 @@
 """
+## Assignment Info
+
 Team: XKJX
 
 Team Members:
@@ -8,6 +10,12 @@ Team Members:
 Topic: Using Hugging Face API for getting datasets
 
 Video: <TODO: insert a URL here>
+
+## Function description
+
+This is a Python script to download datasets from the Hugging Face Hub.
+It allows you to specify the dataset name, choose a configuration, and download specific splits or the entire dataset.
+The downloaded dataset is then saved to a specified directory on your local machine.
 
 
 ## install dependencies
@@ -19,7 +27,58 @@ pip install click==8.1.7
 
 ## How to use it?
 
-<TODO>
+The script provides a command-line interface to download datasets.
+You can specify the dataset name, the desired split (e.g., `train`, `test`, `validation`, or `all`),
+and the directory where you want to save the dataset.
+
+### Command Syntax
+
+```bash
+python hugging_face_api_get_dataset.py [DATASET_NAME] [OPTIONS]
+```
+
+following documentation contains more concrete examples for this.
+
+### Arguments
+
+- `DATASET_NAME`: The name of the dataset to download from the Hugging Face Hub. This argument is required.
+
+### Options
+
+- `--split`: The dataset split to download. You can specify `train`, `test`, `validation`, or `all` (default: `all`).
+- `--save_dir`: The directory where the dataset should be saved. If not provided, it defaults to the name of the dataset.
+
+### Examples
+
+1. Download the entire dataset:
+
+   ```bash
+   python hugging_face_api_get_dataset.py lmsys/toxic-chat --split all --save_dir ./lmsys-toxic-chat
+   ```
+
+   This command will download all splits of the "lmsys/toxic-chat" dataset and save them in the `./lmsys-toxic-chat` directory.
+
+2. Download only the training split:
+
+   ```bash
+   python hugging_face_api_get_dataset.py lmsys/toxic-chat --split train --save_dir ./lmsys-toxic-chat-train
+   ```
+
+   This command will download only the training split of the "lmsys/toxic-chat" dataset and save it in the `./lmsys-toxic-chat-train` directory.
+
+3. Download a dataset with multiple configurations:
+
+   If a dataset has multiple configurations, the tool will list all available configurations and prompt you to select one.
+   The dataset will then be downloaded according to your selection.
+
+### Error Handling
+
+- If the specified save directory already exists, the tool will prompt you to choose a different directory or delete the existing one.
+- If an invalid configuration or split is selected, the tool will notify you and exit.
+
+## Test coverage
+
+This tool has been tested in python 3.9 and 3.10 by hand.
 """
 
 import os
