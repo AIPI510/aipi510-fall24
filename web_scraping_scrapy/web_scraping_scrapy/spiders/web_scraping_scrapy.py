@@ -1,12 +1,3 @@
-# USAGE
-# cd web_scraping_scrapy
-# scrapy crawl HMScraper
-
-# EXPORT RESULTS as a csv, xml or json
-# scrapy crawl HMScraper -o results.csv 
-# scrapy crawl HMScraper -o results.xml
-# scrapy crawl HMScraper -o results.json
-
 # Import necessary libraries and modules
 import scrapy
 from ..items import HMScrapingScrapyItem
