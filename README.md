@@ -15,7 +15,7 @@
 - Plot a graph showing the average popularity of each album by release year.
 
 ## Set up
-1. **Clone the Repository**:
+1. **Clone the Repository**
 
 2. **Create a Virtual Environment** (optional but recommended):
    - Create and activate a virtual environment to manage dependencies:
