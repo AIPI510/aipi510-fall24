@@ -14,12 +14,11 @@ from nws_api import Forecast, IPGeo
 # the callback will always run before the rest of your script. For details on the Callbacks
 # API, please refer to our Session State API Reference Guide.
 #
-def display_chart(df, column): 
+def display_station_temps(df): 
     """
-    
+    Display temperatures at the stations... 
     """
-    #st.dataframe(df)
-    st.bar_chart(df, y=column)
+    return st.bar_chart(df, y='temp', x='station', x_label='Station ID',y_label='Temperature (celsius)')
 
 def display_station_map(df): 
     """ 
@@ -28,58 +27,72 @@ def display_station_map(df):
     Built with help from the streamlit map quickstart: 
     https://docs.streamlit.io/develop/api-reference/charts/st.map
     """
-    st.map(df, size=60, color="#0044ff")
+    return st.map(df, size=60, color="#0044ff")
 
-def display_station_map2(df, lat, lon): 
+def display_station_map2(df): 
     """ 
-    Render the map!
+    Render a map of the named weather stations
     """
-    st.map(df, size=60, color="#0044ff")
-
-    import pydeck as pdk
-    from pydeck.types import String
+    import streamlit as st
     import pandas as pd
+    import numpy as np
+    import pydeck as pdk
 
-    TEXT_LAYER_DATA = "https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/bart-stations.json"  # noqa
-    df = pd.read_json(TEXT_LAYER_DATA)
-
-    # Define a layer to display on a map
-    layer = pdk.Layer(
-        "TextLayer",
-        df,
-        pickable=True,
-        get_position="coordinates",
-        get_text="name",
-        get_size=16,
-        get_color=[0, 0, 0],
-        get_angle=0,
-        # Note that string constants in pydeck are explicitly passed as strings
-        # This distinguishes them from columns in a data set
-        get_text_anchor=String("middle"),
-        get_alignment_baseline=String("center"),
+    st.pydeck_chart(
+        pdk.Deck(
+            map_style=None,
+            initial_view_state=pdk.data_utils.viewport_helpers.compute_view(df[['lon','lat']]),
+            layers=[
+                pdk.Layer(
+                    "TextLayer",
+                    data=df,
+                    get_position="[lon, lat]",
+                    get_text="station",
+                    get_size=16,
+                    get_color="[200, 30, 0, 160]",
+                    get_radius=200,
+                ),
+            ],
+        )
     )
 
-    # Set the viewport location
-    view_state = pdk.ViewState(latitude=37.7749295, longitude=-122.4194155, zoom=10, bearing=0, pitch=45)
+def display_temp_map(df, col): 
+    """ 
+    Render a map of temperatures
+    """
+    import streamlit as st
+    import pandas as pd
+    import numpy as np
+    import pydeck as pdk
 
-    # Render
-    r = pdk.Deck(
-        layers=[layer],
-        initial_view_state=view_state,
-        tooltip={"text": "{name}\n{address}"},
-        map_style=pdk.map_styles.ROAD,
+    st.pydeck_chart(
+        pdk.Deck(
+            map_style=None,
+            initial_view_state=pdk.data_utils.viewport_helpers.compute_view(df[['lon','lat']]),
+            layers=[
+                pdk.Layer(
+                    "HexagonLayer",
+                    data=df[['lon','lat',col]],
+                    get_position="[lon, lat]",
+                    radius=200,
+                    elevation_scale=4,
+                    elevation_range=[0, 1000],
+                    pickable=True,
+                    extruded=True,
+                )
+            ],
+        )
     )
-    r.to_html("text_layer.html")
 
 # todo: fix this to render temperatures or something on the map with a color ramp
 def display_observation_map(df): 
     """ 
     Render the map!
     """
-    st.map(df, size=20, color="#0044ff")
+    return st.map(df, size=20, color="#0044ff")
 
-def temp_graph(df):
-    st.line_chart(df['temperature'])
+def display_temp_graph(df):
+    return st.line_chart(df['temperature'],x_label='Time',y_label='Temperature (celsius)')
 
 @st.cache_data
 def get_location(): 
@@ -106,7 +119,7 @@ def get_hourly_forecast(_forecast):
 def stream_data(text):
     for word in text.split(" "):
         yield word + " "
-        time.sleep(0.04)
+        time.sleep(0.00)
 
 @st.cache_data
 def stream(text): 
@@ -162,38 +175,36 @@ if st.session_state.button1:
     forecast = get_forecast(lat, lon)
     stream(f'Weather forecasts for {lat} {lon} are provided by the NWS **{forecast.office}** office, located in **{forecast.location}**.')
 
-    st.subheader(":satellite: Regional Weather Stations")
-    stream("Forecast information for this area is sourced from numerous regional weather stations, click below to retrieve the locations.")
+    st.subheader("🌡️ Temperature forecast")
+    stream(f'Click the button to see temperature forecast data for your local office.')
+    st.button("Get forecast...", on_click=click_button2)
+    if st.session_state.button2:
+        tempdata = get_hourly_forecast(forecast)
+        temp_graph = display_temp_graph(tempdata)
 
-    st.button("Fetch stations...", on_click=click_button2)
-    if st.session_state.button2: 
-        stream(f'Weather stations that contribute to the forecasts the NWS sources for your area are plotted below.')
-        stations = get_stations(forecast)
-        display_station_map(stations)
+        st.subheader(":satellite: Regional Weather Stations")
+        stream(f"Forecast information for **{forecast.location}** is sourced from numerous regional weather stations, click below to retrieve the locations.")
 
-        st.subheader('Serving Weather Stations')
-        stream("Each weather station sources its own observations, which we can poll through the API...")
-        st.write("")
-        stream("Click the button below to retrieve current observations from the serving weather stations.") 
-
-        st.button("Retrieve weather stations", on_click=click_button3)
+        st.button("Fetch stations...", on_click=click_button3)
         if st.session_state.button3: 
-            st.subheader('Current observations')
-            observations = get_observations(forecast, stations['station'])
-            
-            #display_station_map2(observations, 'temp')
+            stream(f'Weather stations that contribute to the forecasts the NWS sources for **{forecast.location}** are plotted below.')
+            stations = get_stations(forecast)
+            station_map = display_station_map2(stations)
 
-            # @todo: render some time series data from teh get_forecast method which I think is brokwn at the moment
-            stream("Click the button to see temperature forecast data for your local station.")
+            st.subheader('🔭 Weather Stations Observations')
+            stream("Each weather station sources its own observations, which we can poll through the API...")
+            st.write("")
+            stream("Click the button below to retrieve current observations from the serving weather stations.") 
 
-            st.subheader("🌡️ Temperature forecast")
-            st.button("Get forecast", on_click=click_button4)
-            if st.session_state.button4:
-                tempdata = get_hourly_forecast(forecast)
-                temp_graph(tempdata)
-                
+            st.button("Retrieve observations...", on_click=click_button4)
+            if st.session_state.button4: 
+                stream('**Current temperatures by reporting station**')
+                observations = get_observations(forecast, stations['station'])
+
+                merged = stations.merge(observations, on='station', how='inner')
+                temp_map = display_station_temps(merged)
+        
                 st.subheader("Developer Notes")
                 stream("The NWS API is documented with an OpenAPI UI [here](), however it's use is not straightforward. The most intuitive way\
                     to learn about the API is to visit the [Point Forecast site](https://www.weather.gov/forecastpoints/) and click around \
                     with your browser's developer tools turned on [and monitoring the network traffic](https://developer.chrome.com/docs/devtools/network).")
-        
