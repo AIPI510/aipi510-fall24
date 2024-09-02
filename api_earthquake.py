@@ -159,9 +159,14 @@ def get_earthquake_data(args: argparse.Namespace) -> dict:
     if args.maxmagnitude:
         query += f"&maxmagnitude={args.maxmagnitude}"
     
-    response = requests.get(query)
-
-    # Retrive API's JSON response
+    # Retrieve earthquake data from the API
+    try:
+        response = requests.get(query)
+    except requests.exceptions.HTTPError as e:
+        print("HTTP error:", e)
+        return earthquake_data
+    
+    # Convert JSON response to a dictionary
     try:
         earthquake_data = response.json()
     except requests.exceptions.JSONDecodeError:
