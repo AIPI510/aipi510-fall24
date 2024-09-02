@@ -14,13 +14,13 @@ OAuth Redirect URLs: http://localhost:3000
 Category: Your choice
 
 ## Step 4
-Save two pieces of information. The first is your ClientID. The second is a secret, which can be aquired by clicking "New Secret". Add these pieces of information to your .env file.
+Save two pieces of information. The first is your ClientID. The second is a secret, which can be aquired by clicking "New Secret". Add these pieces of information to your main file.
 
 ## Step 5
 Make sure the packages are installed in requirements.txt
 
 ## Step 6
-With the command line, run the python file, and add a query to your argument. If everything works, you should have a list of all Twitch channels that belong in your query.
+With the command line, run the python file, and add a query to your argument. If everything works, you should have a list of all live Twitch channels that belong in your query.
 
 ## Instructions
 1. Create a feature branch in the class GitHub repository for your team. 
