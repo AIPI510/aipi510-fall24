@@ -16,6 +16,8 @@ the code to get the pokemon img; modifications are applied thereafter
 '''
 
 def file_check():
+    if not os.path.exists('data'):
+        os.makedirs('data')
     file_path = 'data'+'/'+'pokemon_data.csv'
 
     if(os.path.exists(file_path)):
