@@ -6,6 +6,7 @@
 
 # aipi510-fall24-team-assignment1
 ## Features
+- Pull data from playlists, artists, albums, and tracks
 - Search for an artist by name.
 - Fetch and display the artist's details including followers and genres.
 - Retrieve all albums and tracks of the artist.
@@ -48,7 +49,7 @@
    - Execute the script using Python:
 
      ```bash
-     python web-scraping-spotify.py
+     python api_spotify.py
      ```
 2. **Input**:
    - When prompted, enter the name of the artist you want to analyze.
