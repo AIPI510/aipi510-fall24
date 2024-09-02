@@ -45,19 +45,26 @@ To submit your code, make a PR into the data-sourcing-ta1 branch and add me and 
 * Video is well organized and clear
 * Video documents topic and code effectively
 
-### TMDB Movie Data Exploration and Visualization
+### TMDB Movie Database
 
-This repository contains a set of Python scripts and functions designed to interact with The Movie Database (TMDB) API, perform data analysis, and visualize movie data. The primary focus is on fetching movie details, displaying movie posters, generating word clouds of movie titles etc.
+This repository contains a set of Python scripts and functions designed to interact with The Movie Database (TMDB) API.
 
-### Contents
+### Functionality
 
-* TMDB API Client: A class for interacting with the TMDB API.
+## TMDBAPIClient
 
-  get_top_rated_movies(page=1): Fetches the top-rated movies.<br>
-  get_movie_details(movie_id): Retrieves detailed information about a specific movie.<br>
-  search_movies(query, page=1): Searches for movies based on a keyword.<br>
-  get_movies_by_genre(genre_id, page=1): Fetches movies based on their genre.<br>
-  get_movie_poster(poster_path, save_path=None): Fetches and optionally saves a movie poster.<br>
+The TMDBAPIClient class provides methods to interact with the TMDB API.
+
+## *  get_top_rated_movies(page=1): Fetches a list of top-rated movies. Returns movie details including ID, title, release date, popularity, vote average, and genre IDs.<br><br>
+
+get_movie_details(movie_id): Retrieves detailed information about a specific movie by its ID. Returns data including ID, title, language, overview, popularity, release date, revenue, runtime, status, vote average, and vote count.<br><br>
+
+search_movies(query, page=1): Searches for movies based on a query. Returns a list of movies with details such as ID, title, overview, release date, popularity, vote average, vote count, original language, and genre IDs.<br><br>
+
+get_movies_by_genre(genre_id, page=1): Fetches movies by a specific genre ID. Returns a list of movies including ID, title, release date, popularity, vote average, and genre IDs.<br><br>
+
+get_movie_poster(poster_path, save_path=None): Retrieves and displays or saves a movie poster image based on its path.
+
   
 * Exploratory Data Analysis (EDA): Preliminary analysis of the movie data to gain insights.
 
