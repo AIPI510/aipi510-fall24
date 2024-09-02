@@ -1,6 +1,26 @@
 # Team Assignment #1
 This is Team Davis: Dave and Siddarth
 ## Data Sourcing
+## Step 1
+Navigate to https://dev.twitch.tv/console . Log in to your Twitch account, creating one if you don't have one. 
+
+## Step 2
+If you have not done already, verify your email address. Additionally you will have to enable Two-Factor Authentication, so navigate to Security and Privacy (Click on your profile icon in the top right, click the drop down to get to Account Settings, Click on the Security and Privacy tab, and navigate and click to enable 2FA). Be sure to refresh your console.
+
+## Step 3
+Select the Applications tab and click Register Your Application. Use this information to fill it out:
+Name: Your choice
+OAuth Redirect URLs: http://localhost:3000
+Category: Your choice
+
+## Step 4
+Save two pieces of information. The first is your ClientID. The second is a secret, which can be aquired by clicking "New Secret". Add these pieces of information to your .env file.
+
+## Step 5
+Make sure the packages are installed in requirements.txt
+
+## Step 6
+With the command line, run the python file, and add a query to your argument. If everything works, you should have a list of all Twitch channels that belong in your query.
 
 ## Instructions
 1. Create a feature branch in the class GitHub repository for your team. 
