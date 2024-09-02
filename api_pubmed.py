@@ -1,9 +1,17 @@
-from pprint import pprint
+'''
+References used for development:
+* https://ualibweb.github.io/UALIB_ScholarlyAPI_Cookbook/src/python/pubmed.html
+* https://www.ncbi.nlm.nih.gov/books/NBK25500/
+* https://www.ncbi.nlm.nih.gov/books/NBK25497/
+* https://stackoverflow.com/questions/54783160/x-axis-tick-labels-are-too-dense-when-drawing-plots
+'''
+
 from time import sleep
 from argparse import ArgumentParser
 import requests
 import pandas as pd
 import matplotlib.pyplot as plt
+import math
 
 class PubMed:
     '''
@@ -36,9 +44,9 @@ def get_args():
     parser = ArgumentParser(
         prog='api_pubmed',
         description='Scatter plots number of articles about specific diseases from PubMed over time.')
-    parser.add_argument('--diseases', dest='diseases', default='polio', help='Comma-separated list of disease entries for the search to PubMed (default: polio)')
-    parser.add_argument('--start', dest='start', default='2024', help='Start year (inclusive) (default: 2024)')
-    parser.add_argument('--end', dest='end', default='2025', help='End year (exclusive) (default: 2025)')
+    parser.add_argument('--disease', dest='disease', default='polio', help='Disease/topic to be analyzed for research interest (default: polio)')
+    parser.add_argument('--start', dest='start', default='1954', help='Start year (inclusive) (default: 1954)')
+    parser.add_argument('--end', dest='end', default='1961', help='End year (exclusive) (default: 1961)')
     return parser.parse_args() 
 
 def construct_term(year, month, disease):
@@ -69,21 +77,19 @@ class DataAggregator:
       
         self.year_month=[]
         self.count=[]
-        self.disease=[]
 
-    def add_raw_data(self,rawdata,year,month,disease):
+    def add_raw_data(self,rawdata,year,month):
         '''
         Rawdata is aggregated into columns: year & month, count, and disease. 
         '''
         self.count.append(int(rawdata["esearchresult"]["count"]))  
         self.year_month.append(str(year) + "/" + str(month))
-        self.disease.append(disease)
 
     def build_data_dictionary(self):
         '''
         Data is passed into a dictionary. 
         '''
-        return {"year_month":self.year_month, "count": self.count, "disease":self.disease}
+        return {"year_month":self.year_month, "count": self.count}
 
 data_aggregator = DataAggregator()
 
@@ -92,17 +98,28 @@ def main():
     Entry-point for the script.
     '''
     args = get_args()
+    disease = args.disease
     for year in range(int(args.start), int(args.end)):
         for month in range(1, 13):
-            for disease in args.diseases.split(','):
-                rawdata=pubmed.query(construct_term(year, month, disease))
-                data_aggregator.add_raw_data(rawdata, year, month,disease)
-                sleep(1)
+            print(f'Sourcing data for year {year}, month {month}...')
+            rawdata=pubmed.query(construct_term(year, month, disease))
+            data_aggregator.add_raw_data(rawdata, year, month)
+            # Maximum of 3 requests per second without an API key:
+            # https://www.ncbi.nlm.nih.gov/books/NBK25497/
+            sleep(0.34)
 
     data_dictionary = data_aggregator.build_data_dictionary()
     df = create_dataframe(data_dictionary)
     print(df.head())
-    df.plot.scatter( x = 'year_month', y = 'count')
+
+    df.plot.bar(x = 'year_month', y = 'count')
+
+    # How to set spacing of labels/ticks
+    # https://stackoverflow.com/questions/54783160/x-axis-tick-labels-are-too-dense-when-drawing-plots
+    skip = math.ceil(len(df) / 12)
+    ax = plt.gca()
+    ax.set_xticks(ax.get_xticks()[::skip])
+
     plt.show()
 
 if __name__ == '__main__':
