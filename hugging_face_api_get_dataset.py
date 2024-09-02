@@ -1,3 +1,26 @@
+"""
+Team: XKJX
+
+Team Members:
+  - Xiaoquan Kong
+  - Jinglong Xiong
+
+Topic: Using Hugging Face API for getting datasets
+
+Video: <TODO: insert a URL here>
+
+
+## install dependencies
+
+```bash
+pip install datasets==2.21.0
+```
+
+## How to use it?
+
+<TODO>
+"""
+
 import os
 import click
 from datasets import load_dataset, get_dataset_config_names
