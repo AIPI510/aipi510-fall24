@@ -1,45 +1,61 @@
 # Team Assignment #1
 ## Data Sourcing
 
-## Instructions
-1. Create a feature branch in the class GitHub repository for your team. 
+### Tejas Jyothi
+### Hung Yin Chen
 
-2. Put together a code demo for your assigned topic. 
-Code should be:
-* Clean and well organized script
-* Using best practices (if you aren’t sure, go back to the Premodule content)
-* Well-commented
-* Contains appropriate unit testing
-* Clear name (ie ‘web-scraping-selenium.py’)
+# aipi510-fall24-team-assignment1
+## Features
+- Search for an artist by name.
+- Fetch and display the artist's details including followers and genres.
+- Retrieve all albums and tracks of the artist.
+- Display the popularity score of each track and calculate average popularity score of each album.
+- Identify and display the top 5 most popular tracks of the artist.
+- Plot a graph showing the average popularity of each album by release year.
 
-3. Create a <5 minute video documenting your topic and code demo. 
+## Set up
+1. **Clone the Repository**:
+     ```bash
+     git clone https://github.com/KelllyChen/aipi510-fall24-team-assignment1.git
+     cd aipi510-fall24-team-assignment1
+     ```
+2. **Create a Virtual Environment** (optional but recommended):
+   - Create and activate a virtual environment to manage dependencies:
+     ```bash
+     pip install virtualenv
+     virtualenv .venv
+     activate .venv
+     ```
+3. **Install Dependencies**:
+   - Install the required Python libraries using the `requirements.txt` file:
 
-## Submission
-To submit your code, make a PR into the data-sourcing-ta1 branch and add me and the TA as reviewers. In your PR, add the link to your demo video. Also, add any requirements (and versions) that are not currently in the requirements.txt file to the text of your PR.
+     ```bash
+     pip install -r requirements.txt
+     ```
+4. **Get Spotify API Credentials**:
+   - Register your application on the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/applications) to obtain your `client_id` and `client_secret`.
 
-## Topics
-* Web scraping with Selenium
-* Web scraping with Beautiful Soup
-* Web scraping using requests
-* Using Hugging Face API for getting datasets
-* Use an API from a social platform (i.e. Strava, Twitter)
-* Use the PubMed API
-* [maybe] Collect sensor data from a Raspberry Pi (temperature sensor may be the easiest, but you can use any sensor)
+5. **Update Credentials**:
+   - Replace the placeholders in the script with your Spotify API `client_id` and `client_secret`:
 
-## Rubric
-### Code (30 points)
-* Code is a script, not a notebook
-* Code is clean and well organized
-* Code is documented with docstrings and comments 
-* Code is free of commented out code (ie debug print statements)
-* Script has a clear name
-* Branching and PRs were done appropriately
-* Requirements are included in the text of the PR and are correct and versioned
-* The code runs as documented
+     ```python
+     client_id = 'YOUR_CLIENT_ID'
+     client_secret = 'YOUR_CLIENT_SECRET'
+     ```
+## Usage
 
-### Video (15 points)
-* < 5 minutes
-* The video is of mid-high production quality and doesn’t contain significant background noise 
-* Video is well organized and clear
-* Video documents topic and code effectively
+1. **Run the Script**:
+   - Execute the script using Python:
+
+     ```bash
+     python web-scraping-spotify.py
+     ```
+2. **Input**:
+   - When prompted, enter the name of the artist you want to analyze.
+3. **Output**:
+   - The script will display the artist's details(including number of followers and genres), each album name, release dates, popularity score of each song, and average popularity score of each album.
+   - It will also print the top 5 most popular songs.
+   - A plot will be shown, visualizing the average popularity of each album by release year.
+
+
 
