@@ -1,7 +1,17 @@
 import plotly.express as px
+import plotly.graph_objs as go
 from opensky_api import OpenSkyApi
 from collections import defaultdict
+import pandas as pd
+from dash import Dash, html, dcc, callback, Output, Input, State
+import plotly.express as px
+import plotly.graph_objs as go
+from opensky_api import OpenSkyApi
+from collections import defaultdict
+import pandas as pd
+from dash import Dash, html, dcc, callback, Output, Input, State
 
+api = OpenSkyApi()
 
 def coords_to_dict():
     '''
@@ -14,7 +24,6 @@ def coords_to_dict():
     '''
 
     # The Initial API Call that gets the most up to data info on airspace information.
-    api = OpenSkyApi()
     states = api.get_states()
 
     coords_freqs = {}
@@ -129,14 +138,134 @@ def viz_flight_density(coords_freqs):
 
     fig.show()
 
+    
+# Define inputs and outputs for the application using component IDs as well as State to keep track of zoom and/or pan state of the plot for each update
+@callback(
+    Output('graph', 'figure'),
+    Input('interval', 'n_intervals'),
+    State('graph', 'relayoutData')
+)
+
+# Define the graph update function
+def update_graph(n, relayoutData):
+    '''
+    This function calls the OpenSky API to retrieve the latest plane positions in the US.
+    Every 10 seconds, this callback method is executed as the input defined above triggers the callback.
+
+    In addition, the relayoutData parameter is used to retain the zoom and pan of the plot upon each update,
+    therefore that is also passed into this function
+
+    Args:
+        n (int): number of 10 second intervals since inception
+        relayoutData: current zoom and/or pan settings of user
+
+    Returns:
+        plotly.graph_objects.Figure: plot of all live flights in the US
+
+    '''        
+    # API call
+    state_vectors = api.get_states(bbox=(20, 50, -126, -65))
+
+    # Organize and store pertinent data
+    times, icao_codes, callsigns, latitudes, longitudes = [], [], [], [], []
+    for state in state_vectors.states:
+        icao_codes.append(state.icao24)
+        times.append(state.time_position)
+        callsigns.append(state.callsign)
+        latitudes.append(state.latitude)
+        longitudes.append(state.longitude)
+
+    temp_dict = {
+        'time' : times,
+        'icao24' : icao_codes,
+        'callsign' : callsigns,
+        'latitude' : latitudes,
+        'longitude' : longitudes
+    }
+
+    # Convert collected data to dataframe
+    flights_df = pd.DataFrame.from_dict(temp_dict)
+
+    # Create a scatter plot of the US map using the dataframe
+    fig = px.scatter_geo(flights_df,
+                    lat='latitude',
+                    lon='longitude',
+                    hover_data=['callsign', 'icao24'],
+                    scope='usa')
+    
+    fig.update(layout_coloraxis_showscale=False)
+
+    # Check if zoom and/or pan data was provided and update the layout accordingly
+    if relayoutData:
+        fig.update_layout(relayoutData)
+
+    return fig
+
+# This callback method is used to handle click events where the clickData stores what details the user has clicked on
+@callback(
+    Input('graph', 'clickData')
+)
+def handle_click(clickData):
+    '''
+    This function handles click events and generates a plot showing the flight path of the flight that was clicked on and its current location
+
+    Args:
+        clickData (dict): stores information regarding the data point that was clicked by the user
+
+    Returns:
+        plotly.graph_objects.Figure: plot of flight path for selected flight
+    
+    '''
+    # Extract ICAO24 code from the clicked data supplied to the function
+    clicked_flight_icao24 = clickData['points'][0]['customdata'][1]
+
+    # API call to retrieve flight path data
+    flight_tracker = api.get_track_by_aircraft(clicked_flight_icao24)
+
+    # Convert to dataframe
+    flight_path_df = pd.DataFrame(flight_tracker.path, columns=["time", "latitude", "longitude", "baro_altitude", "true_track", "on_ground"])
+
+    # Create a geographical line plot
+    fig = px.line_geo(flight_path_df, 
+                    lat='latitude',
+                    lon='longitude',
+                    scope='usa')
+
+    # Display current position as a red dot
+    fig.add_trace(go.Scattergeo(
+        lat=[flight_path_df['latitude'].to_list()[-1]],
+        lon=[flight_path_df['longitude'].to_list()[-1]],
+        mode = 'markers',
+        marker = {'color':'red', 'size':14},
+        showlegend = False,
+    ))
+    
+    fig.update(layout_coloraxis_showscale=False)
+    fig.show()
+
 def main():
     '''
     The main() func that contains menu functionality.
-    '''
+    ''' 
+
+    # Initialize Dash application
+    app = Dash()
+
+    # Setup User Interface layout of Dash application
+    app.layout = html.Div([
+        html.H1(children="Flight Tracker", style={'textAlign':'center'}),
+        dcc.Graph(id='graph', style={'width' : '100vw', 'height' : '100vh'}),
+        dcc.Interval(
+            id='interval',
+            interval=15*1000,
+            n_intervals=0
+        ),
+    ])
+
     while True:
         print("\nMenu Options:")
         print("1. Display Top 10 Most Crowded Airspaces")
-        print("2. (Reserved for Future Functionality)")
+        print("2. Run Live Flight Tracker Web Application")
         print("q. Quit")
 
         command = input("Enter option (1, 2, or q): ").strip().lower()
@@ -146,14 +275,19 @@ def main():
             coords_freqs, most_populated_icao = coords_to_dict()
             top10_airspaces(coords_freqs, most_populated_icao)
         elif command == '2':
-            print("Querying airspace data...")
-            coords_freqs, most_populated_icao = coords_to_dict()
-            viz_flight_density(coords_freqs)
+            print("Running Live Flight Tracker...")
+            print("Click on planes to display their flight path\n")
+            print("Use Ctrl+C to stop the live tracker")
+            break  
         elif command == 'q':
             print("Quitting...")
-            break
+            exit(0)
         else:
             print("Invalid input. Please enter 1, 2, or q.")
+
+    app.run_server(debug=True, use_reloader=False)
+
+    
 
 if __name__ == "__main__":
     main()

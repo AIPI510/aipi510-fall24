@@ -1,45 +1,39 @@
-# Team Assignment #1
-## Data Sourcing
+# Team MIA Assignment #1
 
-## Instructions
-1. Create a feature branch in the class GitHub repository for your team. 
+## Installation
+1. Clone this repo
 
-2. Put together a code demo for your assigned topic. 
-Code should be:
-* Clean and well organized script
-* Using best practices (if you aren’t sure, go back to the Premodule content)
-* Well-commented
-* Contains appropriate unit testing
-* Clear name (ie ‘web-scraping-selenium.py’)
+```bash
+git clone https://github.com/AIPI510/aipi510-fall24.git
+```
 
-3. Create a <5 minute video documenting your topic and code demo. 
+2. Go into the directory where this repo was cloned
+```bash
+cd aipi510-fall24
+```
 
-## Submission
-To submit your code, make a PR into the data-sourcing-ta1 branch and add me and the TA as reviewers. In your PR, add the link to your demo video. Also, add any requirements (and versions) that are not currently in the requirements.txt file to the text of your PR.
+3. Checkout the ta1-mia branch to retrieve our team's changes
+```bash
+git checkout ta1-mia
+```
 
-## Topics
-* Web scraping with Selenium
-* Web scraping with Beautiful Soup
-* Web scraping using requests
-* Using Hugging Face API for getting datasets
-* Use an API from a social platform (i.e. Strava, Twitter)
-* Use the PubMed API
-* [maybe] Collect sensor data from a Raspberry Pi (temperature sensor may be the easiest, but you can use any sensor)
+3. Install the required dependencies using the following command
+```bash
+pip install requirements.txt
+```
 
-## Rubric
-### Code (30 points)
-* Code is a script, not a notebook
-* Code is clean and well organized
-* Code is documented with docstrings and comments 
-* Code is free of commented out code (ie debug print statements)
-* Script has a clear name
-* Branching and PRs were done appropriately
-* Requirements are included in the text of the PR and are correct and versioned
-* The code runs as documented
+4. Run the api_opensky.py script and follow instructions in terminal to use the application
+```bash
+python data_visualization_opensky.py
+```
 
-### Video (15 points)
-* < 5 minutes
-* The video is of mid-high production quality and doesn’t contain significant background noise 
-* Video is well organized and clear
-* Video documents topic and code effectively
+## Notes
+* Upon running the live tracking web app there may be an error that shows up as follows
+```
+Traceback (most recent call last):
+  File "c:\Users\aryan\Documents\aipi510-fall24\data_visualization_opensky.py", line 171, in update_graph
+    for state in state_vectors.states:
+AttributeError: 'NoneType' object has no attribute 'states'
+```
+This is expected and simply requires a refresh of the page or waiting a few seconds for the page to automatically update
 
