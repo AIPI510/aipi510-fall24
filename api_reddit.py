@@ -20,6 +20,11 @@ reddit = praw.Reddit(
 
 # Function to scrape Reddit post
 def scrape_reddit_post(url):
+
+    """
+    Scrape a Reddit post given its URL and output the title, content, and comments of the post.
+    """
+    
     # Get the Reddit post submission
     submission = reddit.submission(url=url)
 
