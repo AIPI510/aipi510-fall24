@@ -3,6 +3,10 @@
 * Team: RRKing
 * Members: Roxanne(Ruoxin) Wang, Reina(Ruonan) Shi
 
+
+* Topic: Use the USDA FoodData Central API
+* Video link: https://drive.google.com/file/d/10kHWf0IEeV3yqWrHdQI9T77XPmEnl7ua/view?usp=sharing
+
 ## Data Sourcing
 ### Using the USDA FoodData Central API
 
