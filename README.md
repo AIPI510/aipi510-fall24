@@ -48,11 +48,6 @@ This project provides a Python script to explore data from the National Park Ser
    ```
 
 
-4. Obtain an API key from the [National Park Service API](https://www.nps.gov/subjects/developer/api-documentation.htm).
-
-
-5. Add your API key to the `API_KEY` variable in the script.
-
 
 ## Usage
 
