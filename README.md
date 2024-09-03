@@ -1,26 +1,44 @@
-# Team Assignment #1 Tony Wang, Bill Yang
+# Team Assignment #1
 ## Data Sourcing
 
-# Reddit Scraper
+## Instructions
+1. Create a feature branch in the class GitHub repository for your team. 
 
-## Description
+2. Put together a code demo for your assigned topic. 
+Code should be:
+* Clean and well organized script
+* Using best practices (if you aren’t sure, go back to the Premodule content)
+* Well-commented
+* Contains appropriate unit testing
+* Clear name (ie ‘web-scraping-selenium.py’)
 
-`api_reddit.py` uses the PRAW library to scrape Reddit posts. It retrieves the title, text body, and comments from a specified Reddit post and saves the data to a CSV file. The script accepts a Reddit post URL as an argument from the command line.
+3. Create a <5 minute video documenting your topic and code demo. 
 
-## Features
+## Submission
+To submit your code, make a PR into the data-sourcing-ta1 branch and add me and the TA as reviewers. In your PR, add the link to your demo video. Also, add any requirements (and versions) that are not currently in the requirements.txt file to the text of your PR.
 
-- Scrapes Reddit post title, content, and comments.
-- Outputs the data to a CSV file named `reddit.csv`.
-- Simple command-line interface to specify the Reddit post URL.
+## Topics
+* Web scraping with Selenium
+* Web scraping with Beautiful Soup
+* Web scraping using requests
+* Using Hugging Face API for getting datasets
+* Use an API from a social platform (i.e. Strava, Twitter)
+* Use the PubMed API
+* [maybe] Collect sensor data from a Raspberry Pi (temperature sensor may be the easiest, but you can use any sensor)
 
-## Requirements
-- numpy==1.24.3
-- praw==7.7.1
-- pandas==2.0.3
+## Rubric
+### Code (30 points)
+* Code is a script, not a notebook
+* Code is clean and well organized
+* Code is documented with docstrings and comments 
+* Code is free of commented out code (ie debug print statements)
+* Script has a clear name
+* Branching and PRs were done appropriately
+* Requirements are included in the text of the PR and are correct and versioned
+* The code runs as documented
 
-## Install the dependencies
-`pip install -r requirements.txt`
-
-## Eg:
-`python api_reddit.py "https://www.reddit.com/r/EngineeringStudents/comments/1f53a5b/finally_left_my_company_is_this_normal/"`
-- this will output a csv file name 'reddit.csv' which contains the post's title, text body, and all comments.
+### Video (15 points)
+* < 5 minutes
+* The video is of mid-high production quality and doesn’t contain significant background noise 
+* Video is well organized and clear
+* Video documents topic and code effectively
