@@ -26,14 +26,14 @@ pip install requirements.txt
 
 4. Run the api_opensky.py script and follow instructions in terminal to use the application
 ```bash
-python data_visualization_opensky.py
+python api_opensky.py
 ```
 
 ## Notes
 * Upon running the live tracking web app there may be an error that shows up as follows
 ```
 Traceback (most recent call last):
-  File "c:\Users\aryan\Documents\aipi510-fall24\data_visualization_opensky.py", line 171, in update_graph
+  File "c:\Users\aryan\Documents\aipi510-fall24\api_opensky.py", line 171, in update_graph
     for state in state_vectors.states:
 AttributeError: 'NoneType' object has no attribute 'states'
 ```
