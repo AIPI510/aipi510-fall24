@@ -1,45 +1,37 @@
-# Team Assignment #1
-## Data Sourcing
+# Contributors: Jinyoung Suh, Harshitha Rasamsetty
 
-## Instructions
-1. Create a feature branch in the class GitHub repository for your team. 
+# SourceSavvy: Showcasing User's Recent Activities with Strava API
 
-2. Put together a code demo for your assigned topic. 
-Code should be:
-* Clean and well organized script
-* Using best practices (if you aren’t sure, go back to the Premodule content)
-* Well-commented
-* Contains appropriate unit testing
-* Clear name (ie ‘web-scraping-selenium.py’)
+# Overview: This project showcases a user's recent activities using the strava API. 
 
-3. Create a <5 minute video documenting your topic and code demo. 
+# Steps to Execute:
+  1. Create an account on Strava's Developer Portal
+     
+  2. Create an application on strava.com/setting/api
+     - Get authorization code from authorization page
+     - Exchange authorization code for access token & refresh token
+     - View my activities using the access token just received
+       
+  3. Download and install postman
+     - Use refresh token to get new access tokens
+       
+  4. Request our recent record api from Strava via email
+     
+  5. Install QGIS and make a map for recent activities
+     
+  6. Export as a qgz file and convert it to shapefiles
+      
+  7. Create pyhton code for make a plot using geopandas and matplotlib
+      
+  8. Execute unittest
 
-## Submission
-To submit your code, make a PR into the data-sourcing-ta1 branch and add me and the TA as reviewers. In your PR, add the link to your demo video. Also, add any requirements (and versions) that are not currently in the requirements.txt file to the text of your PR.
 
-## Topics
-* Web scraping with Selenium
-* Web scraping with Beautiful Soup
-* Web scraping using requests
-* Using Hugging Face API for getting datasets
-* Use an API from a social platform (i.e. Strava, Twitter)
-* Use the PubMed API
-* [maybe] Collect sensor data from a Raspberry Pi (temperature sensor may be the easiest, but you can use any sensor)
+# Requirements
+- geopandas==0.12.2
+- matplotlib==3.8.0
 
-## Rubric
-### Code (30 points)
-* Code is a script, not a notebook
-* Code is clean and well organized
-* Code is documented with docstrings and comments 
-* Code is free of commented out code (ie debug print statements)
-* Script has a clear name
-* Branching and PRs were done appropriately
-* Requirements are included in the text of the PR and are correct and versioned
-* The code runs as documented
-
-### Video (15 points)
-* < 5 minutes
-* The video is of mid-high production quality and doesn’t contain significant background noise 
-* Video is well organized and clear
-* Video documents topic and code effectively
-
+# Files
+- shp folder contians strava shapefiles used to plot the graphs
+- empty_shp folder contains empty shapefiles used for testing purposes
+- test_api_strava.py contains the test functions
+- activities.qgz is a compressed form of the shapefiles. We generated the required shapefiles from this.

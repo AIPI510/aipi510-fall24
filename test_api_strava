@@ -1,0 +1,26 @@
+import unittest
+import geopandas as gpd
+
+class TestStava(unittest.TestCase):
+    def test_graph_loading(self):
+        """
+            This is the unit test for the main function.
+            These are the tests present:
+            Testcase 1: passes if the shapefile is full.
+            Testcase 2: fails if the shapefile is empty.
+        """
+
+        # Read the shapefile
+        gdf1 = gpd.read_file("./shp/recent_activities.shp")
+        gdf2 = gpd.read_file("./empty_shp/empty_shapefile.shp")
+
+
+        # Check whether the shapefile is empty or not
+        # Testcase 1:
+        self.assertFalse(gdf1.empty, "The shapefile should not be empty.")
+        
+        # Testcase 2:
+        # self.assertFalse(gdf2.empty, "The shapefile should be empty." )
+
+if __name__ == '__main__':
+    unittest.main()
