@@ -222,3 +222,34 @@ class Forecast:
             obs.append(ob) 
 
         return pd.DataFrame(obs,columns=['station','temp','humidity', 'weather'])
+    
+
+### interactive code ###
+
+ip_geo = IPGeo()
+
+forecastobj = Forecast()
+
+forecastobj.resolve_location(ip_geo.lat, ip_geo.lon)
+
+print("We will show you data for", forecastobj.location, "based on your IP address")
+
+print("Click enter to continue, and press enter as you go through each step")
+
+input()
+
+print("your local station is: ", forecastobj.office)
+
+input()
+
+forecastobj.update_forecast()
+
+print("the forecast for tomorrow is: ", forecastobj.forecast[0])
+
+input()
+
+print("the Forecast for the day after is: ", forecastobj.forecast[1])
+
+input()
+
+print("Thanks for enjoying this demo ;)")
