@@ -64,16 +64,16 @@ class Forecast:
         
         # Resolve our location ... e.g. https://api.weather.gov/points/39.7456,-97.0892
         points_base_url = "https://api.weather.gov/points/"
-        points_url = points_base_url + str(lat) + ',' + str(lon)
+        points_url = points_base_url + str(lat) + ',' + str(lon)  #obtain correct url
 
         response = requests.get(points_url)
         if response.status_code == 200: 
-            self.data = response.json()['properties']
+            self.data = response.json()['properties']  
             
-            self.forecast_url = self.data['forecast']
+            self.forecast_url = self.data['forecast']  #store for later use
             self.office = self.data['cwa']
 
-            loc = self.data['relativeLocation']['properties']
+            loc = self.data['relativeLocation']['properties']  
             self.location = loc['city'] + ', ' + loc['state']
 
     def update_forecast(self):
@@ -88,7 +88,7 @@ class Forecast:
                 self.forecast = []
                 
                 for period in response.json()['properties']['periods']: 
-                    if period['number'] <= 7:
+                    if period['number'] <= 7:  #limit collection to next 7 days
                         self.forecast.append(
                             "Day " 
                             + str(period['number']) 
@@ -103,7 +103,7 @@ class Forecast:
     
     def retrieve_hourly_forecast(self):
         """
-        get the forecast data
+        get the hourly temperature forecast data
 
         Returns: 
             pandas.DataFrame: the hourly forecast for temperature
@@ -115,13 +115,13 @@ class Forecast:
         data = []
         for period in periods:
             farenheight = period['temperature']
-            celsius = (farenheight - 32) * (5.0/9.0)
+            celsius = (farenheight - 32) * (5.0/9.0)  #convert to celsius for prefence
             data.append({
                 'time': pd.to_datetime(period['startTime']),
                 'temperature': celsius
             })
         
-        df = pd.DataFrame(data)
+        df = pd.DataFrame(data)  #store in pandas dataframe
         df.set_index('time', inplace=True)
         return df 
 
@@ -131,46 +131,17 @@ class Forecast:
 
         returns a bool indiciating wehether or not the NWS reports this as a valid grid
         """
-        gridpoint_url = f"{self.gridpoint_base_url}{station}/{x},{y}"
+        gridpoint_url = f"{self.gridpoint_base_url}{station}/{x},{y}"  #obtain correct url
         response = requests.get(gridpoint_url) 
         return True if response.status_code == 200 else False
-
-    def retrieve_grid_forecast(self):
-        """
-        grab the numerical forecast data for a 2.5km area
-
-        See https://weather-gov.github.io/api/gridpoints
-        """
-        if self.forecast_url: 
-            
-            response = requests.get(self.forecast_url) 
-            if response.status_code == 200: 
-                
-                self.forecast = []
-                
-                # todo refactor this to parse out the time series we need 
-                # for period in response.json()['properties']['periods']: 
-                #     if period['number'] <= 7:
-                #         self.forecast.append(
-                #             "Day " 
-                #             + str(period['number']) 
-                #             + ": " 
-                #             + period['detailedForecast']
-                #         )
-            else: 
-                raise Exception("Forecast URL (" + self.forecast_url + ") returned unexpected code: " + str(response.status_code))
-
-        else: 
-            raise Exception("No forecast URL found!")
-        
-        #@todo pack time series into a dataframe to simplify plotting... 
+ 
 
     def retrieve_serving_stations(self): 
         """
         get a list of the stations that service this grid point
         """ 
         gridpoint_base_url = 'https://api.weather.gov/gridpoints/'
-        station_url = f"{gridpoint_base_url}{self.office}/{self.data['gridX']},{self.data['gridY']}/stations"
+        station_url = f"{gridpoint_base_url}{self.office}/{self.data['gridX']},{self.data['gridY']}/stations"  #obtain correct url
         response = requests.get(station_url)
         response.raise_for_status()
         
@@ -199,7 +170,7 @@ class Forecast:
 
         obs = [] 
         for station in stations: 
-            observation_url = f"{stations_base_url}{station}/observations/latest"
+            observation_url = f"{stations_base_url}{station}/observations/latest"   #obtain correct url
             response = requests.get(observation_url)
             response.raise_for_status()
         
@@ -226,11 +197,11 @@ class Forecast:
 
 ### interactive code ###
 
-ip_geo = IPGeo()
+ip_geo = IPGeo() #initialise
 
 forecastobj = Forecast()
 
-forecastobj.resolve_location(ip_geo.lat, ip_geo.lon)
+forecastobj.resolve_location(ip_geo.lat, ip_geo.lon) #pre-req for other functions (need to know where to fetch data for)
 
 print("We will show you data for", forecastobj.location, "based on your IP address")
 
@@ -242,7 +213,7 @@ print("your local station is: ", forecastobj.office)
 
 input()
 
-forecastobj.update_forecast()
+forecastobj.update_forecast() #collect forecast data
 
 print("the forecast for tomorrow is: ", forecastobj.forecast[0])
 
