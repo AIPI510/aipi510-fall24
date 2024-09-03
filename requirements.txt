@@ -10,5 +10,3 @@ imbalanced-learn==0.11.0
 scikit-learn==1.2.2
 statsmodels==0.14.0
 transformers==4.31.0
-dash==2.17.1
-opensky-api @ git+https://github.com/openskynetwork/opensky-api.git#egg=opensky-api&subdirectory=python
