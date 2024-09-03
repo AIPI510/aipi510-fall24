@@ -23,7 +23,6 @@ class IPGeo:
         """
         Poke the Internet and geolocate the source (first routable) IP 
         """
-
         # Techniknews.net free IP geolocation API, this URI maps your routable Internet address to the 
         # lat/long of its owner
         ip_geo_url='https://api.techniknews.net/ipgeo'
@@ -45,7 +44,6 @@ class Forecast:
     Wrapper for a US National Weather Service forecast API
 
     """
-
     data = None    
     forecast_url = None
     office = None
@@ -195,32 +193,49 @@ class Forecast:
         return pd.DataFrame(obs,columns=['station','temp','humidity', 'weather'])
     
 
-### interactive code ###
+# Demonstrate if invoked from the command line, not if imported... 
+if __name__ == '__main__': 
 
-ip_geo = IPGeo() #initialise
+    geo = IPGeo()
 
-forecastobj = Forecast()
+    stations = None
+    print(f'\nYour IP locates you in {geo.city}, {geo.state} at {geo.lat} {geo.lon}')
+    print("Press enter to retrieve weather information for these coordinates.")
+    input()
+    print("Retrieving office associated with your coordinates...\n")
+    forecast = Forecast()
+    forecast.resolve_location(geo.lat, geo.lon) 
 
-forecastobj.resolve_location(ip_geo.lat, ip_geo.lon) #pre-req for other functions (need to know where to fetch data for)
+    print(f'Weather forecasts for {geo.lat} {geo.lon} are provided by the NWS {forecast.office} office, located in {forecast.location}.')
 
-print("We will show you data for", forecastobj.location, "based on your IP address")
+    print('Press enter to retrieve the 7-day forecast.')
+    input()
+    forecast.update_forecast() #collect forecast data
+    for f in forecast.forecast: 
+        print(" - " + f)
 
-print("Click enter to continue, and press enter as you go through each step")
+    print(f'\nPress enter to retrieve the hourly forecast data from your local office.')
+    input()
+    tempdata = forecast.retrieve_hourly_forecast()
+    print(f'Excerpt of hourly time series returned: ')
+    print(tempdata.head()) 
 
-input()
+    print(f"\nForecast information for {forecast.location} is sourced from numerous regional weather stations. Press enter to retrieve a list.")
+    input()
+    stations = forecast.retrieve_serving_stations()
+    print(f'Weather stations that contribute to the forecasts the NWS sources for {forecast.location} are listed below.')
+    print(stations)
 
-print("your local station is: ", forecastobj.office)
+    print("\nEach weather station sources its own observations, which we can poll through the API.")
+    print("Presse enter to retrieve current observations from these weather stations (this might take a bit)...") 
+    input()
+    observations = forecast.retrieve_observations(stations['station'])
+    print('\nCurrent temperatures by reporting station:')
+    print(observations)
 
-input()
+    print("\nDeveloper Notes")
+    print(" - The NWS API is documented with an OpenAPI UI [here](https://www.weather.gov/documentation/services-web-api), however it's use is not straightforward.")
+    print(" - The most intuitive way to learn about the API is to visit the Point Forecast site @ https://www.weather.gov/forecastpoints/ and click around.")
+    print(" - Your browser's developer tools (turned on and monitoring the network traffic) will give great insight into the 'approved' way to use the API.\n")
 
-forecastobj.update_forecast() #collect forecast data
-
-print("the forecast for tomorrow is: ", forecastobj.forecast[0])
-
-input()
-
-print("the Forecast for the day after is: ", forecastobj.forecast[1])
-
-input()
-
-print("Thanks for enjoying this demo ;)")
+    print("Thanks for enjoying this demo ;)\n")
