@@ -15,7 +15,11 @@ This script is used to fetch the air quality forecast dataset from the Transport
 
 ## Usage
 1. Clone the repository or download the script.
-2. Run the script using Python: 
+2.Install the dependencies (if not already installed):
+    ```bash
+    pip install -r requirements.txt 
+    ```
+3. Run the script using Python: 
     ```bash
     python api_tfl_air_quality.py
     ```
