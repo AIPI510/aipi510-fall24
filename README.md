@@ -1,29 +1,5 @@
 # Team Assignment #1
-
-## Team information
-This is the team Wukong. And the members are Zejun Bai and Yiqing Liu.
-
-## Overview
-This script is used to fetch the air quality forecast dataset from the Transport for London (TfL) Unified API, specifically utilizing the AirQuality endpoint. The dataset is updated hourly and contains forecast data for the next few days. The script processes the data, stores it in a pandas DataFrame, and then saves the data as a CSV file.
-
-## Features
-1. Fetches air quality forecast data from the TfL Unified API.
-2. Extracts and displays key information such as forecast type, forecast summary, and various pollutant levels.
-3. Stores the processed data into a pandas DataFrame.
-4. Saves the data as a CSV file named air_quality_forecast.csv.
-
-
-## Usage
-1. Clone the repository or download the script.
-2. Install the dependencies (if not already installed):
-    ```bash
-    pip install -r requirements.txt 
-    ```
-3. Run the script using Python: 
-    ```bash
-    python api_tfl_air_quality.py
-    ```
-
+## Data Sourcing
 
 ## Instructions
 1. Create a feature branch in the class GitHub repository for your team. 
