@@ -3,6 +3,28 @@
 # Pandas API : https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_csv.html 
 #    (Along with related web-pages in pandas documentation for other references)
 # JSON API : https://www.geeksforgeeks.org/how-to-remove-key-value-pair-from-a-json-file-in-python/
+"""
+How to run:
+```
+python3 -m venv ../ta1
+source ../ta1/bin/activate
+pip install -r requirements.txt
+```
+
+Running the program:
+```
+usage: python3 api_trivia.py [-h] [--category {9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32}] [-n N]
+Get questions from the Open Trivia API
+options:
+  -h, --help            show this help message and exit
+  --category {9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32}
+                        {"9": "General Knowledge", "10": "Entertainment: Books", "11": "Entertainment: Film", "12": "Entertainment: Music", "13": "Entertainment: Musicals & Theatres",
+                        "14": "Entertainment: Television", "15": "Entertainment: Video Games", "16": "Entertainment: Board Games", "17": "Science & Nature", "18": "Science: Computers",
+                        "19": "Science: Mathematics", "20": "Mythology", "21": "Sports", "22": "Geography", "23": "History", "24": "Politics", "25": "Art", "26": "Celebrities", "27":
+                        "Animals", "28": "Vehicles", "29": "Entertainment: Comics", "30": "Science: Gadgets", "31": "Entertainment: Japanese Anime & Manga", "32": "Entertainment: Cartoon &
+                        Animations"}
+  -n N 
+"""
 
 import requests
 import pandas as pd
