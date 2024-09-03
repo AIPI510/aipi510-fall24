@@ -1,11 +1,10 @@
 from PyQt5.QtWidgets import QLineEdit, QLabel, QMainWindow, QPushButton, QMessageBox, QApplication
 from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem
-from PyQt5.QtCore import Qt, QUrl
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 import requests
 from io import BytesIO
-import urllib.request
+
 
 # for test only, should be replaced by api handler
 import pandas as pd
