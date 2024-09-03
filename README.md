@@ -1,5 +1,4 @@
 # Team Assignment #1
-
 ## Data Sourcing
 
 ## Instructions
