@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import heapq
 
 # Replace with your client ID and client secret
-client_id = 'f32e47f002124474834dc28b01450218'
-client_secret = 'bd65693f357544e794e1090acccdfc46'
+client_id = ''
+client_secret = ''
 
 # Set up client credentials
 client_credentials_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
