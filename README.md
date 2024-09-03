@@ -39,3 +39,5 @@ AttributeError: 'NoneType' object has no attribute 'states'
 ```
 This is expected and simply requires a refresh of the page or waiting a few seconds for the page to automatically update
 
+* The above error may also occur if you try running the different functions too quickly. For example, if you run the top 10 most crowded airspaces function and immediately run another function, this will raise the above error as the API has limits on how often it can be called
+
