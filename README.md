@@ -1,5 +1,7 @@
 # Team MIA Assignment #1
 
+### Ensure you use Python versions around 3.10 in your virtual environment, as versions around 3.12 may cause issues!
+
 ## Installation
 1. Clone this repo
 
