@@ -1,24 +1,5 @@
 # Team Assignment #1
-## 0. Author
-Haochen Li & Jesse Warren
 
-## 1. Installation
-1. Go to the venv or conda you want to use.
-2. Install the application using `pip install .`
-3. The program will be installed with name `pokeapi`
-4. To install dependencies, run `pip install -r requirements.txt`
-
-## 2. Running Instruction
-1. To run the application, run `pokeapi` in terminal
-2. Wait for the data to be extracted from the PokeAPI for the first time (This may take a minute.)
-3. Once the data is downloaded, the PyQt window will pop up
-4. Type in the names of 2 pokemon to be compared
-5. Hit 'compare' then 'ok' to continue
-6. View the comparison and compare another 2 pokemon if you wish
-7. Hit Exit to close the application
-8. If `pokeapi` is run a second time, the extraction step will be skipped and the application should launch
-
-# The following is the requirement on github.
 ## Data Sourcing
 
 ## Instructions
