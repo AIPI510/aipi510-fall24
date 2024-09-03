@@ -59,7 +59,7 @@ Run the script using Python:
 python api_nps.py
 ```
 
-Follow instructions as prompted in the terminal, follwing guidelines for field inputs.
+Follow instructions as prompted in the terminal, following guidelines for field inputs.
 
 
 
