@@ -1,14 +1,14 @@
 # Team Assignment #1
 
 * Team: RRKing
-* Members: Ruoxin Wang, Ruonan Shi
+* Members: Roxanne(Ruoxin) Wang, Reina(Ruonan) Shi
 
 ## Data Sourcing
 ### Using the USDA FoodData Central API
 
-* Search food items and its information.
-* Get food nutrients content.
-* Visualizaiton and analysis on food that user search.
+* Enter a food name to search for its information.
+* Get caloric information of the searched food.
+* Visualize the top 6 nutrient content of the searched food.
 
 
 ## Instructions
