@@ -43,39 +43,3 @@ To submit your code, make a PR into the data-sourcing-ta1 branch and add me and 
 * Video is well organized and clear
 * Video documents topic and code effectively
 
----
-
-### Open Trivia API
-
-#### Team Impasta - Dayeon Kang, Shaunak Badani
-
-How to use:
-Install requirements in virtual env outside of root folder:
-```
-python3 -m venv ../ta1
-source ../ta1/bin/activate
-pip install -r requirements.txt
-```
-
-Running the program:
-```
-usage: python3 api_trivia.py [-h] [--category {9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32}] [-n N]
-
-Get questions from the Open Trivia API
-
-options:
-  -h, --help            show this help message and exit
-  --category {9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32}
-                        {"9": "General Knowledge", "10": "Entertainment: Books", "11": "Entertainment: Film", "12": "Entertainment: Music", "13": "Entertainment: Musicals & Theatres",
-                        "14": "Entertainment: Television", "15": "Entertainment: Video Games", "16": "Entertainment: Board Games", "17": "Science & Nature", "18": "Science: Computers",
-                        "19": "Science: Mathematics", "20": "Mythology", "21": "Sports", "22": "Geography", "23": "History", "24": "Politics", "25": "Art", "26": "Celebrities", "27":
-                        "Animals", "28": "Vehicles", "29": "Entertainment: Comics", "30": "Science: Gadgets", "31": "Entertainment: Japanese Anime & Manga", "32": "Entertainment: Cartoon &
-                        Animations"}
-  -n N                  Number of questions to fetch
-```
-
-Parameters:
--n : Number of questions to fetch, default 10
---category: Category to fetch questions from, ranges from 9 to 32, default is None (questions from all categories are fetched)
-
-Saves the questions to a csv file "trivia_questions.csv"
