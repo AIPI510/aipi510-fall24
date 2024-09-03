@@ -35,9 +35,8 @@ try:
     # convert the "currentForecast" data into a pandas DataFrame 
     df = pd.DataFrame(forecast_data)
 
-    # print the resulting DataFrame
+    # print the resulting DataFrame then save it to a csv file
     print(df)
-
     df.to_csv('air_quality_forecast.csv', index=False)
 
 
