@@ -265,16 +265,21 @@ def main():
     while True:
         print("\nMenu Options:")
         print("1. Display Top 10 Most Crowded Airspaces")
-        print("2. Run Live Flight Tracker Web Application")
+        print("2. Display Heatmap of Flight Density")
+        print("3. Run Live Flight Tracker Web Application")
         print("q. Quit")
 
-        command = input("Enter option (1, 2, or q): ").strip().lower()
+        command = input("Enter option (1, 2, 3, or q): ").strip().lower()
         
         if command == '1':
             print("Querying airspace data...")
             coords_freqs, most_populated_icao = coords_to_dict()
             top10_airspaces(coords_freqs, most_populated_icao)
         elif command == '2':
+            print("Querying airspace data...")
+            coords_freqs, most_populated_icao = coords_to_dict()
+            viz_flight_density(coords_freqs)
+        elif command == '3':
             print("Running Live Flight Tracker...")
             print("Click on planes to display their flight path\n")
             print("Use Ctrl+C to stop the live tracker")
@@ -286,8 +291,6 @@ def main():
             print("Invalid input. Please enter 1, 2, or q.")
 
     app.run_server(debug=True, use_reloader=False)
-
-    
 
 if __name__ == "__main__":
     main()
