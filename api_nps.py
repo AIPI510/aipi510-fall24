@@ -154,24 +154,51 @@ def find_parks_by_activity_and_state(activity, state_code):
        else:
            print(f"No parks found in {state_code} offering {activity}.")
 
-
+  
 if __name__ == "__main__":
-   # Example usage:
-  
-   # List valid state codes
-   list_valid_state_codes()
-  
-   # Display available activities
-   fetch_activities(API_KEY)
-  
-   # List all parks in a specific state
-   list_parks_in_state('NC') 
+    # Provide user guidance
+    print("Welcome to the National Parks Explorer!")
+    print("To use this script, refer to the following lists for valid inputs:")
+    print()
 
+    # Display the valid state codes and available activities
+    state_codes = list_valid_state_codes()
+    activities = fetch_activities(API_KEY)
 
-   # Find the top 5 states with the most parks offering 'Camping' and 'Hiking'
-   find_top_states_with_most_parks(top_n=5, activity_filters=["Paddling", "Biking"])
+    # Interactive User Input
+    while True:
+        print("\nWhat would you like to do?")
+        print("1. List parks in a specific state")
+        print("2. Find top states with the most parks offering certain activities")
+        print("3. Find parks by activity and state")
+        print("4. Exit")
 
-
-   # Find parks by activity and state
-   find_parks_by_activity_and_state('Paddling', 'FL')
-   
+        choice = input("Enter the number of your choice: ")
+        
+        if choice == '1':
+            state_code = input("Enter the state code (e.g., 'CA' for California): ").upper()
+            if state_code in state_codes:
+                list_parks_in_state(state_code)
+            else:
+                print("Invalid state code. Please try again.")
+        
+        elif choice == '2':
+            top_n = int(input("How many top states would you like to see? "))
+            activity_filters = input("Enter a comma-separated list of activities (e.g., 'Camping,Hiking'): ").split(',')
+            activity_filters = [activity.strip() for activity in activity_filters if activity.strip() in activities]
+            find_top_states_with_most_parks(top_n=top_n, activity_filters=activity_filters)
+        
+        elif choice == '3':
+            activity = input("Enter the activity (e.g., 'Camping'): ").strip()
+            state_code = input("Enter the state code (e.g., 'CA' for California): ").upper()
+            if state_code in state_codes and activity in activities:
+                find_parks_by_activity_and_state(activity, state_code)
+            else:
+                print("Invalid state code or activity. Please try again.")
+        
+        elif choice == '4':
+            print("Exiting the program. Goodbye!")
+            break
+        
+        else:
+            print("Invalid choice. Please enter a number from 1 to 4.")
