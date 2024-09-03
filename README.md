@@ -59,7 +59,7 @@ pip install -r requirements.txt
 
 Running the program:
 ```
-usage: api_trivia.py [-h] [--category {9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32}] [-n N]
+usage: python3 api_trivia.py [-h] [--category {9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32}] [-n N]
 
 Get questions from the Open Trivia API
 
