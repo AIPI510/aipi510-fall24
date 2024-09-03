@@ -15,7 +15,7 @@ This script is used to fetch the air quality forecast dataset from the Transport
 
 ## Usage
 1. Clone the repository or download the script.
-2.Install the dependencies (if not already installed):
+2. Install the dependencies (if not already installed):
     ```bash
     pip install -r requirements.txt 
     ```
