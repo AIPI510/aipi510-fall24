@@ -9,7 +9,7 @@ Team Members:
 
 Topic: Using Hugging Face API for getting datasets
 
-Video: <TODO: insert a URL here>
+Video: https://drive.google.com/file/d/1lORgPMHKmjmzlkpEHNj5AGFQEXfi7t_y/view?usp=sharing
 
 ## Function description
 
