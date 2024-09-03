@@ -1,5 +1,4 @@
 # Team Assignment #1
-Vihaan Nama and Lennox Anderson
 ## Data Sourcing
 
 ## Instructions
