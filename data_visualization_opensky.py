@@ -4,12 +4,6 @@ from opensky_api import OpenSkyApi
 from collections import defaultdict
 import pandas as pd
 from dash import Dash, html, dcc, callback, Output, Input, State
-import plotly.express as px
-import plotly.graph_objs as go
-from opensky_api import OpenSkyApi
-from collections import defaultdict
-import pandas as pd
-from dash import Dash, html, dcc, callback, Output, Input, State
 
 api = OpenSkyApi()
 
