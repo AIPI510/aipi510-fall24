@@ -26,7 +26,7 @@ This project provides a Python script to explore data from the National Park Ser
 
 
    ```bash
-   git clone https://github.com/AIPI510/aipi510-fall24/tree/ta1-data-miners
+   git clone https://github.com/AIPI510/aipi510-fall24.git
    cd aipi510-fall24
    ```
 
