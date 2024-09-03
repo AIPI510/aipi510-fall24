@@ -1,22 +1,5 @@
 # Team Assignment #1
-
-* Team: RRKing
-* Members: Roxanne(Ruoxin) Wang, Reina(Ruonan) Shi
-
-
-* Topic: Use the USDA FoodData Central API
-* Video link: https://drive.google.com/file/d/10kHWf0IEeV3yqWrHdQI9T77XPmEnl7ua/view?usp=sharing
-
 ## Data Sourcing
-### FoodData Central API Guide
-Link: https://fdc.nal.usda.gov/api-guide.html
-
-### Using the USDA FoodData Central API
-
-* Enter a food name to search for its information.
-* Get caloric information of the searched food.
-* Visualize the top 6 nutrient content of the searched food. 
-
 
 ## Instructions
 1. Create a feature branch in the class GitHub repository for your team. 
