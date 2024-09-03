@@ -16,7 +16,7 @@
 ## Requirements
 - numpy==1.24.3
 - praw==7.7.1
-- pandass==2.0.3
+- pandas==2.0.3
 
 ## Install the dependencies
 `pip install -r requirements.txt`
