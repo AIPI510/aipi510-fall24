@@ -177,7 +177,7 @@ def get_earthquake_data(args: argparse.Namespace) -> dict:
 
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description='Display earthquake data based on a location and search parameters')
     parser.add_argument("zipcode", help="Zipcode of the location to search for earthquakes")
     parser.add_argument("--radius", type=float, default=300, help="Radius in kilometers to search for earthquakes; default is 300 km")
     parser.add_argument("--startdate", help="Start date of the search in the format YYYY-MM-DD; default is 30 days ago")
