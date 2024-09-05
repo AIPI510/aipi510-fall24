@@ -65,6 +65,51 @@ def main():
     print(df5)
     print("\n\n\n")
 
+    #QUESTION 6
+    
+    print("Answer to Question 6 from SELECT statements")
+    cur.execute("""select day, time, smoker, (sum(tip)*100/sum(total_bill))  from tips group by day, time, smoker""")
+    rows = cur.fetchall()
+    df6 = pd.DataFrame(rows, columns=["Day","Time","Smoker", "Total Tip Percent"])
+    print(df6)
+    print("\n\n\n")
+
+    #QUESTION 7
+    
+    print("Answer to Question 7 from SELECT statements")
+    cur.execute("""select total_bill, tip, tip*100/total_bill  from tips order by total_bill desc LIMIT 0,5""")
+    rows = cur.fetchall()
+    df7 = pd.DataFrame(rows, columns=["Total bill","Tip","Tip Percent"])
+    print(df7)
+    print("\n\n\n")
+
+    #QUESTION 8
+    
+    print("Answer to Question 8 from SELECT statements")
+    cur.execute("""select sum(total_bill), sum(tip), max(tip*100/total_bill), min(tip*100/total_bill), day, time  from tips group by day, time""")
+    rows = cur.fetchall()
+    df8 = pd.DataFrame(rows, columns=["Total bill","Total Tip","Max Tip Percent","Min Tip Percent", "Day", "Time"])
+    print(df8)
+    print("\n\n\n")
+
+    #QUESTION 9
+    
+    print("Answer to Question 9 from SELECT statements")
+    cur.execute("""select total_bill, tip, tip*100/total_bill from tips where size >= 4 and (tip*100/total_bill) > 15 and total_bill between 50 and 100""")
+    rows = cur.fetchall()
+    df9 = pd.DataFrame(rows, columns=["Total bill","Tip","Tip Percent"])
+    print(df9)
+    print("\n\n\n")
+
+    #QUESTION 10
+    
+    print("Answer to Question 10 from SELECT statements")
+    cur.execute("""select day, time, smoker, sum(tip)*100/sum(total_bill), count(*) as combination_count from tips group by day, time, smoker having combination_count > 5""")
+    rows = cur.fetchall()
+    df10 = pd.DataFrame(rows, columns=["Day","Time","Smoker", "Average Tip Percent", "Combiation Count"])
+    print(df10)
+    print("\n\n\n")
+
 
 if __name__ == "__main__":
     main()
