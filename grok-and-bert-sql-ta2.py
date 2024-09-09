@@ -210,6 +210,7 @@ def main():
 
         # update
             try:
+                print("Update Query")
                 cur.execute("""update tips set smoker = 'Yes' where id = 10""")
                 connection.commit()
             except Exception as e:
@@ -229,27 +230,28 @@ def main():
                 print(f"There was an error in the verification process: {e}")
             print("\n\n\n")
 
-    # delete
-        try:
-            cur.execute("delete from tips where total_bill < 10")
-            connection.commit()
-        except Exception as e:
-            print(f"There was an error in the delete process: {e}")
+        # delete
+            try:
+                print("Delete query")
+                cur.execute("delete from tips where total_bill < 10")
+                connection.commit()
+            except Exception as e:
+                print(f"There was an error in the delete process: {e}")
 
 
-        # verify
-        try:
-            # set to 15 to prove that deletion acc works
-            cur.execute("select * from tips where total_bill < 10")
-            rows = cur.fetchall()
-            # no rows under 10 created conditional to prevent error
-            if not rows:
-                print("No totals that have less than $10")
-            else:
-                dfVerifyDelete = pd.DataFrame(rows, columns=df.columns)
-                print(dfVerifyDelete)
-        except Exception as e:
-            print(f"There was an error in the verification process: {e}")
+            # verify
+            try:
+                # set to 15 to prove that deletion acc works
+                cur.execute("select * from tips where total_bill < 10")
+                rows = cur.fetchall()
+                # no rows under 10 created conditional to prevent error
+                if not rows:
+                    print("No totals that have less than $10")
+                else:
+                    dfVerifyDelete = pd.DataFrame(rows, columns=df.columns)
+                    print(dfVerifyDelete)
+            except Exception as e:
+                print(f"There was an error in the verification process: {e}")
 
 
 
