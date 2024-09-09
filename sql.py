@@ -298,7 +298,7 @@ try:
             sex, size, tip_percentage= row
             print(f"Sex:{sex}, Size: {size}, tip_percentage: {tip_percentage}") 
         # Execute the delete query
-        conn.execute(query_del)
+        
         
         # Execute the update
         cursor = conn.cursor()
@@ -322,6 +322,8 @@ try:
     
         # Commit the changes
         conn.commit()
+
+        conn.execute(query_del)
 
         print("Records with total bill less than $10 have been deleted.")
         print("Smoking record for id 10 has been updated to 'yes'")
