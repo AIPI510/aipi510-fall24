@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9655ac46-db60-484f-ae5f-726b40f87166" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/grok-and-bert-sql-ta2.py" beforeDir="false" afterPath="$PROJECT_DIR$/grok-and-bert-sql-ta2.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -80,7 +81,7 @@
       <workItem from="1724880890284" duration="49300000" />
       <workItem from="1725290192676" duration="646000" />
       <workItem from="1725384230725" duration="1781000" />
-      <workItem from="1725744430451" duration="11147000" />
+      <workItem from="1725744430451" duration="16059000" />
     </task>
     <servers />
   </component>
@@ -92,7 +93,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/aipi510_fall24$test.coverage" NAME="test Coverage Results" MODIFIED="1724890022943" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ta1-grok-and-bert/workingDirectory" />
-    <SUITE FILE_PATH="coverage/aipi510_fall24$grok_and_bert_sql_ta2.coverage" NAME="grok-and-bert-sql-ta2 Coverage Results" MODIFIED="1725824210149" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/aipi510_fall24$grok_and_bert_sql_ta2.coverage" NAME="grok-and-bert-sql-ta2 Coverage Results" MODIFIED="1725909602210" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/aipi510_fall24$api_news.coverage" NAME="api_news Coverage Results" MODIFIED="1725216133484" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ta1-grok-and-bert/workingDirectory" />
     <SUITE FILE_PATH="coverage/aipi510_fall24$test_api_news.coverage" NAME="test_api_news Coverage Results" MODIFIED="1724868123310" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ta1-grok-and-bert/test" />
     <SUITE FILE_PATH="coverage/aipi510_fall24$download_nltk_data.coverage" NAME="download_nltk_data Coverage Results" MODIFIED="1724882460210" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ta1-grok-and-bert" />

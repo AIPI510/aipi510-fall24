@@ -1,4 +1,14 @@
 def main():
+    """
+        Overview: This script imports tip data from a CSV, stores it in an SQLite database,
+        performs various SQL queries to analyze tip and bill data, updates and deletes records, and prints the results.
+
+        Param: None
+
+        Return: None
+
+        Function Logs: This script does not return anything, just prints out query's made from using python and sql.
+    """
 
     # NOTE: Used the following you tube video for help on how to connect to sqllite db - https://www.youtube.com/watch?v=UZIhVmkrAEs
 
@@ -137,7 +147,7 @@ def main():
         # unique 1
             try:
                 print("The average tip % based on gender and smoking")
-                cur.execute("""select sex, smoker, avg(tip * 100 / total_bill) as avg_tip_percent from tips group by sex, smoker order by avg_tip_percent desc; """)
+                cur.execute("""select sex, smoker, round(avg(tip * 100 / total_bill), 2) as avg_tip_percent from tips group by sex, smoker order by avg_tip_percent desc; """)
                 rows = cur.fetchall()
                 df11 = pd.DataFrame(rows, columns=["Sex", "Smoker", "Average Tip Percent"])
                 print(df11)
@@ -149,7 +159,7 @@ def main():
         # unique 2
             try:
                 print("The average price each gender spends on lunch and dinner")
-                cur.execute("""select sex, time, avg(total_bill) as avg_spent from tips group by sex, time order by sex, time; """)
+                cur.execute("""select sex, time, round(avg(total_bill), 2) as avg_spent from tips group by sex, time order by sex, time; """)
                 rows = cur.fetchall()
                 df12 = pd.DataFrame(rows, columns=["Gender", "Time", "Average Spent"])
                 print(df12)
@@ -161,7 +171,7 @@ def main():
         # unique 3
             try:
                 print("The average amount each gender spends each day of the week")
-                cur.execute("""select sex, day, avg(total_bill) as avg_spent from tips group by sex, day order by sex, day;""")
+                cur.execute("""select sex, day, round(avg(total_bill), 2) as avg_spent from tips group by sex, day order by sex, day;""")
                 rows = cur.fetchall()
                 df13 = pd.DataFrame(rows, columns=["Gender", "Day", "Average Spent"])
                 print(df13)
@@ -173,7 +183,7 @@ def main():
         # unique 4
             try:
                 print("The average tip percent for each gender, day, and time")
-                cur.execute("""select sex, day, time, avg(tip * 100.0 / total_bill) as avg_tip_percent from tips group by sex, day, time order by sex, day, time; """)
+                cur.execute("""select sex, day, time, round(avg(tip * 100.0 / total_bill), 2) as avg_tip_percent from tips group by sex, day, time order by sex, day, time; """)
                 rows = cur.fetchall()
                 df14 = pd.DataFrame(rows, columns=["Gender", "Day", "Time", "Average Tip Percent"])
                 print(df14)
@@ -189,7 +199,7 @@ def main():
                                             when total_bill >= 25 and total_bill < 50 then '$25 - $50'
                                             when total_bill >= 50 and total_bill < 75 then '$50 - $75'
                                             when total_bill >= 75 and total_bill < 100 then '$75 - $100'
-                                            else '$100+' end as bill_range, avg(total_bill) as avg_bill from tips group by bill_range;""")
+                                            else '$100+' end as bill_range, round(avg(total_bill),2) as avg_bill from tips group by bill_range;""")
                 rows = cur.fetchall()
                 df15 = pd.DataFrame(rows, columns=["Bill Range", "Average Bill Amount"])
                 print(df15)
