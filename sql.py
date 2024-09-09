@@ -45,81 +45,91 @@ try:
 
         #5. Retrieve the total bill, tip amount, and tip percentage for each combination of day and time, sorted by tip percentage in descending order
         query_5="""
-        SELECT day, time, SUM(total_bill), SUM(tip), AVG(ROUND((tip / total_bill) * 100,2)) AS avg_tip_percentage
+        SELECT day, time, SUM(total_bill), SUM(tip), ROUND((SUM(tip) / SUM(total_bill)) * 100,2) AS tip_percentage
         FROM tips
         GROUP BY day, time
-        ORDER BY avg_tip_percentage DESC;
+        ORDER BY tip_percentage DESC;
         """
 
         #6. Find the average tip percentage for each combination of day, time, and smoker status
         query_6="""
-        SELECT day,time,smoker, ROUND((tip / total_bill) * 100,2) as tip_percentage 
+        SELECT day,time,smoker, ROUND(AVG(tip/total_bill)*100,2) as avg_tip_percentage 
         FROM tips 
         GROUP BY day, time, smoker
         """
 
         #7. Retrieve the total bill, tip amount, and tip percentage for each sex, sorted by total bill in descending order, and limit the results to the top 5 records
         query_7="""
-
+        SELECT sex, SUM(total_bill), SUM(tip), ROUND(SUM(tip)/SUM(total_bill)*100, 2) as tip_percentage 
+        FROM tips 
+        GROUP BY sex 
+        ORDER BY SUM(total_bill) DESC 
+        LIMIT 5
         """
 
         #8. Find the maximum and minimum tip percentage for each day and time combination, along with the corresponding total bill and tip amount
         query_8="""
         WITH tip_percents AS (
-        SELECT day, time, total_bill, tip, ROUND((tip / total_bill) * 100,2) AS tip_percentage
-        FROM tips), max_tips AS (
+            SELECT
+                day,
+                time,
+                total_bill,
+                tip,
+                ROUND((tip / total_bill) * 100, 2) AS tip_percentage
+            FROM
+                tips
+        ),
+        max_tips AS (
+            SELECT
+                day,
+                time,
+                MAX(tip_percentage) AS max_tip_percentage
+            FROM
+                tip_percents
+            GROUP BY
+                day, time
+        ),
+        min_tips AS (
+            SELECT
+                day,
+                time,
+                MIN(tip_percentage) AS min_tip_percentage
+            FROM
+                tip_percents
+            GROUP BY
+                day, time
+        )
         SELECT
-            day,
-            time,
-            MAX(tip_percentage) AS max_tip_percentage
+            tp.day,
+            tp.time,
+            tp.total_bill,
+            tp.tip,
+            tp.tip_percentage,
+            'Max' AS tip_type
         FROM
-            tip_percents
-        GROUP BY
-            day, time
-    ),
-    min_tips AS (
+            tip_percents AS tp
+        JOIN
+            max_tips AS mt
+            ON tp.day = mt.day
+            AND tp.time = mt.time
+            AND tp.tip_percentage = mt.max_tip_percentage
+
+        UNION ALL
+
         SELECT
-            day,
-            time,
-            MIN(tip_percentage) AS min_tip_percentage
+            tp.day,
+            tp.time,
+            tp.total_bill,
+            tp.tip,
+            tp.tip_percentage,
+            'Min' AS tip_type
         FROM
-            tip_percents
-        GROUP BY
-            day, time
-    )
-    SELECT
-        tp.day,
-        tp.time,
-        tp.total_bill,
-        tp.tip,
-        tp.tip_percentage,
-        'Max' AS tip_type
-    FROM
-        tip_percents as tp
-    JOIN
-        max_tips as mt
-    ON
-        tp.day = mt.day AND
-        tp.time = mt.time AND
-        tp.tip_percentage = mt.max_tip_percentage
-
-    UNION ALL
-
-    SELECT
-        tp.day,
-        tp.time,
-        tp.total_bill,
-        tp.tip,
-        tp.tip_percentage,
-        'Min' AS tip_type
-    FROM
-        tip_percents as tp
-    JOIN
-        min_tips as mit
-    ON
-        tp.day = mit.day AND
-        tp.time = mit.time AND
-        tp.tip_percentage = mit.min_tip_percentage
+            tip_percents AS tp
+        JOIN
+            min_tips AS mit
+            ON tp.day = mit.day
+            AND tp.time = mit.time
+            AND tp.tip_percentage = mit.min_tip_percentage
         """
 
         #9. Retrieve the total bill, tip amount, and tip percentage for parties of size 4 or more, where the tip percentage is greater than 15%, and the total bill is between $50 and $100
@@ -131,7 +141,7 @@ try:
 
         #10. Find the average tip percentage for each combination of day, time, and smoker status, but only include combinations with more than 5 records
         query_10="""
-        SELECT AVG(ROUND(tip/total_bill*100, 2)) as tip_percentage
+        SELECT day, time, smoker, AVG(ROUND(tip/total_bill*100, 2)) as tip_percentage
         FROM tips
         GROUP BY day, time, smoker
         HAVING COUNT(*) > 5
@@ -177,12 +187,6 @@ try:
         ORDER BY tip_percentage DESC
         """
 
-        
-
-        #update
-
-
-
         #Delete records from the database that have a total bill that is less than $10.
         query_del="""
         DELETE FROM tips
@@ -196,16 +200,16 @@ try:
         result_4 = conn.execute(query_4).fetchall()
         result_5 = conn.execute(query_5).fetchall()
         result_6 = conn.execute(query_6).fetchall()
-        #result_7 = conn.execute(query_7).fetchall()
-        #result_8 = conn.execute(query_8).fetchall()
+        result_7 = conn.execute(query_7).fetchall()
+        result_8 = conn.execute(query_8).fetchall()
         result_9 = conn.execute(query_9).fetchall()
-        #result_10 = conn.execute(query_10).fetchall()
+        result_10 = conn.execute(query_10).fetchall()
 
         result_add_1 = conn.execute(query_add_1).fetchall()
         result_add_2 = conn.execute(query_add_2).fetchall()
-        #result_add_3 = conn.execute(query_add_3).fetchall()
-        #result_add_4 = conn.execute(query_add_4).fetchall()
-        #result_add_5 = conn.execute(query_add_5).fetchall()
+        result_add_3 = conn.execute(query_add_3).fetchall()
+        result_add_4 = conn.execute(query_add_4).fetchall()
+        result_add_5 = conn.execute(query_add_5).fetchall()
 
         
 
@@ -244,10 +248,14 @@ try:
 
         
         print('---Question7---')
-        # print Q7 ans
+        for row in result_7:
+            sex, total_bill, tip, tip_percentage= row
+            print(f"Sex: {sex}, Total Bill: {total_bill:.2f}, Tip: {tip:.2f}, Tip Percentage:{tip_percentage:.2f}")  
 
         print('---Question8---')
-        # print Q8 ans
+        for row in result_8:
+            day, time, total_bill, tip, tip_percentage, tip_type = row
+            print(f"Day: {day}, Time: {time}, Total Bill: ${total_bill:.2f}, Tip: {tip:.2f}, Tip Percentage:{avg_tip_percentage:.2f}, Tip Type:{tip_type}") 
 
         print('---Question9---')
         for row in result_9:
@@ -255,7 +263,9 @@ try:
             print(f"Total bill: {total_bill}, Tip: {tip}, Avg tip percentage:{avg_tip_percentage:.2f}")
 
         print('---Question10---')
-        #print Q10 ans
+        for row in result_10:
+            day, time, smoker, tip_percentage = row
+            print(f"Day: {day}, Time: {time}, Smoker: {smoker}, Tip percentage:{tip_percentage:.2f}")
 
         print('---Additional Question1---')
         print("Below day and sex combination has highest average tip percentage")
@@ -271,17 +281,50 @@ try:
 
 
         print('---Additional Question3---')
+        print("Finding the average tip between non-smokers and smokers")
+        for row in result_add_3:
+            smoker, tip_percentage= row
+            print(f"Smoker: {smoker}, tip_percentage: {tip_percentage}") 
+            
         print('---Additional Question4---')
-        print('---Additional Question5---')
+        print('Ordering size by which group tips the most on average')
+        for row in result_add_4:
+            size, tip_percentage= row
+            print(f"Size: {size}, tip_percentage: {tip_percentage}") 
         
-
+        print('---Additional Question5---')
+        print("Seeing who tips the most based on sex and larger party sizes, 4 and up")
+        for row in result_add_5:
+            sex, size, tip_percentage= row
+            print(f"Sex:{sex}, Size: {size}, tip_percentage: {tip_percentage}") 
         # Execute the delete query
         conn.execute(query_del)
+        
+        # Execute the update
+        cursor = conn.cursor()
+        cursor.execute("""
+            WITH TargetRow AS (
+                SELECT ROWID
+                FROM tips
+                ORDER BY smoker
+                LIMIT 1 OFFSET 10
+            )
+            SELECT ROWID FROM TargetRow
+        """)
+        row_id_to_update = cursor.fetchone()[0]
+
+        # Update the row with the identified ROWID
+        cursor.execute("""
+            UPDATE tips
+            SET smoker = ?
+            WHERE ROWID = ?
+        """, ('yes', row_id_to_update))
     
         # Commit the changes
         conn.commit()
 
         print("Records with total bill less than $10 have been deleted.")
+        print("Smoking record for id 10 has been updated to 'yes'")
 
 
 # Error Handling
