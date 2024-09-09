@@ -27,7 +27,7 @@ def main():
         #QUESTION 1
             try:
                 print("Answer to Question 1 from SELECT statements")
-                cur.execute("""SELECT day, (((sum(tip))/sum(total_bill))* 100) as average FROM 'tips' group by "day" """)
+                cur.execute("""SELECT day, round((((sum(tip))/sum(total_bill))* 100),2) as average FROM 'tips' group by "day" """)
                 rows = cur.fetchall()
                 df1 = pd.DataFrame(rows, columns=["Day","Average Tip %"])
                 print(df1)
@@ -76,7 +76,7 @@ def main():
         #QUESTION 5
             try:
                 print("Answer to Question 5 from SELECT statements")
-                cur.execute("""select day, time, sum(total_bill), sum(tip), (sum(tip)*100/sum(total_bill))  from tips group by day, time order by (sum(tip)*100/sum(total_bill)) desc""")
+                cur.execute("""select day, time, sum(total_bill), sum(tip), round((sum(tip)*100/sum(total_bill)),2)  from tips group by day, time order by (sum(tip)*100/sum(total_bill)) desc""")
                 rows = cur.fetchall()
                 df5 = pd.DataFrame(rows, columns=["Day","Time", "sum(total_bill)", "sum(tip)", "Total Tip Percent"])
                 print(df5)
@@ -88,7 +88,7 @@ def main():
         #QUESTION 6
             try:
                 print("Answer to Question 6 from SELECT statements")
-                cur.execute("""select day, time, smoker, (sum(tip)*100/sum(total_bill))  from tips group by day, time, smoker""")
+                cur.execute("""select day, time, smoker, round((sum(tip)*100/sum(total_bill)),2)  from tips group by day, time, smoker""")
                 rows = cur.fetchall()
                 df6 = pd.DataFrame(rows, columns=["Day","Time","Smoker", "Total Tip Percent"])
                 print(df6)
@@ -100,7 +100,7 @@ def main():
         #QUESTION 7
             try:
                 print("Answer to Question 7 from SELECT statements")
-                cur.execute("""select total_bill, tip, tip*100/total_bill  from tips order by total_bill desc LIMIT 0,5""")
+                cur.execute("""select total_bill, tip, round(tip*100/total_bill, 2)  from tips order by total_bill desc LIMIT 0,5""")
                 rows = cur.fetchall()
                 df7 = pd.DataFrame(rows, columns=["Total bill","Tip","Tip Percent"])
                 print(df7)
@@ -112,7 +112,7 @@ def main():
         # QUESTION 8
             try:
                 print("Answer to Question 8 from SELECT statements")
-                cur.execute("""select sum(total_bill), sum(tip), max(tip*100/total_bill), min(tip*100/total_bill), day, time  from tips group by day, time""")
+                cur.execute("""select sum(total_bill), sum(tip), round(max(tip*100/total_bill),2), round(min(tip*100/total_bill),2), day, time  from tips group by day, time""")
                 rows = cur.fetchall()
                 df8 = pd.DataFrame(rows, columns=["Total bill","Total Tip","Max Tip Percent","Min Tip Percent", "Day", "Time"])
                 print(df8)
@@ -135,7 +135,7 @@ def main():
         #QUESTION 10
             try:
                 print("Answer to Question 10 from SELECT statements")
-                cur.execute("""select day, time, smoker, sum(tip)*100/sum(total_bill), count(*) as combination_count from tips group by day, time, smoker having combination_count > 5""")
+                cur.execute("""select day, time, smoker, round(sum(tip)*100/sum(total_bill),2), count(*) as combination_count from tips group by day, time, smoker having combination_count > 5""")
                 rows = cur.fetchall()
                 df10 = pd.DataFrame(rows, columns=["Day","Time","Smoker", "Average Tip Percent", "Combiation Count"])
                 print(df10)
