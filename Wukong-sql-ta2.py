@@ -26,7 +26,7 @@ def execute_query(query, params=None):
 
 def main():
     # Load the data from CSV and write to the database
-    df = pd.read_csv('tips.csv')
+    df = pd.read_csv('data/tips.csv')
     with sqlite3.connect('tips_database.db') as conn:
         df.to_sql('tips', conn, if_exists='replace', index=False)
 
