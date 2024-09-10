@@ -100,7 +100,7 @@ class SQL_QUERY():
         query = '''
         SELECT total_bill, tip
         FROM tips
-        WHERE size >=4 and tip > (total_bill*0.15)
+        WHERE size >=4 and tip > (total_bill * 0.15)
         '''
         self.execute(query,4)
     
@@ -118,7 +118,7 @@ class SQL_QUERY():
     def q6(self):
         
         query = '''
-        SELECT day, time, tip/total_bill AS tip_percent
+        SELECT day, time, AVG(tip/total_bill) AS tip_percent
         FROM tips
         GROUP BY day, time, smoker
         '''
@@ -126,42 +126,36 @@ class SQL_QUERY():
 
     # Q7 Retrieve the total bill, tip amount, and tip percentage for each sex, sorted by total bill in descending order, and limit the results to the top 5 records
     def q7(self):
-        print("Male top 5")
-        query1 = '''
-        SELECT sex, total_bill, tip, tip/total_bill AS tip_percent
-        FROM tips
-        WHERE sex = 'Male'
-        ORDER BY total_bill DESC
-        LIMIT 5
+        query = '''
+        WITH MaleTop5 AS(
+            SELECT sex, total_bill, tip, tip/total_bill AS tip_percent
+            FROM tips
+            WHERE sex = 'Male'
+            ORDER BY total_bill DESC
+            LIMIT 5
+        ),
+        FemaleTop5 AS(
+            SELECT sex, total_bill, tip, tip/total_bill AS tip_percent
+            FROM tips
+            WHERE sex = 'Female'
+            ORDER BY total_bill DESC
+            LIMIT 5
+        )
+        SELECT * FROM MaleTop5
+        UNION ALL
+        SELECT * FROM FemaleTop5
         '''
-        self.execute(query1,7) 
-
-        print("Female top 5")
-        query2 = '''
-        SELECT sex, total_bill, tip, tip/total_bill AS tip_percent
-        FROM tips
-        WHERE sex = 'Female'
-        ORDER BY total_bill DESC
-        LIMIT 5
-        '''
-        self.execute(query2,7) 
+        self.execute(query,7) 
 
     # Q8 Find the maximum and minimum tip percentage for each day and time combination, along with the corresponding total bill and tip amount
     def q8(self):
-        print("MAX:")
         query = '''
-        SELECT day, time, MAX(tip/total_bill) AS max_tip_percent, total_bill, tip
+        SELECT day, time, MAX(tip/total_bill) AS max_tip_percent, MIN(tip/total_bill) AS max_tip_percent, total_bill, tip
         FROM tips
         GROUP BY day, time
         '''
         self.execute(query,8) 
-        print("MIN:")
-        query2 = '''
-        SELECT day, time, MIN(tip/total_bill) AS max_tip_percent, total_bill, tip
-        FROM tips
-        GROUP BY day, time
-        '''
-        self.execute(query2,8) 
+    
 
     # Q9 Retrieve the total bill, tip amount, and tip percentage for parties of size 4 or more, where the tip percentage is greater than 15%, and the total bill is between $50 and $100
     def q9(self):
