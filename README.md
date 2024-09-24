@@ -1,55 +1,48 @@
-# Team Assignment #2
-## Data Storage and Access
+# Team Assignment #4
+## Data Exploration 
 
 ## Instructions
-### CREATE
-You have been provided with a sample .csv file. Create a SQLite database in Python using the data in this sample .csv file.
+For this assignment, you will be using the Welltory COVID-19 and Wearables Open Data Research dataset. This dataset is messy and exploration of it is meant to be less similar to cleaned datasets you may see in classrooms or on Kaggle and more relevant to real-world dataset exploration. Data is available [here](https://github.com/Welltory/hrv-covid19/tree/master).
+Note: you will first need to organize the data to enable your analysis.
 
-### READ
-Answer the following questions (must show your work via SQL queries):
-1. Retrieve the average tip percentage for each day of the week 
-2. Find the maximum and minimum total bull amounts
-3. Count the number of parties for each size
-4. Retrieve the total bill and tip for parties of size 4 or more, where the tip percentage is greater than 15%
-5. Retrieve the total bill, tip amount, and tip percentage for each combination of day and time, sorted by tip percentage in descending order
-6. Find the average tip percentage for each combination of day, time, and smoker status
-7. Retrieve the total bill, tip amount, and tip percentage for each sex, sorted by total bill in descending order, and limit the results to the top 5 records
-8. Find the maximum and minimum tip percentage for each day and time combination, along with the corresponding total bill and tip amount
-9. Retrieve the total bill, tip amount, and tip percentage for parties of size 4 or more, where the tip percentage is greater than 15%, and the total bill is between $50 and $100
-10. Find the average tip percentage for each combination of day, time, and smoker status, but only include combinations with more than 5 records
+For this assignment, you will provide a Jupyter notebook report of your exploratory data analysis.
 
-Come up with your own SQL queries for the table. You must show 5 additional queries beyond the 10 outlined above. 
-
-**After you have performed the above queries:**
-
-### UPDATE
-It was determined that there was an error in the database. Please update the record that corresponds to id=10 and set smoker to Yes. 
-
-### DELETE
-Delete records from the database that have a total bill that is less than $10. 
-
-### Follow best practices:
-* Use Context Managers to ensure proper resource handling and automatic closing of connections
-* Use Parameterized Queries- named parameters offer better readability and maintainability
-* Use Error Handling - wrap database operations within try-except blocks to handle errors
+### In your Jupyter notebook report, complete the following:
+* Document data context and data sampling in markdown
+* Explore and interpret data structure, descriptive statistics, data quality, and variable relationships
+* Explore data visually with appropriate visualizations
+* Discuss and implement strategies for Handling Missing Values, Removing Duplicates, and Handling Outliers
+* Perform data transformation as appropriate
+* Create at least one new feature and document your approach
+* Perform a dimensionality reduction method on the data and discuss 
+* Include a discussion around data quality assessment, including data profiling, data completeness, data accuracy, data consistency, data integrity, and data lineage and provenance
 
 ## Submission
-To submit your code, make a PR into the sql-ta2 branch and add me and the TA as reviewers. Your code can be in the form of scripts or a notebook. Follow the naming convention teamname-sql-ta2.ipynb / teamname-sql-ta2.py. 
-
-Note: For this assignment, I recommend turning off any autocomplete or copilot code services you are using. SQL queries are a task LLMs are pretty good at. (So, Dr. Bent, why are we learning it? 1. So you know how things work and 2. Because SQL queries are a beloved interview question. You won’t have an LLM helping you during your interview, so I recommend doing this one on your own)
-
+To submit your code, make a PR into the data-eda-ta4 branch and add me and the TA as reviewers. Make sure the name of your notebook follows best practices and includes your team name.
 ## Rubric
-### Code (45 points)
+
+### Report (35 points)
+* Report includes a title, authors, dates, and relevant information for running it at the top 
+* Report includes a reference to the original dataset
+* Data context and sampling is documented in markdown
+* Code and documented interpretation of data structure
+* Code and documented interpretation of descriptive statistics
+* Code and documented interpretation of data quality
+* Code and documented interpretation of variable relationships
+* Visualizations used are complete and appropriate and interpretation(s) are documented in the notebook
+* Visualizations follow best practices (titles, axes labels, etc)
+* Strategies for handling missing values, outliers, and removing duplicates are implemented and/or discussed
+* Appropriate data transformation is performed
+* One new feature is engineered and documented
+* A dimensionality reduction method is performed and interpreted
+* A discussion on data quality assessment is included and incorporates the following components: data profiling, data completeness, data accuracy, data consistency, data integrity, and data lineage and provenance
+
+### Code (10 points)
+* Code is in a clearly named notebook
 * Code is clean and well organized
 * Code is documented with docstrings and comments 
-* Code is free of commented out code (ie debug print statements)
-* Script has a clear name
 * Branching and PRs were done appropriately
 * Requirements are included in the text of the PR and are correct and versioned
 * The code runs as documented
-* The appropriate steps were taken for CREATE
-* The appropriate steps were taken for READ
-* 5 additional unique queries were added to the READ step
-* The appropriate steps were taken for UPDATE
-* The appropriate steps were taken for DELETE
-* SQL-python best practices were followed (Context Managers used, parameterized queries, and error handling)
+
+
