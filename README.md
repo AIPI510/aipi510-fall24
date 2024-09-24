@@ -1,3 +1,4 @@
+
 # Team Assignment #4
 ## Data Exploration 
 
@@ -41,8 +42,3 @@ To submit your code, make a PR into the data-eda-ta4 branch and add me and the T
 * Code is in a clearly named notebook
 * Code is clean and well organized
 * Code is documented with docstrings and comments 
-* Branching and PRs were done appropriately
-* Requirements are included in the text of the PR and are correct and versioned
-* The code runs as documented
-
-
