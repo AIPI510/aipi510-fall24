@@ -1,11 +1,17 @@
+# AIPI510 TA5 Statistics
+# Author: Jesse Warren & Haochen Li
+
+# GenAI is used to generate the outline of the intereactive website pages.  
+
 from flask import Flask
 from dash import Dash, dcc, html
 from dash.dependencies import Input, Output
 import plotly.graph_objs as go
 import numpy as np
-from scipy.stats import skew, kurtosis, skewnorm, t
+from scipy.stats import skewnorm, t
 
-# Initialize the Flask app as the main server to host Dash applications
+
+# Initialize the Flask app
 server = Flask(__name__)
 
 # Interactive Normal Distribution hosted on /demo1
@@ -37,7 +43,7 @@ app1.layout = html.Div([
         updatemode="drag"
     ),
     dcc.Graph(id='normal-dist-graph'),
-    html.Div(id='stats-output')
+    html.Div(id='stats-output',  style={'textAlign': 'center', 'marginTop': '20px'})
 ])
 
 # Define the callback to update the graph and display statistics for app1
@@ -48,31 +54,59 @@ app1.layout = html.Div([
      Input('alpha-slider', 'value')]
 )
 def update_graph_app1(mean, alpha):
-    x = np.linspace(-5, 5, 1000)
+    start = -10
+    end = 10
+    point_num = 5000
+
+    delta_x = (end- start)/point_num
+
+    x = np.linspace(start, end, point_num)
     
-    # First normal distribution (mean=0, var=1)
-    y1 = (1 / np.sqrt(2 * np.pi * 1)) * np.exp(-0.5 * (x ** 2))
-    
-    # Second normal distribution (mean=variable, var=1)
-    y2 = (1 / np.sqrt(2 * np.pi * 1)) * np.exp(-0.5 * ((x - mean) ** 2))
-    
-    # Merged normal distribution
-    y = alpha * y1 + (1 - alpha) * y2
+    y1 = (1 / np.sqrt(2 * np.pi * 1)) * np.exp(-0.5 * (x ** 2)) # First normal distribution (mean=0, var=1)
+    y2 = (1 / np.sqrt(2 * np.pi * 1)) * np.exp(-0.5 * ((x - mean) ** 2)) # Second normal distribution (mean=variable, var=1)
+    y = alpha * y1 + (1 - alpha) * y2 # weighter normal distribution (merged version)
     
     # Calculate skewness and kurtosis
-    skewness = skew(y)
-    kurt = kurtosis(y)
+    skewness = stat_std_moment(x, y, delta_x, order = 3)
+    kurt = stat_std_moment(x, y, delta_x, order = 4)
     
+    # plot the graph
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=x, y=y1*alpha, mode='lines', name='N(0, 1)', line=dict(color='blue')))
     fig.add_trace(go.Scatter(x=x, y=y2*(1-alpha), mode='lines', name=f'N({mean}, 1)', line=dict(color='green')))
     fig.add_trace(go.Scatter(x=x, y=y, mode='lines', name='Merged', line=dict(color='red', dash='dash')))
-    
     fig.update_layout(title='Normal Distribution', xaxis_title='X', yaxis_title='Probability Density')
-    
     stats_output = f"Skewness: {skewness:.2f}, Kurtosis: {kurt:.2f}"
     
     return fig, stats_output
+
+# helper functions to calculate the std moments
+def stat_std_moment(x, y, delta_x, order : int):
+    '''
+    this function is to calculate the order th moment given the plot x and y np array 
+    order = 3 means skewness
+    order = 4 means kurtosis
+    '''
+    nth_moment = moment(x, y, delta_x, order)
+    sigma = moment(x, y, delta_x, order = 2)
+    return nth_moment/(sigma**order) # miu_n/sigma^n
+
+def moment(x, y, delta_x, order : int):
+    '''
+    this function is to calculate the order th moment given the plot x and y np array
+    '''
+    if order in [2,3,4]:
+        mean = stat_mean(x, y, delta_x) # get mean first
+        return np.sum( (x - mean) ** order * y) * delta_x # approximate E[(X-mean)^n]; n is order here
+    else:
+        raise ValueError("Order not supported")
+
+def stat_mean(x, y, delta_x):
+    '''
+    this function is to calculate the mean given the plot x and y np array
+    '''
+    return np.sum(x * y) *delta_x # E[x]
+
 
 # Interactive Distribution Visualization hosted on /demo2
 app2 = Dash(__name__, server=server, url_base_pathname='/demo2/')
