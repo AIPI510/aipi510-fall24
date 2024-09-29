@@ -1,3 +1,5 @@
+# PPT: https://docs.google.com/presentation/d/1-gd7BSLd3pqxKH5wceoWW7dzh5YfwOMHIsVri8Qaa0c/edit?usp=sharing
+
 # https://storage.googleapis.com/aipi_datasets/Auto.csv
 import streamlit as st
 import pandas as pd
