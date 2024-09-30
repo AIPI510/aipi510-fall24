@@ -1,12 +1,12 @@
 import unittest
 import pandas as pd
-from analysis import DataAnalyzer
+from paired_t_test import DataAnalyzer
 from scipy import stats
 import logging
 
 class TestDataAnalyzer(unittest.TestCase):
     def setUp(self):
-        self.analyzer = DataAnalyzer('Premier League Player Stat Original.csv')
+        self.analyzer = DataAnalyzer('prem.csv')
         self.analyzer.preprocess_data()
 
     # Test that data is preprocessed correctly
