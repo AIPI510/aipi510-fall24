@@ -1,8 +1,6 @@
 numpy
-pandas
-matplotlib
 seaborn
-scikit-learn
-statsmodels
 scipy
+seaborn
+matplotlib
 pytest

@@ -1,43 +1,42 @@
 import pytest
-import seaborn as sns
-import numpy as np
-from p_values import perform_t_test, perform_anova, perform_chi_square, perform_logistic_regression
+from p_values import simulate_coin_flips, calculate_p_values, check_hypothesis
 
-# Fixture for loading the Titanic dataset
-@pytest.fixture
-def titanic_df():
-    return sns.load_dataset("titanic").dropna(subset=['age', 'fare'])
+"""
+    Since I'm using a specific example simulation, I can logically only test for those exact values. 
+    Feel free to change this when you work with a different random seed.
+"""
 
-def test_t_test(titanic_df):
-    t_stat, p_value = perform_t_test(titanic_df)
-    # Check if p-value and t-stat are floats
-    assert isinstance(t_stat, float)
-    assert isinstance(p_value, float)
-    # p-value should be between 0 and 1
-    assert 0 <= p_value <= 1
+def test_simulate_coin_flips():
+    flips = simulate_coin_flips(n_flips=100, prob_head=0.5, seed=42)
+    assert len(flips) == 100, "Number of flips should be 100"
+    assert sum(flips) == 47, "Number of heads should be 47 (with seed 42)"
+    assert sum(flips == 0) == 53, "Number of tails should be 53"
 
-def test_anova(titanic_df):
-    f_stat, p_value = perform_anova(titanic_df)
-    # Check if F-statistic and p-value are floats
-    assert isinstance(f_stat, float)
-    assert isinstance(p_value, float)
-    # p-value should be between 0 and 1
-    assert 0 <= p_value <= 1
+def test_calculate_p_values():
+    n_heads = 47
+    n_flips = 100
+    prob_head = 0.5
+    binom_p_value, z_p_value, chi2_p_value, z_stat = calculate_p_values(n_heads, n_flips, prob_head)
 
-def test_chi_square(titanic_df):
-    chi2_stat, p_value = perform_chi_square(titanic_df)
-    # Check if chi-square statistic and p-value are floats
-    assert isinstance(chi2_stat, float)
-    assert isinstance(p_value, float)
-    # p-value should be between 0 and 1
-    assert 0 <= p_value <= 1
+    # Checking binomial test p-value
+    assert pytest.approx(binom_p_value, 0.0001) == 0.6173, "Binomial test p-value is incorrect"
+    
+    # Checking z-test p-value
+    assert pytest.approx(z_p_value, 0.0001) == 0.5485, "Z-test p-value is incorrect"
+    
+    # Checking chi-square test p-value
+    assert pytest.approx(chi2_p_value, 0.0001) == 0.5485, "Chi-square test p-value is incorrect"
 
-def test_logistic_regression(titanic_df):
-    fpr, tpr, roc_auc = perform_logistic_regression(titanic_df)
-    # Check if ROC AUC score is a float
-    assert isinstance(roc_auc, float)
-    # Check if false positive rate and true positive rate are numpy arrays
-    assert isinstance(fpr, np.ndarray)
-    assert isinstance(tpr, np.ndarray)
-    # ROC AUC should be between 0 and 1
-    assert 0 <= roc_auc <= 1
+def test_check_hypothesis():
+    """
+    I'm using just the binomial test for this 
+    """
+    # Failing to reject null hypothesis (coin likely fair)
+    binom_p_value = 0.6173
+    result = check_hypothesis(binom_p_value)
+    assert result == "Fail to reject H₀, coin is likely fair."
+
+    # Rejecting null hypothesis (coin may not be fair)
+    binom_p_value = 0.03
+    result = check_hypothesis(binom_p_value)
+    assert result == "Reject H₀, coin may not be fair."
