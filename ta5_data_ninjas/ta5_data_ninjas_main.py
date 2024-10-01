@@ -8,6 +8,13 @@ from scipy.stats import skew, kurtosis, skewnorm, t
 # Initialize the Flask app as the main server to host Dash applications
 server = Flask(__name__)
 
+# Added a page for a meme
+app0 = Dash(__name__, server=server, url_base_pathname='/demo0/')
+
+app0.layout = html.Div([
+    html.Img(src="/static/meme.png", style={'width': '500px'}),
+])
+
 # Interactive Normal Distribution hosted on /demo1
 app1 = Dash(__name__, server=server, url_base_pathname='/demo1/')
 
