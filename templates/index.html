@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Dispersion Calculator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Data Dispersion Calculator</h1>
+    
+    <!-- Upload dataset form -->
+    <form id="uploadForm" onsubmit="uploadFile(event)">
+        <label for="file">Upload your CSV file:</label>
+        <input type="file" name="file" id="file" accept=".csv">
+        <button type="submit">Upload File</button>
+    </form>
+
+    <div>
+        <label for="dataInput">Enter Column Name:</label>
+        <input type="text" id="dataInput" placeholder="e.g., height">
+        <button onclick="calculateDispersion()">Calculate</button>
+        <button onclick="generateBoxPlot()">Generate Box Plot</button>
+    </div>
+
+    <div id="results">
+        <p id="standardDeviation">Standard Deviation:</p>
+        <p id="variance">Variance:</p>
+        <p id="range">Range:</p>
+        <p id="interquartileRange">Interquartile Range:</p>
+    </div>
+    
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
