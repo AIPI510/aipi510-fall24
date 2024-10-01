@@ -3,54 +3,31 @@ import numpy as np
 
 def calculate_variance(data):
     """
-    Calculate the variance of a dataset.
-    
-    Parameters:
-    data (list or ndarray): A list or array of numerical values.
-
-    Returns:
-    float: Variance of the data.
+    Variance represents the degree of spread in a set of data points.
     """
     return np.var(data, ddof=1)
 
 
 def calculate_standard_deviation(data):
     """
-    Calculate the standard deviation of a dataset.
-
-    Parameters:
-    data (list or ndarray): A list or array of numerical values.
-
-    Returns:
-    float: Standard deviation of the data.
+    Standard deviation indicats how spread out the values are from the mean.
     """
     return np.std(data, ddof=1)
 
 
 def calculate_iqr(data):
     """
-    Calculate the interquartile range (IQR) of a dataset.
-
-    Parameters:
-    data (list or ndarray): A list or array of numerical values.
-
-    Returns:
-    float: Interquartile range of the data.
+    The interquartile range (IQR) represent the range between the first quartile (Q1)
+    and the third quartile (Q3) of a dataset, covering the middle 50% of the data points.
     """
-    q75 = np.percentile(data, 75, interpolation='midpoint')
-    q25 = np.percentile(data, 25, interpolation='midpoint')
+    q75 = np.percentile(data, 75, method='midpoint')
+    q25 = np.percentile(data, 25, method='midpoint')
     return q75 - q25
 
 
 def calculate_range(data):
     """
-    Calculate the range of a dataset.
-
-    Parameters:
-    data (list or ndarray): A list or array of numerical values.
-
-    Returns:
-    float: Range of the data.
+    Range is a measure of spread that represents the difference between the maximum and minimum values in a dataset.
     """
     return np.max(data) - np.min(data)
 
