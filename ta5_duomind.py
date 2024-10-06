@@ -1,9 +1,10 @@
 import numpy as np
 import math
+from scipy.stats import norm
 
 # Paired sample data
-before = np.array([50, 60, 55, 68, 52, 62, 58, 65])
-after = np.array([54, 63, 60, 60, 54, 63, 55, 60])
+before = np.array([15, 20, 10, 25, 12, 18, 22, 30, 17, 40])
+after = np.array([12, 16, 11, 27, 17, 24, 29, 38, 26, 50])
 
 # Step 1: Calculate the differences
 differences = after - before
@@ -31,20 +32,19 @@ sigma_W = math.sqrt(n * (n + 1) * (2 * n + 1) / 24)  # Standard deviation of the
 z = (W - mu_W) / sigma_W
 
 # Step 8: Calculate p-value from z-score
-from scipy.stats import norm
 p_value = 2 * norm.cdf(z)  # Two-tailed test
 
 # Output the results
-print(f"Differences: {differences}")
-print(f"Ranks: {ranks}")
-print(f"Signed Ranks: {signed_ranks}")
-print(f"Positive Ranks Sum: {positive_ranks_sum}")
-print(f"Negative Ranks Sum: {negative_ranks_sum}")
-print(f"Test Statistic (W): {W}")
-print(f"Mean of W: {mu_W}")
-print(f"Standard Deviation of W: {sigma_W}")
-print(f"Z-score: {z}")
-print(f"P-value: {p_value}")
+print(f"Differences: {differences}\n")
+print(f"Ranks: {ranks}\n")
+print(f"Signed Ranks: {signed_ranks}\n")
+print(f"Positive Ranks Sum: {positive_ranks_sum}\n")
+print(f"Negative Ranks Sum: {negative_ranks_sum}\n")
+print(f"Test Statistic (W): {W}\n")
+print(f"Mean of W: {mu_W}\n")
+print(f"Standard Deviation of W: {sigma_W}\n")
+print(f"Z-score: {z}\n")
+print(f"P-value: {p_value}\n")
 
 # Step 9: Interpretation
 alpha = 0.05  # significance level
