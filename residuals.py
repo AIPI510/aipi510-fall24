@@ -44,6 +44,91 @@ def residual_plot(residuals, y_pred):
     plt.legend()
     plt.show()
 
+def calculate_leverage(X_test):
+    """
+    Calculate the leverage (hat matrix diagonal) for each observation.
+    
+    Parameters:
+    X (array-like): The design matrix of the regression model.
+    
+    Returns:
+    numpy.ndarray: Leverage values for each observation.
+    """
+    X = np.array(X_test)
+    hat_matrix = X.dot(np.linalg.inv(X.T.dot(X))).dot(X.T)
+    return np.diagonal(hat_matrix)
+
+def cooks_distance(residuals, leverage, n_params = 1):
+    """
+    Calculate Cook's distance for each observation.
+    
+    Parameters:
+    residuals (array-like): The residuals from the regression model.
+    leverage (array-like): The leverage (hat matrix diagonal) for each observation.
+    n_params (int): The number of parameters in the model (including intercept).
+    
+    Returns:
+    numpy.ndarray: Cook's distance for each observation.
+    """
+    # Convert inputs to numpy arrays if they aren't already
+    residuals = np.array(residuals)
+    leverage = np.array(leverage)
+    
+    # Number of observations
+    n_obs = len(residuals)
+    
+    # Calculate MSE
+    mse = np.sum(residuals**2) / (n_obs - n_params)
+    
+    # Calculate Cook's distance
+    cook_numerator = (residuals / (1 - leverage))**2
+    cook_denominator = n_params * mse
+    cooks_d = cook_numerator / cook_denominator
+    
+    return cooks_d
+
+def visualize_cooks_distance(cooks_distances, threshold=None):
+    """
+    Visualize Cook's distance for each observation.
+    
+    Parameters:
+    cooks_distances (array-like): Array of Cook's distances for each observation.
+    threshold (float, optional): Threshold for influential points. If None, uses 4/n.
+    
+    Returns:
+    None (displays the plot)
+    """
+    n = len(cooks_distances)
+    
+    # Set up the plot
+    plt.figure(figsize=(12, 6))
+    plt.bar(range(n), cooks_distances)
+    plt.xlabel('Observation')
+    plt.ylabel("Cook's Distance")
+    plt.title("Cook's Distance for Influential Observations")
+    
+    # Add threshold line
+    if threshold is None:
+        threshold = 4 / n
+    plt.axhline(y=threshold, color='r', linestyle='--', label=f'Threshold ({threshold:.4f})')
+    
+    # Highlight influential points
+    influential = cooks_distances > threshold
+    plt.scatter(range(n), cooks_distances, c=['r' if i else 'b' for i in influential], zorder=3)
+    
+    # Add labels for influential points
+    for i, (d, inf) in enumerate(zip(cooks_distances, influential)):
+        if inf:
+            plt.annotate(f'{i}', (i, d), xytext=(0, 5), textcoords='offset points', ha='center')
+    
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+    
+    # Print summary
+    print(f"Number of influential observations: {sum(influential)}")
+    print(f"Indices of influential observations: {np.where(influential)[0]}")
+
 
 def Breusch_Pagan(residuals, X_test):
     #test for homodescacity
@@ -67,6 +152,9 @@ def main():
     X_train,X_test,y_train,y_test = preprocess()
     residuals, y_pred = linReg(X_train,X_test,y_train,y_test)
     residual_plot(residuals, y_pred)
+    leverage = calculate_leverage(X_test)
+    cooks_distances = cooks_distance(residuals, leverage)
+    visualize_cooks_distance(cooks_distances)
     Breusch_Pagan(residuals, X_test)
     Durbin_Watson(residuals)
 
