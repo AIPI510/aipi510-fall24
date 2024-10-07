@@ -12,6 +12,19 @@ import numpy as np
 
 
 def preprocess():
+    """
+    Does data preprocessing
+    
+    Parameters:
+    None
+
+    Returns:
+    X_train - the train set for X features
+    X_test - the test set for X features
+    y_train - the train set for y target
+    y_test - the test set for y target
+    
+    """
     # Load the data
     copperdata = pd.read_csv('copper-new.txt',header=None)
     copperdata['X'] = copperdata.apply(lambda x: x.str.split()[0][1],axis=1)
@@ -31,12 +44,35 @@ def preprocess():
     return X_train,X_test,y_train,y_test
 
 def linReg(X_train,X_test,y_train,y_test):
+    """
+    Does linear Regression
+    
+    Parameters:
+    X_train - the train set for X features
+    X_test - the test set for X features
+    y_train - the train set for y target
+    y_test - the test set for y target
+    
+    Returns:
+    residuals - list of residuals
+    y_pred - the list of predicted results from the model
+    """
     regression = LinearRegression().fit(X_train, y_train)
     y_pred = regression.predict(X_test)
     residuals = y_pred - y_test
     return residuals, y_pred
 
 def residual_plot(residuals, y_pred):
+    """
+    Displays the residual Plot
+    
+    Parameters:
+    residual = the residuals returned by the model
+    y_pred - the set of items predicted by the model
+    
+    Returns:
+    None - Displays plot
+    """
     plt.scatter(y_pred, residuals)
     plt.xlabel('y_pred')
     plt.ylabel('Residuals')
@@ -131,6 +167,16 @@ def visualize_cooks_distance(cooks_distances, threshold=None):
 
 
 def Breusch_Pagan(residuals, X_test):
+    """
+    Does the Breusch_Pagan Test to determine if the data displays homodescacity
+    
+    Parameters:
+    residual = the residuals returned by the model
+    X_test - the test set for X features
+    
+    Returns:
+    None
+    """
     #test for homodescacity
     X_test_scaled_bpt = sm.add_constant(X_test)  # Add a constant term to the features
 
@@ -143,6 +189,16 @@ def Breusch_Pagan(residuals, X_test):
     print("\nSince p Value is above 0.05 (Common norm for Breusch-Pagan tes), we can say that the data displays heterodescacity")
 
 def Durbin_Watson(residuals):
+    """
+    Does the Durbin_watson Test to determine autocorrelation
+    
+    Parameters:
+    residual = the residuals returned by the model
+    
+    
+    Returns:
+    None
+    """
     dw_statistic = durbin_watson(residuals)
     print(f"\nDurbin-Watson statistic linear regression: {dw_statistic}")
     print("Since the value is  below 2, it indicates a strong positive autocorrelation")
