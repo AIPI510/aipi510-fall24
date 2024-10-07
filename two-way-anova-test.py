@@ -3,8 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy import stats
-from statsmodels.formula.api import ols
-from statsmodels.stats.anova import anova_lm
 
 #########     SCRIPT    #########
 # Use the updated dataset from the previous results
@@ -50,29 +48,12 @@ print(f"\nTotal number of samples: {len(final_df)}")
 grand_mean = final_df['Noise_Level'].mean()
 print(f"\nGrand mean: {grand_mean}\n")
 
-# Perform 2-way ANOVA
-model = ols('Noise_Level ~ C(Substances) + C(Religious_Iconography) + C(Substances):C(Religious_Iconography)', data=final_df).fit()
-anova_table = anova_lm(model, typ=2)
-
-# Print ANOVA results
-print("ANOVA Results:")
-print(anova_table)
-print("\n")
-
 # Create interaction plot
 plt.figure(figsize=(10, 6))
 sns.boxplot(x='Substances', y='Noise_Level', hue='Religious_Iconography', data=final_df)
 plt.title('Interaction Plot: Substances and Religious Iconography')
 plt.ylabel('Noise Level (dB)')
 plt.show()
-
-# Print interpretations
-print("Interpretations:")
-print("1. Main effect of Substances:", "Significant" if anova_table.loc['C(Substances)', 'PR(>F)'] < 0.05 else "Not significant")
-print("2. Main effect of Religious Iconography:", "Significant" if anova_table.loc['C(Religious_Iconography)', 'PR(>F)'] < 0.05 else "Not significant")
-print("3. Interaction effect:", "Significant" if anova_table.loc['C(Substances):C(Religious_Iconography)', 'PR(>F)'] < 0.05 else "Not significant")
-
-# Calculate the F Statistic
 
 # Calculate SS for Substances
 ss_substances = sum([(group['Noise_Level'].mean() - grand_mean)**2 * len(group) 
@@ -82,10 +63,13 @@ ss_substances = sum([(group['Noise_Level'].mean() - grand_mean)**2 * len(group)
 ss_iconography = sum([(group['Noise_Level'].mean() - grand_mean)**2 * len(group) 
                       for name, group in final_df.groupby('Religious_Iconography')])
 
-# Calculate SS for Interaction
-ss_interaction = sum([(group['Noise_Level'].mean() - grand_mean)**2 * len(group) 
+# Calculate Group Means
+group_means_df = final_df.groupby(['Substances', 'Religious_Iconography']).mean()
+ss_between = sum([(group['Noise_Level'].mean() - grand_mean)**2 * len(group)
                       for name, group in final_df.groupby(['Substances', 'Religious_Iconography'])])
-ss_interaction -= (ss_substances + ss_iconography)
+
+# Calculate SS for Interaction
+ss_interaction = ss_between - (ss_substances + ss_iconography)
 
 # Calculate SS Total and SS Error
 ss_total = sum((final_df['Noise_Level'] - grand_mean)**2)
@@ -108,10 +92,29 @@ f_substances = ms_substances / ms_error
 f_iconography = ms_iconography / ms_error
 f_interaction = ms_interaction / ms_error
 
-print(f"F-statistic for Substances: {f_substances}")
-print(f"F-statistic for Religious Iconography: {f_iconography}")
-print(f"F-statistic for Interaction: {f_interaction}")
+# Calculate p-values (Pr(>F))
+p_substances = stats.f.sf(f_substances, df_substances, df_error)
+p_iconography = stats.f.sf(f_iconography, df_iconography, df_error)
+p_interaction = stats.f.sf(f_interaction, df_interaction, df_error)
 
+# Create the ANOVA table
+anova_df = pd.DataFrame({
+    'source': ['Substances', 'Religious_Iconography', 'Interaction', 'Residual'],
+    'sum_sq': [ss_substances, ss_iconography, ss_interaction, ss_error],
+    'df': [df_substances, df_iconography, df_interaction, df_error],
+    'mean_sq': [ms_substances, ms_iconography, ms_interaction, ms_error],
+    'F': [f_substances, f_iconography, f_interaction, None],
+    'Pr(>F)': [p_substances, p_iconography, p_interaction, None],
+}).set_index('source')
+
+# Print the 2-way ANOVA table
+print(anova_df)
+
+# Print interpretations
+print("\nInterpretations:")
+print("1. Main effect of Substances:", "Significant" if anova_df.loc['Substances', 'Pr(>F)'] < 0.05 else "Not significant")
+print("2. Main effect of Religious Iconography:", "Significant" if anova_df.loc['Religious_Iconography', 'Pr(>F)'] < 0.05 else "Not significant")
+print("3. Interaction effect:", "Significant" if anova_df.loc['Interaction', 'Pr(>F)'] < 0.05 else "Not significant")
 
 # Save the final dataset to a CSV file
 final_df.to_csv('apocalypse_bunker_data.csv', index=False)
@@ -175,46 +178,46 @@ def staged_scene(scene, action_text=None, on_click=None):
     st.progress(st.session_state.page / 15)
 
 def scene1():
-    st.write('''
-             ![](https://raw.githubusercontent.com/aipi510fall24foreverloop/assignment5resources/8cbdd55d55a09d3ec4547427dd88dd68ddcd35ed/bunker.jpeg)
-
+    col1, col2 = st.columns(2)
+    col1.write('''![](https://raw.githubusercontent.com/aipi510fall24foreverloop/assignment5resources/8cbdd55d55a09d3ec4547427dd88dd68ddcd35ed/bunker.jpeg)''')
+    col2.write('''
              You find yourself in a bunker. The world as you know it has come to an end.
              ''')
     
 def scene2():
-    st.write('''
-             ![](https://raw.githubusercontent.com/aipi510fall24foreverloop/assignment5resources/8cbdd55d55a09d3ec4547427dd88dd68ddcd35ed/bunker.jpeg)
-
+    col1, col2 = st.columns(2)
+    col1.write('''![](https://raw.githubusercontent.com/aipi510fall24foreverloop/assignment5resources/8cbdd55d55a09d3ec4547427dd88dd68ddcd35ed/bunker.jpeg)''')
+    col2.write('''
              You made it to safety as soon as you heard the reports on the news. You were one of the lucky ones.
              ''')
     
 def scene3():
-    st.write('''
-             ![](https://raw.githubusercontent.com/aipi510fall24foreverloop/assignment5resources/8cbdd55d55a09d3ec4547427dd88dd68ddcd35ed/bunker.jpeg)
-
+    col1, col2 = st.columns(2)
+    col1.write('''![](https://raw.githubusercontent.com/aipi510fall24foreverloop/assignment5resources/8cbdd55d55a09d3ec4547427dd88dd68ddcd35ed/bunker.jpeg)''')
+    col2.write('''
              A frightening sound emanates from the heavy steel bunker door and reverberates.
              ''')
     
 def scene4():
-    st.write('''
-             ![](https://raw.githubusercontent.com/aipi510fall24foreverloop/assignment5resources/8cbdd55d55a09d3ec4547427dd88dd68ddcd35ed/bunker.jpeg)
-
+    col1, col2 = st.columns(2)
+    col1.write('''![](https://raw.githubusercontent.com/aipi510fall24foreverloop/assignment5resources/8cbdd55d55a09d3ec4547427dd88dd68ddcd35ed/bunker.jpeg)''')
+    col2.write('''
              You hear a crackle over Discord.
              ''')
     
 def scene5():
-    st.write('''
-             ![](https://raw.githubusercontent.com/aipi510fall24foreverloop/assignment5resources/8cbdd55d55a09d3ec4547427dd88dd68ddcd35ed/bunker.jpeg)
-
+    col1, col2 = st.columns(2)
+    col1.write('''![](https://raw.githubusercontent.com/aipi510fall24foreverloop/assignment5resources/8cbdd55d55a09d3ec4547427dd88dd68ddcd35ed/bunker.jpeg)''')
+    col2.write('''
              "-one ther-" *nothing* "-ello?! Is anyone there?!"
 
              The audio comes into focus and you hear a man sobbing on the other end.
              ''')
     
 def scene6():
-    st.write('''
-             ![](https://raw.githubusercontent.com/aipi510fall24foreverloop/assignment5resources/8cbdd55d55a09d3ec4547427dd88dd68ddcd35ed/bunker.jpeg)
-
+    col1, col2 = st.columns(2)
+    col1.write('''![](https://raw.githubusercontent.com/aipi510fall24foreverloop/assignment5resources/8cbdd55d55a09d3ec4547427dd88dd68ddcd35ed/bunker.jpeg)''')
+    col2.write('''
              The sobbing man: "Oh thank God!"
 
              Another voice, also sobbing: "Hello?"
@@ -225,16 +228,16 @@ def scene6():
              ''')
     
 def scene7():
-    st.write('''
-             ![](https://raw.githubusercontent.com/aipi510fall24foreverloop/assignment5resources/8cbdd55d55a09d3ec4547427dd88dd68ddcd35ed/bunker.jpeg)
-
+    col1, col2 = st.columns(2)
+    col1.write('''![](https://raw.githubusercontent.com/aipi510fall24foreverloop/assignment5resources/8cbdd55d55a09d3ec4547427dd88dd68ddcd35ed/bunker.jpeg)''')
+    col2.write('''
              You hear a bunker door creak open, followed by a blood-curdling scream.
              ''')
     
 def scene8():
-    st.write('''
-             ![](https://raw.githubusercontent.com/aipi510fall24foreverloop/assignment5resources/8cbdd55d55a09d3ec4547427dd88dd68ddcd35ed/bunker.jpeg)
-
+    col1, col2 = st.columns(2)
+    col1.write('''![](https://raw.githubusercontent.com/aipi510fall24foreverloop/assignment5resources/8cbdd55d55a09d3ec4547427dd88dd68ddcd35ed/bunker.jpeg)''')
+    col2.write('''
              You explain to the Discord channel that before you rushed to the bunker, you heard on the news that
              officials speculated that the monsters outside might be zombies, werewolves, or vampires.
 
@@ -242,10 +245,10 @@ def scene8():
              ''')
 
 def scene9():
-    st.write('''
-             ![](https://raw.githubusercontent.com/aipi510fall24foreverloop/assignment5resources/8cbdd55d55a09d3ec4547427dd88dd68ddcd35ed/bunker.jpeg)
-
-             "Maybe there's some material or substance in our bunkers that wards off the monsters outside!
+    col1, col2 = st.columns(2)
+    col1.write('''![](https://raw.githubusercontent.com/aipi510fall24foreverloop/assignment5resources/8cbdd55d55a09d3ec4547427dd88dd68ddcd35ed/bunker.jpeg)''')
+    col2.write('''
+             You: "Maybe there's some material or substance in our bunkers that wards off the monsters outside!
              If we can figure out what it is, then whoever has it can leave the bunker and come rescue the others!
              We can rebuild!"
 
@@ -287,10 +290,13 @@ def scene10():
              ''')
     
 def scene11():
+    st.write('''#### Exploring the Data''')
     st.code('''
 final_df.head()
             ''', language="python")
     st.dataframe(final_df.head())
+    st.write('''##### Group Means''')
+    st.dataframe(group_means_df)
     st.write('''
              You: "We now have all the data we need. I'll start on the analysis, folks! Please sit back and relax."
              ''')
@@ -320,7 +326,7 @@ def scene13():
     st.write('''
              #### Testing homogeneity of variance
              ''')
-    st.write('''We need to check that the distribution is normal from each group (i.e. each bunker). We'll use Levene's Test.''')
+    st.write('''We need to check that the variance from each group (i.e. each bunker) is homogeneous. We'll use Levene's Test.''')
     groups = []
     for substance in substances:
         for iconography in iconography_list:
@@ -347,18 +353,74 @@ final_df['Noise_Level'].mean()
             ''', language='python')
     st.write(f'{grand_mean}')
     st.write('''
-            ##### Running ANOVA Linear Model
+             ##### Group Means
+             ''')
+    st.dataframe(group_means_df)
+    st.write('''
+            ##### Producing the ANOVA table
             ''')
     st.code('''
-model = ols('Noise_Level ~ C(Substances) + C(Religious_Iconography) + C(Substances):C(Religious_Iconography)', data=final_df).fit()
-anova_table = anova_lm(model, typ=2)
+# Calculate SS for Substances
+ss_substances = sum([(group['Noise_Level'].mean() - grand_mean)**2 * len(group) 
+                     for name, group in final_df.groupby('Substances')])
+
+# Calculate SS for Religious Iconography
+ss_iconography = sum([(group['Noise_Level'].mean() - grand_mean)**2 * len(group) 
+                      for name, group in final_df.groupby('Religious_Iconography')])
+
+# Calculate Group Means
+group_means_df = final_df.groupby(['Substances', 'Religious_Iconography']).mean()
+ss_between = sum([(group['Noise_Level'].mean() - grand_mean)**2 * len(group)
+                      for name, group in final_df.groupby(['Substances', 'Religious_Iconography'])])
+
+# Calculate SS for Interaction
+ss_interaction = ss_between - (ss_substances + ss_iconography)
+
+# Calculate SS Total and SS Error
+ss_total = sum((final_df['Noise_Level'] - grand_mean)**2)
+ss_error = ss_total - (ss_substances + ss_iconography + ss_interaction)
+
+# Calculate degrees of freedom
+df_substances = 2  # 3 levels - 1
+df_iconography = 1  # 2 levels - 1
+df_interaction = 2  # (3-1) * (2-1)
+df_error = len(final_df) - (3 * 2)  # total samples - (levels of A * levels of B)
+
+# Calculate Mean Squares
+ms_substances = ss_substances / df_substances
+ms_iconography = ss_iconography / df_iconography
+ms_interaction = ss_interaction / df_interaction
+ms_error = ss_error / df_error
+
+# Calculate F-statistics
+f_substances = ms_substances / ms_error
+f_iconography = ms_iconography / ms_error
+f_interaction = ms_interaction / ms_error
+
+# Calculate p-values (Pr(>F))
+p_substances = stats.f.sf(f_substances, df_substances, df_error)
+p_iconography = stats.f.sf(f_iconography, df_iconography, df_error)
+p_interaction = stats.f.sf(f_interaction, df_interaction, df_error)
+
+# Create the ANOVA table
+anova_df = pd.DataFrame({
+    'source': ['Substances', 'Religious_Iconography', 'Interaction', 'Residual'],
+    'sum_sq': [ss_substances, ss_iconography, ss_interaction, ss_error],
+    'df': [df_substances, df_iconography, df_interaction, df_error],
+    'mean_sq': [ms_substances, ms_iconography, ms_interaction, ms_error],
+    'F': [f_substances, f_iconography, f_interaction, None],
+    'Pr(>F)': [p_substances, p_iconography, p_interaction, None],
+}).set_index('source')
+
+# Print the 2-way ANOVA table
+print(anova_df)
             ''', language='python')
-    st.dataframe(anova_table)
+    st.dataframe(anova_df)
     
 def scene15():
-    st.write('''
-             ![](https://raw.githubusercontent.com/aipi510fall24foreverloop/assignment5resources/8cbdd55d55a09d3ec4547427dd88dd68ddcd35ed/bunker.jpeg)
-             
+    col1, col2 = st.columns(2)
+    col1.write('''![](https://raw.githubusercontent.com/aipi510fall24foreverloop/assignment5resources/8cbdd55d55a09d3ec4547427dd88dd68ddcd35ed/bunker.jpeg)''')
+    col2.write('''
              You: "Now we know there's a chance at warding off these monsters! Whatever they happen to be!"
 
              Everyone cheers over the channel.
