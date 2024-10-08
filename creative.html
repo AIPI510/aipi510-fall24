@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Multiple Linear Regression with 3D Plot and Fitted Plane</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> <!-- Load Plotly for interactive plots -->
+</head>
+<body>
+    <h1>Interactive Multiple Linear Regression with 3D Plot and Fitted Plane</h1>
+
+    <form id="regressionForm">
+        <label for="x1">X1 (Comma separated values):</label><br>
+        <input type="text" id="x1" name="x1" placeholder="E.g. 2.3, 3.5, 4.7"><br><br>
+
+        <label for="x2">X2 (Comma separated values):</label><br>
+        <input type="text" id="x2" name="x2" placeholder="E.g. 1.1, 2.2, 3.3"><br><br>
+
+        <label for="y">Y (Target, Comma separated values):</label><br>
+        <input type="text" id="y" name="y" placeholder="E.g. 10, 20, 30"><br><br>
+
+        <button type="submit">Run Regression</button>
+    </form>
+
+    <div id="output"></div> <!-- To display the regression results -->
+    <div id="regressionPlot" style="width: 100%; height: 500px;"></div> <!-- For the 3D Plot -->
+
+    <script>
+        // Function to compute the regression
+        function linearRegression(X1, X2, Y) {
+            const n = X1.length;
+            let x1_mean = X1.reduce((acc, val) => acc + val, 0) / n;
+            let x2_mean = X2.reduce((acc, val) => acc + val, 0) / n;
+            let y_mean = Y.reduce((acc, val) => acc + val, 0) / n;
+
+            let S_x1_y = 0, S_x2_y = 0, S_x1_x1 = 0, S_x2_x2 = 0, S_x1_x2 = 0;
+
+            for (let i = 0; i < n; i++) {
+                S_x1_y += (X1[i] - x1_mean) * (Y[i] - y_mean);
+                S_x2_y += (X2[i] - x2_mean) * (Y[i] - y_mean);
+                S_x1_x1 += (X1[i] - x1_mean) * (X1[i] - x1_mean);
+                S_x2_x2 += (X2[i] - x2_mean) * (X2[i] - x2_mean);
+                S_x1_x2 += (X1[i] - x1_mean) * (X2[i] - x2_mean);
+            }
+
+            const denominator = (S_x1_x1 * S_x2_x2) - (S_x1_x2 * S_x1_x2);
+            const b1 = ((S_x2_x2 * S_x1_y) - (S_x1_x2 * S_x2_y)) / denominator;
+            const b2 = ((S_x1_x1 * S_x2_y) - (S_x1_x2 * S_x1_y)) / denominator;
+            const b0 = y_mean - (b1 * x1_mean) - (b2 * x2_mean);
+
+            const y_pred = X1.map((x1_val, i) => b0 + b1 * x1_val + b2 * X2[i]);
+
+            return { coefficients: [b1, b2], intercept: b0, y_pred };
+        }
+
+        document.getElementById('regressionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Retrieve the input values from the form
+            const x1 = document.getElementById('x1').value.split(',').map(Number);
+            const x2 = document.getElementById('x2').value.split(',').map(Number);
+            const y = document.getElementById('y').value.split(',').map(Number);
+
+            // Perform the regression using JavaScript
+            const result = linearRegression(x1, x2, y);
+            displayResults(result, x1, x2, y);
+        });
+
+        function displayResults(result, x1, x2, y_actual) {
+            const outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = `
+                <h3>Regression Results</h3>
+                <p>Coefficients: X1 = ${result.coefficients[0].toFixed(2)}, X2 = ${result.coefficients[1].toFixed(2)}</p>
+                <p>Intercept: ${result.intercept.toFixed(2)}</p>
+            `;
+
+            const y_pred = result.y_pred;
+
+            // Generate points for the regression plane
+            const x1_range = [Math.min(...x1), Math.max(...x1)];
+            const x2_range = [Math.min(...x2), Math.max(...x2)];
+            const x1_plane = [];
+            const x2_plane = [];
+            const y_plane = [];
+
+            for (let i = 0; i < 10; i++) {
+                for (let j = 0; j < 10; j++) {
+                    const x1_val = x1_range[0] + (x1_range[1] - x1_range[0]) * (i / 9);
+                    const x2_val = x2_range[0] + (x2_range[1] - x2_range[0]) * (j / 9);
+                    x1_plane.push(x1_val);
+                    x2_plane.push(x2_val);
+                    y_plane.push(result.intercept + result.coefficients[0] * x1_val + result.coefficients[1] * x2_val);
+                }
+            }
+
+            // Prepare 3D plot data
+            const traceActual = {
+                x: x1,
+                y: x2,
+                z: y_actual,
+                mode: 'markers',
+                marker: {
+                    color: 'blue',
+                    size: 5
+                },
+                name: 'Actual Y',
+                type: 'scatter3d'
+            };
+
+            const tracePredicted = {
+                x: x1,
+                y: x2,
+                z: y_pred,
+                mode: 'markers',
+                marker: {
+                    color: 'red',
+                    size: 5
+                },
+                name: 'Predicted Y',
+                type: 'scatter3d'
+            };
+
+            const tracePlane = {
+                x: x1_plane,
+                y: x2_plane,
+                z: y_plane,
+                opacity: 0.5,
+                type: 'mesh3d',
+                name: 'Fitted Plane',
+                showscale: false
+            };
+
+            const data = [traceActual, tracePredicted, tracePlane];
+
+            const layout = {
+                title: '3D Plot: Actual vs Predicted Y with Fitted Plane',
+                scene: {
+                    xaxis: { title: 'X1' },
+                    yaxis: { title: 'X2' },
+                    zaxis: { title: 'Y' }
+                }
+            };
+
+            Plotly.newPlot('regressionPlot', data, layout);
+        }
+    </script>
+</body>
+</html>
