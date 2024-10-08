@@ -1,4 +1,3 @@
-                    
 import streamlit as st
 import pandas as pd 
 import numpy as np
@@ -220,8 +219,8 @@ if st.session_state.button1:
     stream("Bayes theorem is often illustrated with an example where our belief about rain is adjusted based on the fact it's cloudy. This example is sort of unhelpful as we usually have so much in the way of historicals, that we can go the frequentist approach and just directly estimate the probability of rain based our long history of observations. Using a bayesian update technique in this case seems impractical, and indeed throws out a lot of data that you could use.") 
     stream("However, many situations do not have rich historicals to draw estimates from, or might be deviate wildly from the historicals, and either of these cases would be inferior to a bayesian approach that is really at its heart about trying to perpetually contextualize new observations")
 
-    df = load_rainfall('avl_rainfall.csv')
-    df2 = load_river_crests('avl_crests.csv')
+    df = load_rainfall('ta5-trackstars-resources/avl_rainfall.csv')
+    df2 = load_river_crests('ta5-trackstars-resources/avl_crests.csv')
     df2 = categorize_floods(df2) 
 
     plot_river_height(df2)
@@ -270,7 +269,7 @@ if st.session_state.button1:
             st.subheader("Bayes Factor")
 
             stream("We can and should talk about another way to think about what this equation is doing when solving for \
-                   **P(H|E)**. The likelihood of the evidence in the context of the hypothesis, normalizewd by the \
+                   **P(H|E)**. The likelihood of the evidence in the context of the hypothesis, normalized by the \
                    probability of the evidence is called the **Bayes Factor**.")
 
             st.latex("P(H|E) = {BF}\cdot{P(H)}")
@@ -294,7 +293,7 @@ if st.session_state.button1:
                 stream("We know the proximate cause of a flood event is rain. But let's say we suspect an underappreciated \
                        factor of the flooding is that the soil was saturated at the time the rain arrived. That is, the \
                        ground had no further capacity to absorb water and thus contributed to the likelihood heavy rain \
-                       pools to crreate flood conditions.") 
+                       pools to create flood conditions.") 
 
                 st.markdown("**Question**: What is the chance of having a flood event if we have above average rain event the months preceding the flood?")
                 st.markdown("""\
