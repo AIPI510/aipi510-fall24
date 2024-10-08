@@ -236,7 +236,7 @@ def Durbin_Watson(residuals):
 
 def main():
     X_train,X_test,y_train,y_test, X, y = preprocess()
-    residuals_test, y_pred_test, residuals_full, y_pred_train = linReg(X_train,X_test,y_train,y_test, X, y)
+    residuals_test, y_pred_test, residuals_full, y_pred_full = linReg(X_train,X_test,y_train,y_test, X, y)
     residual_plot(residuals_test, y_pred_test)
     leverage = calculate_leverage(X)
     cooks_distances = cooks_distance(residuals_full, leverage)
