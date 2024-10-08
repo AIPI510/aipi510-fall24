@@ -448,7 +448,7 @@ if ctx is not None:
     elif st.session_state.page == 3:
         staged_scene(scene3, action_text="What was that?!")
     elif st.session_state.page == 4:
-        staged_scene(scene4, action_text="Tune the radio")
+        staged_scene(scene4, action_text="Go to the computer")
     elif st.session_state.page == 5:
         staged_scene(scene5, action_text="Hello!! I'm here!")
     elif st.session_state.page == 6:
