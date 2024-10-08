@@ -1,48 +1,39 @@
-# Team Assignment #4
-## Data Exploration 
+# AIPI 510: Data Sourcing & Analytics (Fall 2024)
 
-## Instructions
-For this assignment, you will be using the Welltory COVID-19 and Wearables Open Data Research dataset. This dataset is messy and exploration of it is meant to be less similar to cleaned datasets you may see in classrooms or on Kaggle and more relevant to real-world dataset exploration. Data is available [here](https://github.com/Welltory/hrv-covid19/tree/master).
-Note: you will first need to organize the data to enable your analysis.
+This is the accompanying GitHub to the Fall 2024 section of AIPI 510, taught by Dr. Brinnae Bent. Teaching assistance from Daniel Medina and Haoyang Ma. 
 
-For this assignment, you will provide a Jupyter notebook report of your exploratory data analysis.
+## Course Description
+Course introduces students to the technical and non-technical aspects of collecting, cleaning and preparing data for use in machine learning applications. Technical aspects covered will include the types of data, methods of sourcing data via the web, APIs and from domain-specific sensors and hardware, an increasingly common source of analytics data in technical industries. The course also introduces methods and tools for evaluating the quality of data, performing basic exploratory data analysis, and pre-processing data for use in analytics. Non-technical aspects covered include an introduction to data privacy, GDPR, regulatory issues, bias and industry-specific concerns regarding data usage.
 
-### In your Jupyter notebook report, complete the following:
-* Document data context and data sampling in markdown
-* Explore and interpret data structure, descriptive statistics, data quality, and variable relationships
-* Explore data visually with appropriate visualizations
-* Discuss and implement strategies for Handling Missing Values, Removing Duplicates, and Handling Outliers
-* Perform data transformation as appropriate
-* Create at least one new feature and document your approach
-* Perform a dimensionality reduction method on the data and discuss 
-* Include a discussion around data quality assessment, including data profiling, data completeness, data accuracy, data consistency, data integrity, and data lineage and provenance
+## Installation
 
-## Submission
-To submit your code, make a PR into the data-eda-ta4 branch and add me and the TA as reviewers. Make sure the name of your notebook follows best practices and includes your team name.
-## Rubric
+1. Clone the repository:
+   ```
+   git clone https://github.com/AIPI510/aipi510-fall24.git
+   cd aipi510-fall24
+   ```
 
-### Report (35 points)
-* Report includes a title, authors, dates, and relevant information for running it at the top 
-* Report includes a reference to the original dataset
-* Data context and sampling is documented in markdown
-* Code and documented interpretation of data structure
-* Code and documented interpretation of descriptive statistics
-* Code and documented interpretation of data quality
-* Code and documented interpretation of variable relationships
-* Visualizations used are complete and appropriate and interpretation(s) are documented in the notebook
-* Visualizations follow best practices (titles, axes labels, etc)
-* Strategies for handling missing values, outliers, and removing duplicates are implemented and/or discussed
-* Appropriate data transformation is performed
-* One new feature is engineered and documented
-* A dimensionality reduction method is performed and interpreted
-* A discussion on data quality assessment is included and incorporates the following components: data profiling, data completeness, data accuracy, data consistency, data integrity, and data lineage and provenance
+2. Recommended: Use a virtual environment, using venv or conda. **USE PYTHON VERSION <3.12**
 
-### Code (10 points)
-* Code is in a clearly named notebook
-* Code is clean and well organized
-* Code is documented with docstrings and comments 
-* Branching and PRs were done appropriately
-* Requirements are included in the text of the PR and are correct and versioned
-* The code runs as documented
+3. Install the required dependencies:
+   ```
+   pip install -r requirements.txt
+   ```
 
+## How to use this GitHub:
+
+For each assignment:
+
+1. Create a feature branch in the class GitHub repository for your team. We recommend branching off of the assignment branch for each assignment. Feature branch naming convention: ta#-teamID. If individual team members create their own feature branches, ensure these branches are PR'd into your team feature branch, merged, and deleted prior to submission. **Important** Make sure ALL of your filenames are descriptive of your topic and contain your team ID.
+
+2. Each assignment has its own branch. To submit your code, make a PR into the branch specified in the rubric and add me and the TAs as reviewers. In your PR, add any requirements (and versions) that are not currently in the requirements.txt file to the text of your PR.
+
+## Assignment Branches
+* [hello-world-ta0](https://github.com/AIPI510/aipi510-fall24/tree/hello-world-ta0)
+* [data-sourcing-ta1](https://github.com/AIPI510/aipi510-fall24/tree/data-sourcing-ta1)
+* [sql-ta2](sql-ta2)
+* [data-eda-ta4](https://github.com/AIPI510/aipi510-fall24/tree/data-eda-ta4)
+* [statistical-analysis-ta5](https://github.com/AIPI510/aipi510-fall24/tree/statistical-analysis-ta5)
+* [feature-engineering-ta7](https://github.com/AIPI510/aipi510-fall24/tree/feature-engineering-ta7)
+* [etl-ta8](https://github.com/AIPI510/aipi510-fall24/tree/etl-ta8)
 
