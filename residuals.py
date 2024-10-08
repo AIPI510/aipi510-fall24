@@ -47,7 +47,7 @@ def preprocess():
 
     return X_train,X_test,y_train,y_test, X, y
 
-def linReg(X_train,X_test,y_train,y_test):
+def linReg(X_train,X_test,y_train,y_test, X, y):
     """
     Performs linear regression on the given training data and predicts outcomes for the test data.
     Calculates residuals between predicted and actual test values.
@@ -70,10 +70,12 @@ def linReg(X_train,X_test,y_train,y_test):
     # # get residuals
     residuals = y_pred - y_test
 
-    y_pred_train = regression.predict(X_train)
-    residuals_train = y_train - y_pred_train
 
-    return residuals, y_pred, residuals_train, y_pred_train
+
+    y_pred_full = regression.predict(X)
+    residuals_full = y - y_pred_full
+
+    return residuals, y_pred, residuals_full, y_pred_full
 
 def residual_plot(residuals, y_pred):
     """
@@ -234,10 +236,10 @@ def Durbin_Watson(residuals):
 
 def main():
     X_train,X_test,y_train,y_test, X, y = preprocess()
-    residuals_test, y_pred_test, residuals_train, y_pred_train = linReg(X_train,X_test,y_train,y_test)
+    residuals_test, y_pred_test, residuals_full, y_pred_train = linReg(X_train,X_test,y_train,y_test, X, y)
     residual_plot(residuals_test, y_pred_test)
-    leverage = calculate_leverage(X_train)
-    cooks_distances = cooks_distance(residuals_train, leverage)
+    leverage = calculate_leverage(X)
+    cooks_distances = cooks_distance(residuals_full, leverage)
     visualize_cooks_distance(cooks_distances)
     Breusch_Pagan(residuals_test, X_test)
     Durbin_Watson(residuals_test)
