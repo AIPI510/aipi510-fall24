@@ -13,7 +13,8 @@ import numpy as np
 
 def preprocess():
     """
-    Does data preprocessing
+    Loads copper data from a file, preprocesses it by extracting X and y values,
+    converts data types, and splits the dataset into training and testing sets.
     
     Parameters:
     None
@@ -25,18 +26,21 @@ def preprocess():
     y_test - the test set for y target
     
     """
-    # Load the data
+    # load data from file
     copperdata = pd.read_csv('copper-new.txt',header=None)
+    # extract x and y values
     copperdata['X'] = copperdata.apply(lambda x: x.str.split()[0][1],axis=1)
     copperdata['y'] = copperdata.apply(lambda x: x.str.split()[0][0],axis=1)
+    # convert to float
     copperdata = copperdata[['X','y']].astype(float)
+    # display a sample of the table
     print(copperdata.head())
-
+    # separate features and target
     X = copperdata['X'].values
     y = copperdata['y'].values
-
+    # use the "reshape" for prep of sklearn
     X = X.reshape(-1,1)
-
+    # split
     X_train,X_test,y_train,y_test = train_test_split(X, y, random_state=0,test_size=0.2)
 
     print(y_test)
@@ -45,7 +49,8 @@ def preprocess():
 
 def linReg(X_train,X_test,y_train,y_test):
     """
-    Does linear Regression
+    Performs linear regression on the given training data and predicts outcomes for the test data.
+    Calculates residuals between predicted and actual test values.
     
     Parameters:
     X_train - the train set for X features
@@ -57,14 +62,20 @@ def linReg(X_train,X_test,y_train,y_test):
     residuals - list of residuals
     y_pred - the list of predicted results from the model
     """
+
+    # fit linear regression model
     regression = LinearRegression().fit(X_train, y_train)
+    # predict y value
     y_pred = regression.predict(X_test)
+    # # get residuals
     residuals = y_pred - y_test
+
     return residuals, y_pred
 
 def residual_plot(residuals, y_pred):
     """
-    Displays the residual Plot
+    Creates and displays a scatter plot of residuals against predicted values.
+    This plot helps visualize the distribution of errors in the models predictions
     
     Parameters:
     residual = the residuals returned by the model
@@ -73,16 +84,23 @@ def residual_plot(residuals, y_pred):
     Returns:
     None - Displays plot
     """
+    # create scatter plot
     plt.scatter(y_pred, residuals)
+    # x label
     plt.xlabel('y_pred')
+    # y label
     plt.ylabel('Residuals')
+    # title
     plt.title('Residuals vs y_pred Values')
+    # lengend
     plt.legend()
+    # display
     plt.show()
 
 def calculate_leverage(X_test):
     """
-    Calculate the leverage (hat matrix diagonal) for each observation.
+    Calculates the leverage (hat matrix diagonal) for each observation in the test set.
+    Leverage indicates the influence of each data point on the model's predictions
     
     Parameters:
     X (array-like): The design matrix of the regression model.
@@ -90,13 +108,17 @@ def calculate_leverage(X_test):
     Returns:
     numpy.ndarray: Leverage values for each observation.
     """
+    # convert input to numpy array
     X = np.array(X_test)
+    # calculate hat matrix
     hat_matrix = X.dot(np.linalg.inv(X.T.dot(X))).dot(X.T)
+
     return np.diagonal(hat_matrix)
 
 def cooks_distance(residuals, leverage, n_params = 1):
     """
-    Calculate Cook's distance for each observation.
+    Calculates Cook's distance for each observation in the dataset.
+    Cook distance measures the influence of each data point on the regression results.
     
     Parameters:
     residuals (array-like): The residuals from the regression model.
@@ -106,17 +128,17 @@ def cooks_distance(residuals, leverage, n_params = 1):
     Returns:
     numpy.ndarray: Cook's distance for each observation.
     """
-    # Convert inputs to numpy arrays if they aren't already
+    # convert inputs to numpy arrays
     residuals = np.array(residuals)
     leverage = np.array(leverage)
-    
-    # Number of observations
+
+    # calculate number of observations
     n_obs = len(residuals)
     
-    # Calculate MSE
+    # calculate mean squared error
     mse = np.sum(residuals**2) / (n_obs - n_params)
     
-    # Calculate Cook's distance
+    # get cook's distance
     cook_numerator = (residuals / (1 - leverage))**2
     cook_denominator = n_params * mse
     cooks_d = cook_numerator / cook_denominator
@@ -190,7 +212,8 @@ def Breusch_Pagan(residuals, X_test):
 
 def Durbin_Watson(residuals):
     """
-    Does the Durbin_watson Test to determine autocorrelation
+    Performs the Durbin-Watson test to detect the presence of autocorrelation in the residuals of a regression model.
+    The Durbin-Watson statistic tests for first-order autocorrelation in the residuals of a regression analysis.
     
     Parameters:
     residual = the residuals returned by the model
@@ -199,8 +222,10 @@ def Durbin_Watson(residuals):
     Returns:
     None
     """
+    # calculate the Durbin-Watson statistic to check for residuals
     dw_statistic = durbin_watson(residuals)
     print(f"\nDurbin-Watson statistic linear regression: {dw_statistic}")
+    # a value below 2 suggests strong positive autocorrelation
     print("Since the value is  below 2, it indicates a strong positive autocorrelation")
 
 
