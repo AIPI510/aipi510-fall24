@@ -18,7 +18,7 @@ iris = load_iris()
 iris_df = pd.DataFrame(data=iris.data, columns=iris.feature_names)
 iris_df['species'] = iris.target
 
-print("Here are 5 random rows o the imported dataset:\n")
+print("Here are 5 random rows of the imported dataset:\n")
 print(iris_df.sample(5))
 
 print("\nFirst we'll use scikit-learn's StandardScaler to standardize the feature columns.")
