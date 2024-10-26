@@ -3,7 +3,7 @@ import gensim.downloader as api
 import gensim
 from gensim.models import Word2Vec, LdaModel, TfidfModel
 import nltk
-nltk.download('punkt')
+nltk.download('punkt_tab')
 nltk.download("stopwords")
 nltk.download('wordnet')
 
@@ -11,6 +11,7 @@ from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from gensim.corpora import Dictionary
+
 
 # Helper functions to show gensims feature engineering capabilities
 def preprocess_text(text):
@@ -29,6 +30,11 @@ def preprocess_text(text):
             tokens_list.append(lemmatizer.lemmatize(word))
 
     return tokens_list
+
+def test_preprocess_text():
+    text = "Hello! This is a simple testing sentence."
+    expected_output = ['hello', 'simple', 'testing', 'sentence']
+    assert preprocess_text(text) == expected_output
 
 def load_dataset():
     """
@@ -55,6 +61,27 @@ def train_word2vec(corpus):
     model = Word2Vec(corpus, vector_size=100, window=5, min_count=2, workers=4)
     return model
 
+def test_train_word2vec():
+    # repeatig words since min_count for Word2Vec has been set to 2
+    sample_texts = [
+        'hi this this is a simple simple test',
+        'will use use pytest',
+        'run test success success'
+        ]
+
+    model = train_word2vec([preprocess_text(i) for i in sample_texts])
+    
+    # check what model instance it is
+    assert isinstance(model, Word2Vec)
+    
+    # Check model vector size
+    assert model.vector_size == 100
+
+    # assert vocab
+    assert "simple" in model.wv.key_to_index
+    assert "use" in model.wv.key_to_index
+    assert "success" in model.wv.key_to_index
+
 
 def train_tfidf(corpus):
     """
@@ -66,6 +93,26 @@ def train_tfidf(corpus):
     corpus_tfidf = tfidf_model[bow_corpus]
     
     return tfidf_model, dictionary, corpus_tfidf
+
+
+def test_train_tfidf():
+    sample_texts = [
+        'hi this this is a simple simple test',
+        'will use use pytest',
+        'run test success success'
+        ]
+
+    tfidf_model, dictionary, corpus_tfidf = train_tfidf([preprocess_text(i) for i in sample_texts])
+    
+    # model is a TfidfModel instance
+    assert isinstance(tfidf_model, TfidfModel)
+    
+    # assert dictionary has been built correctly
+    assert isinstance(dictionary, Dictionary)
+    assert len(dictionary) == 7  # Should contain all unique words from the corpus
+    
+    # check corpus creation
+    assert len(list(corpus_tfidf)) == 3  
 
 def compute_similarity(corpus):
     """
@@ -94,12 +141,34 @@ def train_lda_model(corpus, num_topics=5):
     return lda_model, dictionary, bow_corpus
 
 
+def test_train_lda_model():
+    sample_texts = [
+        'hi this this is a simple simple test',
+        'will use use pytest',
+        'run test success success'
+        ]
+
+    lda_model, dictionary, bow_corpus = train_lda_model([preprocess_text(i) for i in sample_texts], num_topics=2)
+    
+    assert isinstance(lda_model, LdaModel)
+    assert lda_model.num_topics == 2
+    assert isinstance(dictionary, Dictionary)
+    assert len(dictionary) == 7 
+    assert len(bow_corpus) == 3 
+
+
 # Displaying Feature Engineering Results
 if __name__ == '__main__':
+    # run test for pre-process text
+    test_preprocess_text()
+
     # Load and preprocess the dataset
     corpus = load_dataset()
     print(f"\nPreprocessed {len(corpus)} documents.\n")
     print("*"*100)
+
+    # test for Word2Vec Model
+    test_train_word2vec()
 
     ### Word2Vec Model ###
     print("Training Word2Vec model...")
@@ -116,6 +185,10 @@ if __name__ == '__main__':
     similarity = w2v_model.wv.similarity('rule', 'law')
     print(f"\nWord similarity between 'rules' and 'law': {similarity:.4f}\n")
     print("*"*100)
+
+
+    # test for TF-IDF model
+    test_train_tfidf()
 
     ### TF-IDF Model ###
     print("Training TF-IDF model...")
@@ -141,6 +214,8 @@ if __name__ == '__main__':
 
     print("*"*100)
 
+    # test for LDA model
+    test_train_lda_model()
 
     ### LDA Model ###
     print("\nTraining LDA model for topic extraction...")
