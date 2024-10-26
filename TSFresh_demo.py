@@ -14,17 +14,18 @@ from tsfresh.utilities.dataframe_functions import impute
 from multiprocessing import freeze_support
 import unittest
 
+#Importing airline passenger data from Github. 
 def load_data():
-    #Importing airline passenger data from Github. 
-    url = 'https://raw.githubusercontent.com/jbrownlee/Datasets/master/airline-passengers.csv' 
+    url = 'https://raw.githubusercontent.com/jbrownlee/Datasets/master/airline-passengers.csv'  #Github data source which is publically available
     df = pd.read_csv(url) 
     df['Month'] = pd.to_datetime(df['Month'])
-    df['ID']=1
+    df['ID']=1 #Adding new ID column which will be used later for extract_features
     return df
-    
+
+#Performing feature extraction through tsfresh
 def perform_feature_extraction(df):
     extracted_features = extract_features(df, column_id= 'ID', column_sort='Month', column_value ='Passengers', disable_progressbar=True, n_jobs=1)
-    impute(extracted_features)
+    impute(extracted_features) #Imputing the extracted features)
     return(extracted_features)
 
 
@@ -39,8 +40,10 @@ class TestFeatureEngineering(unittest.TestCase):
     
     #Second unit test is checking if feature extraction happened.
     def test_perform_feature_extraction(self):
-        df = perform_feature_extraction(df)
+        df = load_data()
+        extracted_features = perform_feature_extraction(df)
         self.assertGreater(extracted_features.shape[1], 0, "Feature extraction didn't produce any features.")
+
 
 if __name__ == "__main__":
     
