@@ -1,3 +1,9 @@
+## Team Assignment 7 -- Feature Engineering
+## Author: Roxanne Wang & Ruonan Shi
+## Date: 26/10/2024
+## Package: SpaCy
+## GitHub: https://github.com/explosion/spaCy
+
 import spacy
 from spacy.lang.en.stop_words import STOP_WORDS
 import pytest
