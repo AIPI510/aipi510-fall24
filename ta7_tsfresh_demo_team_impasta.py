@@ -1,9 +1,19 @@
 # TSFresh : Script for feature extraction on timeseries data
 # Team Impasta - TA 7 
+
+## How to run:
+## python3 ta7_tsfresh_demo_team_impasta.py
+
+
 from tsfresh import extract_features, select_features
 from tsfresh.examples.robot_execution_failures import download_robot_execution_failures, load_robot_execution_failures
 import numpy as np
 from tsfresh.utilities.dataframe_functions import impute
+
+
+
+
+
 
 def fetch_timeseries_data():
     download_robot_execution_failures()
@@ -47,3 +57,26 @@ if __name__ == "__main__":
 
     print("Selected features:")
     print(X_selected.columns)
+
+###### TESTS
+## How to run tests:
+## pytest ta7_tsfresh_demo_team_impasta.py
+
+def test_download_correctly():
+    """
+    Tests that the download of the robot execution dataset happens correctly
+    And that the number of id's and number of rows in labels is the same
+    """
+    timeseries, y = fetch_timeseries_data()
+
+    assert(timeseries['id'].unique().shape[0] == y.shape[0])
+
+def test_abs_energy():
+    h = np.array([1, 2, -1])
+    assert( abs_energy(h) == 6)
+
+def test_remove_nans():
+    import pandas as pd
+    k = pd.DataFrame({'test_vals': [1, 2, 3, np.nan]})
+    remove_nans(k)
+    assert(k.isna().sum()['test_vals'] == 0)
