@@ -26,7 +26,7 @@ def extract_pupil(image):
     center, radius = _find_pupil(pupil_mask)
     ## no pupil candidate was found that met criteria
     if not center:
-        return temp, temp
+        return pupil_mask, temp
     ## Overlay center and radius on image
     cv2.circle(temp, (int(center[0]),int(center[1])), int(radius), (255, 255, 255), 3)
     cv2.line(temp, (int(center[0]),int(center[1])), (int(center[0])+int(radius),int(center[1])), (0, 0, 255), 3)
@@ -63,11 +63,12 @@ def _find_pupil(mask):
         a binary mask highlighting the potential pupil region
     """
 
+    ## find contours in mask
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    ## define minimum radius, candidate center and radius
+    ## define maximum area, candidate center and radius
     max_area = 0
     candidate_center, candidate_radius = None, None
-    ## loop over contours
+    ## loop over all contours
     for contour in contours:
         ## find the convex hull of the contour 
         convex_closed = cv2.convexHull(contour, False)
@@ -75,11 +76,11 @@ def _find_pupil(mask):
         perimeter = cv2.arcLength(convex_closed, True)
         if perimeter == 0: 
             continue
-            ## find the area of the contour
+        ## find the area of the contour
         area = cv2.contourArea(convex_closed)
-        ## calculating circularity based on its equation
+        ## calculating circularity based on area & perimeter
         circularity = (4*math.pi*area)/(perimeter*perimeter)
-        ## our pupil candidate is the contour with the maximal area that meets the circularity requirement below
+        ## our pupil candidate is the contour with the maximal area that meets the circularity requirement
         if circularity > 0.7 and area > max_area:
             # compute the center of the contour
             approx = cv2.approxPolyDP(convex_closed, perimeter * 0.034, True)
