@@ -6,7 +6,6 @@ from sklearn.metrics import accuracy_score, recall_score, roc_auc_score
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
-import pandas as pd
 
 
 def main():
