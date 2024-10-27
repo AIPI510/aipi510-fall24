@@ -1,10 +1,3 @@
-import tsfresh
-from tsfresh.examples.robot_execution_failures import download_robot_execution_failures, load_robot_execution_failures
-from tsfresh import extract_features
-import pandas as pd
-import numpy as np
-
-
 def get_robot_data():
     """
     Overview:
@@ -14,6 +7,9 @@ def get_robot_data():
     Returns:
         dataframe and target column.
     """
+
+    from tsfresh.examples.robot_execution_failures import download_robot_execution_failures, load_robot_execution_failures
+
     download_robot_execution_failures()
     return load_robot_execution_failures()
 
@@ -30,6 +26,8 @@ def calculate_accelerations(df):
         dataframe with the additional columns. Acceleration of force and torque over time.
     """
 
+    import numpy as np
+
     def calculate_3d_acceleration(group, cols):
         # get the velocity
         vx = group[cols[0]].diff() / group['time'].diff()
@@ -41,7 +39,7 @@ def calculate_accelerations(df):
         ay = vy.diff() / group['time'].diff()
         az = vz.diff() / group['time'].diff()
 
-        # Calculate magnitude of 3D acceleration vector
+        # get the magnitude of 3D acceleration vector using numpy
         return np.sqrt(ax ** 2 + ay ** 2 + az ** 2)
 
     # get the force and torque accelerations
