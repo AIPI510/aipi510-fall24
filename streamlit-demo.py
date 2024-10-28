@@ -8,7 +8,7 @@ from torchvision import transforms
 import matplotlib.pyplot as plt
 
 st.title("Feature Engineering in Images 📷")
-st.write("Feature engineering for images is about extracting useful information from raw images for classification.")
+st.write("Feature engineering for images is about extracting useful information from raw images. We might want to use this information to train a classifier, so lets keep that in mind when we're engineering these features.")
 
 # Initialize session state variables if not already set
 for state_var in ['dataset', 'sample_img', 'grey_image', 'blurred_image', 'edge_detect', 'corner_img', 'corner', 'super_pixel', 'super_pixel_img', 'SIFT_img']:
@@ -26,6 +26,7 @@ def load_subset(dataset_size=100):
     if st.session_state.dataset is None:
         full_dataset = FGVCAircraft(root='data', annotation_level='family', download=True, transform=transform)
         indices = np.random.choice(len(full_dataset), dataset_size, replace=False)
+        st.success("Successfully loaded 100 items")
         st.session_state.dataset = Subset(full_dataset, indices)
 
 # Step 1: Load dataset subset
@@ -36,26 +37,27 @@ if st.button("Load Dataset Subset"):
         st.write("Here is an example image from the dataset.")
         img_pil = transforms.ToPILImage()(st.session_state.sample_img)
         st.image(img_pil, caption="Sample Image", use_column_width=True)
-        st.write("Let’s explore features like edge detection.")
+        st.write("How might we get some information out of this that we might use in a classifier? Well perhaps to identify which planes are which we would look at the shape. A simple way of extracting this is edge detection")
 
 # Step 2: Convert to grayscale
-if st.session_state.sample_img is not None and st.button("Convert to Grayscale"):
-    st.write("Converting to grayscale...")
+if st.session_state.sample_img is not None and st.button("Convert to Greyscale"):
+    st.write("First we convert to greyscale")
     img_np = np.array(transforms.ToPILImage()(st.session_state.sample_img))
     st.session_state.grey_image = cv2.cvtColor(img_np, cv2.COLOR_RGB2GRAY)
-    st.image(st.session_state.grey_image, caption="Grayscale Image", use_column_width=True)
+    st.image(st.session_state.grey_image, caption="Greyscale Image", use_column_width=True)
+    st.write("Then we will need to apply gaussian blurring to remove noise and detail")
 
 # Step 3: Apply Gaussian blur
 if st.session_state.grey_image is not None and st.button("Apply Gaussian Blurring"):
-    st.write("Applying Gaussian blurring...")
     st.session_state.blurred_image = cv2.GaussianBlur(st.session_state.grey_image, (5, 5), 0)
     st.image(st.session_state.blurred_image, caption="Blurred Image", use_column_width=True)
+    st.write("Now we're ready to apply a Canny edge detector")
 
 # Step 4: Apply Canny edge detection
 if st.session_state.blurred_image is not None and st.button("Apply Edge Detection"):
-    st.write("Applying Canny edge detection...")
     st.session_state.edge_detect = cv2.Canny(st.session_state.blurred_image, threshold1=100, threshold2=200)
     st.image(st.session_state.edge_detect, caption="Edges", use_column_width=True)
+    st.write("We could also use a Harris corner detection algorithm to try to extract the shape")
 
 # Step 5: Load a new image for Harris corner detection
 if st.session_state.edge_detect is not None and st.button("Load New Image for Corner Detection"):
@@ -82,6 +84,7 @@ if st.session_state.corner_img is not None and st.button("Apply Harris Corner De
     ax.imshow(thresh_img)
     ax.axis("off")
     st.pyplot(fig)
+    st.write("We can also use a technique for simplifying the image into 'superpixels'. This groups pixels of similar colour and location together, as they're likely to be one 'thing' ")
 
 # Step 7: Load a new image for SuperPixel segmentation
 if st.session_state.corner is not None and st.button("Load New Image for SuperPixel Segmentation"):
