@@ -18,9 +18,9 @@ def load_csv():
         df = pd.read_csv('data/thailand-air-quality.csv', usecols=["city", "date", "pm25", "pm10"], skipinitialspace = True)
         # Convert date column to have proper date format
         df["date"]= pd.to_datetime(df["date"], dayfirst=False, yearfirst=False)
-        # drow rows without pm25/pm10 data
+        # Drop rows without pm25/pm10 data
         df.dropna(subset=["pm25", "pm10"], inplace=True)
-        # sort the data based on city (ascending), and then date (most recent date first)
+        # Sort the data based on city (ascending), and then date (most recent date first)
         df = df.sort_values(by=["city", "date"], ascending=[True, False])
         return df
         
@@ -28,7 +28,7 @@ def load_csv():
         print(f'Error in CSV file loading occurred: {err}')
 
 
-# Custome Feature Function
+# Custom Feature Function
 @set_property("fctype", "simple")
 def goodair_pct_day_count(x, p, t):
      """Custom Feature: Return True if number of days with good air (AQI <= threshold t) is not less than p% of total number of days
