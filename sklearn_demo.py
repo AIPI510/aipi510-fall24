@@ -1,6 +1,6 @@
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split, cross_val_score
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, recall_score, roc_auc_score
 import matplotlib.pyplot as plt
@@ -83,9 +83,9 @@ def plot_feature_distribution(X, feature_names):
 
 def feature_eng_pipeline(X):
     '''Perform feature engineering on X'''
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
-    return X_scaled
+    poly = PolynomialFeatures(degree=2, include_bias=False)
+    X_poly = poly.fit_transform(X)
+    return X_poly
 
 
 if __name__ == "__main__":
