@@ -1,19 +1,7 @@
-'''
-For those with Nvidia Graphics Cards ->
+import pandas as pd
 
-(Ensure that you have the necessary CUDA12.1 Drivers downloaded and set in your PATH variable)
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-
-(You may run into an issue with torchvision. In this case, just run the following to force uninstall and reinstall)
-pip3 uninstall torchvision
-pip3 install torchvision --extra-index-url https://download.pytorch.org/whl/cu121
-
-(Run this in the command line to ensure that you have CUDA12.1)
-nvcc --version
-'''
-
+# The PyTorch Module
 import torch
-import torchvision
 import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 
@@ -36,24 +24,61 @@ def load_celeba():
         transforms.ToTensor(),
     ])
 
-    celeba = torchvision.datasets.CelebA(root='./celeba_data', split='train',
+    celeba_data = datasets.CelebA(root='./data', split='train',
                                         download=True, transform=transform)
+    
+    return celeba_data
 
-def load_cifar100():
-    transform = transforms.Compose([
-        transforms.Resize(224),
-        transforms.ToTensor(),
-    ])
+def get_dataframes():
+    identity_df = pd.read_csv("./data/celeba/identity_CelebA.txt", delim_whitespace=True, header=None, names=["image_id", "encoding"])
+    
+    attr_df = pd.read_csv("./data/celeba/list_attr_celeba.txt", delim_whitespace=True, header=1)
+    attr_df.index.name = 'image_id'
 
-    cifar100 = datasets.CIFAR100(root='./data', train=True, download=True, transform=transform)
+    bbox_df = pd.read_csv("./data/celeba/list_bbox_celeba.txt", delim_whitespace=True, header=1)
+    
+    partition_df = pd.read_csv("./data/celeba/list_eval_partition.txt", delim_whitespace=True, header=None, names=["image_id", "partition"])
+
+    landmarks_df = pd.read_csv("./data/celeba/list_landmarks_align_celeba.txt", delim_whitespace=True, header=1)
+
+    return identity_df, attr_df, bbox_df, partition_df, landmarks_df
 
 def main():
     device = cuda_device()
 
-    load_celeba()
-    load_cifar100()
+    # celeba_data = load_celeba()
 
-    print(f"Device: {device}")
+    identity_df, attr_df, bbox_df, partition_df, landmarks_df = get_dataframes()
 
+    # Menu
+    def show_menu():
+        print("\nSelect an option to display a DataFrame:")
+        print("1 - Identity DataFrame")
+        print("2 - Attributes DataFrame")
+        print("3 - Bounding Boxes DataFrame")
+        print("4 - Partition DataFrame")
+        print("5 - Landmarks DataFrame")
+        print("q - Quit")
+
+    while True:
+        show_menu()
+        choice = input("Enter your choice: ").strip().lower()
+
+        if choice == "1":
+            print(identity_df.head())
+        elif choice == "2":
+            print(attr_df.head())
+        elif choice == "3":
+            print(bbox_df.head())
+        elif choice == "4":
+            print(partition_df.head())
+        elif choice == "5":
+            print(landmarks_df.head())
+        elif choice == "q":
+            print("Exiting program.")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+        
 if __name__ == "__main__":
     main()
