@@ -3,7 +3,7 @@
 # Team Members: Xiaoquan Kong, Jinglong Xiong
 #
 # Install the required libraries by running the following commands:
-# pip install -q nltk scikit-learn pytest
+# pip install -q nltk==3.9.1 scikit-learn==1.5.2 pytest==8.3.3
 #
 # How to run this code:
 # python ta7-XKJX-nltk-demo.py
