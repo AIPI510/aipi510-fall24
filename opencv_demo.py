@@ -1,13 +1,14 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 
-import torch
-import torchvision.transforms as transforms
-import torchvision.datasets as datasets
+from torchvision import transforms, datasets
 
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
+
 import cv2
 
 def load_celeba():
@@ -16,10 +17,8 @@ def load_celeba():
         transforms.ToTensor(),
     ])
 
-    celeba_data = datasets.CelebA(root='./data', split='train',
+    datasets.CelebA(root='./data', split='train',
                                         download=True, transform=transform)
-    
-    return celeba_data
 
 def get_dataframes():
     identity_df = pd.read_csv("./data/celeba/identity_CelebA.txt", delim_whitespace=True, header=None, names=["image_id", "encoding"])
@@ -27,13 +26,7 @@ def get_dataframes():
     attr_df = pd.read_csv("./data/celeba/list_attr_celeba.txt", delim_whitespace=True, header=1)
     attr_df.index.name = 'image_id'
 
-    bbox_df = pd.read_csv("./data/celeba/list_bbox_celeba.txt", delim_whitespace=True, header=1)
-    
-    partition_df = pd.read_csv("./data/celeba/list_eval_partition.txt", delim_whitespace=True, header=None, names=["image_id", "partition"])
-
-    landmarks_df = pd.read_csv("./data/celeba/list_landmarks_align_celeba.txt", delim_whitespace=True, header=1)
-
-    return identity_df, attr_df, bbox_df, partition_df, landmarks_df
+    return identity_df, attr_df
 
 def display_imgs(imgs, img=None):
     # Load similar images
@@ -82,13 +75,6 @@ def find_similar_celebs(attr_df, target_image_id, top_n=5):
     
     return similar_celebs
 
-# def group_celebs_face_features(attr_df, cluster_id):
-    '''
-    Exploring Attribute-Based Groupings for the Celebrities
-
-    Should maybe still employ the bbox and landmarks dfs.
-    '''
-
 def find_celeb_by_attr(attr_df):
     # Available attributes from CelebA
     available_attributes = attr_df.columns.tolist()
@@ -127,31 +113,60 @@ def find_celeb_by_attr(attr_df):
 
     display_imgs(imgs=matching_celebs)
 
-# def cuda_device():
-    if torch.cuda.is_available():
-        print(torch.cuda.get_device_name())
-        device = torch.device("cuda")
-    else:
-        print("cpu")
-        device = torch.device("cpu")
+def attr_groupings(attr_df):
+    # Convert (-1, 1) to (0, 1) for binary representation
+    attr_df = attr_df.replace(-1, 0)
 
-    return device
+    # Use only the attribute columns (drop the index for clustering)
+    X = attr_df.values  # This will exclude the image_id index automatically
 
-def show_menu():
-    print("\nSelect an option to display a DataFrame:")
-    print("1 - Choose attributes to get a Celebrity of Interest")
-    print("2 - Finding Similar Celebrities among the dataset Based on Facial Features")
-    print("3 - Exploring Attribute-Based Groupings for the Celebrities")
-    print("4 - Face Detection to find your Celebrity Lookalike via Webcam")
-    print("q - Quit")
+    # Perform K-Means Clustering
+    k = 5  # Define the number of clusters
+    kmeans = KMeans(n_clusters=k, random_state=42)
+    attr_df['cluster'] = kmeans.fit_predict(X)  # Add cluster assignments back to the DataFrame
 
+    # Show the number of items in each cluster
+    print("Number of items in each cluster:")
+    print(attr_df['cluster'].value_counts())
+
+    # Calculate mean attributes for each cluster
+    cluster_means = attr_df.groupby('cluster').mean()
+
+    print("\nTop 3 attributes for each cluster:")
+
+    # Loop through each cluster and display the top 3 attributes
+    for cluster_num, attributes in cluster_means.iterrows():
+        # Sort attributes in descending order and select the top 3
+        top_attributes = attributes.sort_values(ascending=False).head(3)
+        
+        print(f"\nCluster {cluster_num} - Top 3 Attributes:")
+        for attr, value in top_attributes.items():
+            print(f"{attr}: {value:.2f}")
+
+    # Reduce to 2D for visualization using PCA
+    pca = PCA(n_components=2)
+    X_pca = pca.fit_transform(X)
+
+    # Plot the clusters
+    plt.figure(figsize=(10, 7))
+    sns.scatterplot(x=X_pca[:, 0], y=X_pca[:, 1], hue=attr_df['cluster'], palette="viridis", s=50)
+    plt.title("K-Means Clustering of CelebA Attributes (PCA-reduced)")
+    plt.xlabel("PCA Component 1")
+    plt.ylabel("PCA Component 2")
+    plt.legend(title="Cluster")
+    plt.show()
+    
 def main():
-    # celeba_data = load_celeba()
+    load_celeba()
 
-    identity_df, attr_df, bbox_df, partition_df, landmarks_df = get_dataframes()
+    identity_df, attr_df = get_dataframes()
 
     while True:
-        show_menu()
+        print("\nSelect an option to display a DataFrame:")
+        print("1 - Choose attributes to get a Celebrity of Interest")
+        print("2 - Finding Similar Celebrities among the dataset Based on Facial Features")
+        print("3 - Exploring Attribute-Based Groupings for the Celebrities")
+        print("q - Quit")
         choice = input("Enter your choice: ").strip().lower()
 
         if choice == "1":
@@ -172,11 +187,7 @@ def main():
 
             display_imgs(similar_celebs, img=f'./data/celeba/img_align_celeba/{encoding}.jpg')
         elif choice == "3":
-            # TODO: Exploring Attribute-Based Groupings for the Celebrities
-            pass
-        elif choice == "4":
-            # TODO: Face Detection to find your Celebrity Lookalike via Webcam 
-            pass
+            attr_groupings(attr_df)
         elif choice == "q":
             print("Exiting program.")
             break
