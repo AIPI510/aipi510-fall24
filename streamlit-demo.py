@@ -42,7 +42,7 @@ st.write("""
 st.write("""
     The dataset consists of 10,200 images, which offers a reasonable amount of diversity while 
     remaining within a single narrow task (fixed-wing aircraft classification). This task helps illustrate 
-    how up-front feature engineering can present feature diversity to a classifier that might improve it's 
+    how up-front feature engineering can present feature diversity to a classifier that might improve its 
     overall accuracy (or at least save training time getting to the desired accuracy). 
     """)
 st.write("""
