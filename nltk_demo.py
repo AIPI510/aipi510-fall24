@@ -10,8 +10,11 @@ from nltk.tokenize import word_tokenize
 from collections import Counter  # Correct import
 
 # Download necessary resources
-nltk.download('stopwords')
-nltk.download('punkt')
+nltk.download('stopwords', download_dir='./data')
+nltk.download('punkt', download_dir='./data')
+nltk.download('punkt_tab', download_dir='./data')
+
+nltk.data.path.append('./data')
 
 def extract_text_from_pdf(pdf_file):
 
