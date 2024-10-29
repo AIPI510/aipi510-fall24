@@ -61,62 +61,6 @@ def calculate_accelerations(df):
     """
 
     import numpy as np
-    import pandas as pd
-
-    # def calculate_3d_acceleration(group, cols):
-    #     # get the velocity
-    #     vx = group[cols[0]].diff() / group['time'].diff()
-    #     vy = group[cols[1]].diff() / group['time'].diff()
-    #     vz = group[cols[2]].diff() / group['time'].diff()
-
-    #     # get the acceleration
-    #     ax = vx.diff() / group['time'].diff()
-    #     ay = vy.diff() / group['time'].diff()
-    #     az = vz.diff() / group['time'].diff()
-
-    #     # get the magnitude of 3D acceleration vector using numpy
-    #     velocity_magnitude = np.sqrt(vx ** 2 + vy ** 2 + vz ** 2)
-    #     acceleration_magnitude = np.sqrt(ax ** 2 + ay ** 2 + az ** 2)
-    #     return pd.Series({'velocity': velocity_magnitude, 'acceleration': acceleration_magnitude})
-
-
-    # force_result = df.groupby('id', group_keys=False).apply(
-    #     calculate_3d_acceleration, ['F_x', 'F_y', 'F_z']).reset_index(level=0, drop=True)
-    # df['force_yank'] = force_result['velocity'].to_numpy()
-    # df['force_acceleration'] = force_result['acceleration'].to_numpy()
-
-    # # Calculate for torque
-    # torque_result = df.groupby('id', group_keys=False).apply(
-    #     calculate_3d_acceleration, ['T_x', 'T_y', 'T_z']).reset_index(level=0, drop=True)
-    # df['torque_rotatum'] = torque_result['velocity'].to_numpy()
-    # df['torque_acceleration'] = torque_result['acceleration'].to_numpy()
-    # # # get the force and torque accelerations
-    # # df['yank'],df['force_acceleration'] = df.groupby('id').apply(
-    # #     calculate_3d_acceleration, ['F_x', 'F_y', 'F_z']).reset_index(level=0, drop=True)
-    # # df['rotatum'],df['torque_acceleration'] = df.groupby('id').apply(
-    # #     calculate_3d_acceleration, ['T_x', 'T_y', 'T_z']).reset_index(level=0, drop=True)
-
-    # # format as 4 decimals and fill w 0 if nan
-    # df['force_acceleration'] = df['force_acceleration'].fillna(0).round(4)
-    # df['torque_acceleration'] = df['torque_acceleration'].fillna(0).round(4)
-    # df['force_yank'] = df['force_yank'].fillna(0).round(4)
-    # df['torque_rotatum'] = df['torque_rotatum'].fillna(0).round(4)
-
-    # return df
-
-def calculate_accelerations(df):
-    """
-    Overview:
-        calculate 3-dimensional accelerations of the robot dataframe.
-
-    Param:
-        robot dataframe
-
-    Returns:
-        dataframe with the additional columns. Acceleration of force and torque over time.
-    """
-
-    import numpy as np
 
     def calculate_3d_acceleration(group, cols):
         # get the velocity
