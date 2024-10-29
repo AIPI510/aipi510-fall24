@@ -6,6 +6,85 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_percentage_error
 from matplotlib import pyplot as plt
 
+import http.server
+import socketserver
+import webbrowser
+import threading
+
+# HTML content for creative part as a string
+html_content = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Multiple Linear Regression with 3D Plot and Fitted Plane</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> <!-- Load Plotly for interactive plots -->
+</head>
+<body>
+    <h1>Interactive Multiple Linear Regression with 3D Plot and Fitted Plane</h1>
+
+    <form id="regressionForm">
+        <label for="x1">X1 (Comma separated values):</label><br>
+        <input type="text" id="x1" name="x1" placeholder="E.g. 2.3, 3.5, 4.7"><br><br>
+
+        <label for="x2">X2 (Comma separated values):</label><br>
+        <input type="text" id="x2" name="x2" placeholder="E.g. 1.1, 2.2, 3.3"><br><br>
+
+        <label for="y">Y (Target, Comma separated values):</label><br>
+        <input type="text" id="y" name="y" placeholder="E.g. 10, 20, 30"><br><br>
+
+        <button type="submit">Run Regression</button>
+    </form>
+
+    <div id="output"></div> <!-- To display the regression results -->
+    <div id="regressionPlot" style="width: 100%; height: 500px;"></div> <!-- For the 3D Plot -->
+
+    <script>
+        // JavaScript code for linear regression and plotting (as shown in the uploaded file)
+    </script>
+</body>
+</html>
+"""
+
+# Opening the creative part in a web browser
+
+class CustomHandler(http.server.SimpleHTTPRequestHandler):
+
+    """ A custom request handler that serves the HTML content. """
+
+    def do_GET(self):
+        # Set the response status code
+        self.send_response(200)
+        
+        # Set headers
+        self.send_header("Content-type", "text/html")
+        self.end_headers()
+        
+        # Write the HTML content to the response
+        self.wfile.write(html_content.encode("utf-8"))
+
+def start_server():
+
+    """ Start the server to serve the HTML content. """
+
+    PORT = 8082
+    with socketserver.TCPServer(("", PORT), CustomHandler) as httpd:
+        print(f"Serving at port {PORT}")
+        httpd.serve_forever()
+
+def open_creative_part():
+
+    """ Open the creative part in a web browser. """
+
+    server_thread = threading.Thread(target=start_server)
+    server_thread.start()
+
+    # Open the web browser to the local server
+    webbrowser.open("http://localhost:8082")
+
+
+
 # Multiple Linear Regression
 def multiple_linear_regression(X_train, y_train,X_test, y_test):
     """
@@ -188,10 +267,25 @@ def linear_regression_non_linear_data():
     visualize_feature_and_target_relationship(X_train_bad, y_train_bad)
     visualize_residual_plot(model_bad, X_train_bad, y_train_bad)
 
-
 if __name__ == '__main__':
-    linear_regression_linear_data()
-    linear_regression_non_linear_data()
+    
+    import argparse
+
+    # Create the parser
+    parser = argparse.ArgumentParser(description="A simple example of argparse usage.")
+
+    # Add arguments
+    parser.add_argument("--creative", type=bool, default=False, help="Whether need to show creative part")  # Optional argument with a default value
+
+    # Parse the arguments
+    args = parser.parse_args()
+
+    if args.creative==True:
+        open_creative_part()
+    else:
+        linear_regression_linear_data()
+        linear_regression_non_linear_data()
+
 
 # Unit tests for the functions
 
