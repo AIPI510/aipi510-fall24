@@ -1,15 +1,13 @@
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import cv2
 
 from torchvision import transforms, datasets
 
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
-
-import cv2
 
 def load_celeba():
     transform = transforms.Compose([
@@ -21,7 +19,7 @@ def load_celeba():
                                         download=True, transform=transform)
 
 def get_dataframes():
-    identity_df = pd.read_csv("./data/celeba/identity_CelebA.txt", delim_whitespace=True, header=None, names=["image_id", "encoding"])
+    identity_df = pd.read_csv("./data/celeba/identity_CelebA.txt", delim_whitespace=True, header=None, names=["image_id", "identity_label"])
     
     attr_df = pd.read_csv("./data/celeba/list_attr_celeba.txt", delim_whitespace=True, header=1)
     attr_df.index.name = 'image_id'
@@ -57,25 +55,7 @@ def display_imgs(imgs, img=None):
     plt.tight_layout()
     plt.show()
 
-def find_similar_celebs(attr_df, target_image_id, top_n=5):
-    '''
-    Finding Similar Celebrities among the dataset Based on Facial Features
-    '''
-    attr_df = attr_df.replace(-1, 0)
-
-    target_attrs = attr_df.loc[target_image_id].values.reshape(1, -1)
-    
-    # Calculate cosine similarity between the target and all other celebrities
-    similarities = cosine_similarity(target_attrs, attr_df.values)[0]
-    
-    # Sort the similarities and get the top N most similar celebrities
-    most_similar = np.argsort(similarities)[::-1][1:top_n+1]  # Skipping self-comparison
-    
-    similar_celebs = attr_df.iloc[most_similar].index.tolist()
-    
-    return similar_celebs
-
-def find_celeb_by_attr(attr_df):
+def find_celeb_by_attr(attr_df, identity_df):
     # Available attributes from CelebA
     available_attributes = attr_df.columns.tolist()
 
@@ -108,10 +88,66 @@ def find_celeb_by_attr(attr_df):
     for attr in selected_attrs:
         matching_celebs = matching_celebs[matching_celebs[attr] == 1]
 
-    # Return top N matches
-    matching_celebs = matching_celebs.index[:top_n].tolist()
+    # Merge with identity_df to get identity labels
+    matching_celebs = matching_celebs.merge(identity_df, on="image_id")
 
-    display_imgs(imgs=matching_celebs)
+    # Select unique identities up to the top_n
+    unique_matches = []
+    seen_identities = set()
+
+    for _, row in matching_celebs.iterrows():
+        identity_label = row["identity_label"]
+        if identity_label not in seen_identities:
+            unique_matches.append(row["image_id"])
+            seen_identities.add(identity_label)
+        if len(unique_matches) == top_n:
+            break
+
+    # Check if we have enough matches
+    if len(unique_matches) < top_n:
+        print(f"Only found {len(unique_matches)} unique matches. Unable to display {top_n}.")
+        return
+
+    # Display the images
+    display_imgs(imgs=unique_matches)
+
+def find_similar_celebs(attr_df, identity_df, target_image_id, top_n=5):
+    '''
+    Finding Similar Celebrities among the dataset Based on Facial Features
+    '''
+    # Replace -1 with 0 to normalize data
+    attr_df = attr_df.replace(-1, 0)
+    
+    # Get target identity label
+    target_identity_label = identity_df.loc[identity_df['image_id'] == target_image_id, 'identity_label'].values[0]
+    
+    # Extract target attributes for cosine similarity calculation
+    target_attrs = attr_df.loc[target_image_id].values.reshape(1, -1)
+    
+    # Calculate cosine similarity between target and all other celebrities
+    similarities = cosine_similarity(target_attrs, attr_df.values)[0]
+    
+    # Create a DataFrame with image_id, similarity scores, and identity_label
+    similarity_df = pd.DataFrame({
+        'image_id': attr_df.index,
+        'similarity': similarities
+    }).merge(identity_df, on='image_id')
+
+    # Exclude target image and any images with the same identity_label as the target
+    similarity_df = similarity_df[(similarity_df['image_id'] != target_image_id) & 
+                                  (similarity_df['identity_label'] != target_identity_label)]
+
+    # Sort by similarity in descending order
+    similarity_df = similarity_df.sort_values(by='similarity', ascending=False)
+
+    # Select images with unique identity_labels
+    unique_similar_celebs = similarity_df.drop_duplicates(subset='identity_label').head(top_n)
+
+    # Final check for enough unique matches
+    if len(unique_similar_celebs) < top_n:
+        print(f"Only found {len(unique_similar_celebs)} unique matches. Unable to display {top_n}.")
+
+    return unique_similar_celebs['image_id'].tolist()
 
 def attr_groupings(attr_df):
     # Convert (-1, 1) to (0, 1) for binary representation
@@ -155,11 +191,14 @@ def attr_groupings(attr_df):
     plt.ylabel("PCA Component 2")
     plt.legend(title="Cluster")
     plt.show()
+
+    return attr_df
     
 def main():
     load_celeba()
 
     identity_df, attr_df = get_dataframes()
+    print(identity_df)
 
     while True:
         print("\nSelect an option to display a DataFrame:")
@@ -170,7 +209,7 @@ def main():
         choice = input("Enter your choice: ").strip().lower()
 
         if choice == "1":
-            find_celeb_by_attr(attr_df)
+            find_celeb_by_attr(attr_df, identity_df)
         elif choice == "2":
             while True:
                 encoding = input("Enter a number from 000001-202599: ").strip()
@@ -183,7 +222,7 @@ def main():
 
             n = int(input("How many similar celebrities do you want to see? ").strip())
             
-            similar_celebs = find_similar_celebs(attr_df, f'{encoding}.jpg', top_n=n)
+            similar_celebs = find_similar_celebs(attr_df, identity_df, f'{encoding}.jpg', top_n=n)
 
             display_imgs(similar_celebs, img=f'./data/celeba/img_align_celeba/{encoding}.jpg')
         elif choice == "3":
