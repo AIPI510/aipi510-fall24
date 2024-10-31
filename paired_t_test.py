@@ -1,5 +1,5 @@
 import pandas as pd
-
+from datasets import load_dataset
 from scipy import stats
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -8,8 +8,10 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 class DataAnalyzer:
-    def __init__(self, file_path):
-        self.data = pd.read_csv(file_path, encoding='latin1')
+    def __init__(self):
+        # Load data
+        self.data = load_dataset('tj1215/prem_data1')
+        self.data = self.data['train'].to_pandas()
         self.t_data = None
 
     def preprocess_data(self):
@@ -101,7 +103,7 @@ class DataAnalyzer:
 
 
 if __name__ == "__main__":
-    analyzer = DataAnalyzer('prem.csv')
+    analyzer = DataAnalyzer()
     analyzer.preprocess_data()
 
     analyzer.check_normality()

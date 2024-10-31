@@ -1,12 +1,9 @@
 import unittest
-import pandas as pd
 from paired_t_test import DataAnalyzer
-from scipy import stats
-import logging
 
 class TestDataAnalyzer(unittest.TestCase):
     def setUp(self):
-        self.analyzer = DataAnalyzer('prem.csv')
+        self.analyzer = DataAnalyzer()
         self.analyzer.preprocess_data()
 
     # Test that data is preprocessed correctly
