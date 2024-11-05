@@ -111,7 +111,7 @@ if __name__ == "__main__":
     unittest.main(argv=['first-arg-is-ignored'], exit=False)
 
     # Process the data and extract features
-    extracted_features = process_data('QQQ_ETF_Stock_Price_History.csv')
+    extracted_features = process_data('data/QQQ_ETF_Stock_Price_History.csv')
     print("Extracted Features:")
     print(extracted_features.head())
     
