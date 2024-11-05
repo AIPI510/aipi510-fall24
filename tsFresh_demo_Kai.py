@@ -102,7 +102,7 @@ class TestDataProcessing(unittest.TestCase):
 
     def test_process_data(self):
         """Test the data processing function."""
-        processed_features = process_data('QQQ_ETF_Stock_Price_History.csv')
+        processed_features = process_data('data/QQQ_ETF_Stock_Price_History.csv')
         self.assertIsInstance(processed_features, pd.DataFrame)
         self.assertGreater(processed_features.shape[1], 0)  # Ensure some features are extracted
 
