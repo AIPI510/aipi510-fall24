@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cat vs Dog</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .upload-form {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        .preview {
+            margin-top: 20px;
+        }
+        .preview img {
+            max-width: 100%;
+            max-height: 500px;
+        }
+        .prediction {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cat vs Dog</h1>
+    
+    <div class="upload-form">
+        <form method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*">
+            <input type="submit" value="Classify">
+        </form>
+    </div>
+
+    {% if message %}
+    <div class="message">
+        {{ message }}
+    </div>
+    {% endif %}
+
+    {% if image_path %}
+    <div class="preview">
+        {% if prediction %}
+        <h2 class="prediction">
+            Prediction: {{ prediction }}
+        </h2>
+        {% endif %}
+        <!-- <h2>Uploaded Image:</h2> -->
+        <img src="{{ url_for('static', filename=image_path) }}" alt="Uploaded image">
+    </div>
+    {% endif %}
+</body>
+</html>
