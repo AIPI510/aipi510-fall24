@@ -1,5 +1,5 @@
 .ipynb_checkpoints
-__pycache__
+app/__pycache__
 app/.venv
 app/images/
 app/resnet50v2
