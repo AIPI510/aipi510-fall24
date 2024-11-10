@@ -1,8 +1,8 @@
 .ipynb_checkpoints
 __pycache__
-.venv
-images/
-resnet50v2
+app/.venv
+app/images/
+app/resnet50v2
 
 bin
 obj
