@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import datetime
 import time
+import requests 
+from io import StringIO
 
 # Streamlit  basics courtesy of https://docs.streamlit.io/get-started/fundamentals/main-concepts
 #
@@ -66,26 +68,38 @@ month_coding = {
     'December': 'DEC'
 }
 
-def load_rainfall(path):
+def fetch_data(file_name): 
+    """
+    Grab data from an azure storage container and instantiate a dataframe to hold it
+    """
+    azure_container = 'https://trackstarspublic.blob.core.windows.net/teamassignment5/'
+    blob = azure_container + file_name
+
+    data = requests.get(blob).text
+    
+    stringio = StringIO(data) 
+
+    return pd.read_csv(stringio)
+
+def load_rainfall():
     """
     Fetch and preprocess the rainfall data
     """
-    df = pd.read_csv(path)
+    df_rain = fetch_data('avl_rainfall.csv')
 
     # The data is pretty ratty earlier than 1888
-    df = df[df['YEAR']>1887]
+    df = df_rain[df_rain['YEAR']>1887]
     months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'] 
     for month in months: 
         df[month] = pd.to_numeric(df[month])
     
     return df
 
-def load_river_crests(path):
+def load_river_crests():
     """
-    Fetch and preprocess river crests/height data
+    Fetch river crests/height data
     """
-    df = pd.read_csv(path) 
-    return df
+    return fetch_data('avl_crests.csv')
 
 def categorize_floods(df):
     """
@@ -219,8 +233,8 @@ if st.session_state.button1:
     stream("Bayes theorem is often illustrated with an example where our belief about rain is adjusted based on the fact it's cloudy. This example is sort of unhelpful as we usually have so much in the way of historicals, that we can go the frequentist approach and just directly estimate the probability of rain based our long history of observations. Using a bayesian update technique in this case seems impractical, and indeed throws out a lot of data that you could use.") 
     stream("However, many situations do not have rich historicals to draw estimates from, or might be deviate wildly from the historicals, and either of these cases would be inferior to a bayesian approach that is really at its heart about trying to perpetually contextualize new observations")
 
-    df = load_rainfall('ta5-trackstars-resources/avl_rainfall.csv')
-    df2 = load_river_crests('ta5-trackstars-resources/avl_crests.csv')
+    df = load_rainfall()
+    df2 = load_river_crests()
     df2 = categorize_floods(df2) 
 
     plot_river_height(df2)
