@@ -1,7 +1,0 @@
-numpy
-seaborn
-scipy
-seaborn
-matplotlib
-pytest
-setuptools
