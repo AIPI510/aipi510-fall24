@@ -1,0 +1,8 @@
+numpy
+s3fs
+streamlit
+pandas
+boto3
+st-files-connection
+feature_engine
+xgboost
