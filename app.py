@@ -10,13 +10,6 @@ from io import BytesIO
 import boto3
 import sklearn
 
-# title of the Web App
-st.title("See how much your car is worth NOW in just a minute!")
-st.subheader("This application predicts the price of your vehicle in just a minute, with minimal information provided. Note that results are only estimations and real-world numbers differ case-by-case.")
-st.write("Specify your car information below:")
-
-# processor_path = '/Users/owner/Desktop/data_science/ml_course/aipi510/assignment9/preprocessor.pkl'
-# model_path = "/Users/owner/Desktop/data_science/ml_course/aipi510/assignment9/xgbr_model.pkl"
 
 bucket_name = 'churn-challenge'
 file_key = 'churn-challenge/x_train.csv'
@@ -36,16 +29,17 @@ with BytesIO() as mod:
    mod.seek(0)    # move back to the beginning after writing
    model = pickle.load(mod)
 
+fuel_types = ['Gasoline', 'E85 Flex Fuel', 'Hybrid', 'Diesel', 'Plug-In Hybrid']
 
 def user_inputs(df):
     brand = st.selectbox("Select Brand", df["brand"].unique())
-    model = st.selectbox("Select Model", df["model"].unique())
+    model_options = df[df["brand"] == brand]["model"].unique()
+    model_options.sort()
+    model = st.selectbox("Select Model", model_options)
     model_year = st.number_input("Model Year", min_value=2000, max_value=2024, step=1)
-    milage = st.number_input("Mileage", min_value=0, step=1000)
-    fuel_type = st.selectbox("Select Fuel Type", df["fuel_type"].unique())
-    engine = st.selectbox("Select Engine", df["engine"].unique())  
-    transmission = st.selectbox("Select Transmission", df["transmission"].unique())
-    accident = st.selectbox("Accident History", ["Yes", "No"])  # Assuming binary options
+    milage = st.number_input("Mileage (Miles)", min_value=0, step=1000)
+    fuel_type = st.selectbox("Select Fuel Type", fuel_types)
+    accident = st.selectbox("Accident History", ["Yes", "No"]) 
 
     data = {
         'brand': brand,
@@ -53,8 +47,6 @@ def user_inputs(df):
         'model_year': model_year,
         'milage': milage,
         'fuel_type': fuel_type,
-        'engine': engine,
-        'transmission': transmission,
         'accident': accident
     }
 
@@ -80,13 +72,13 @@ def main():
     if st.button("Find out"):
         # Transform user data and make prediction
         transformed_data = data_transform(user_data, processor)
-        predicted_price = predict_price(model, transformed_data)[0]
+        predicted_price = predict(model, transformed_data)[0]
         
         # Display the predicted price in a formatted style
         st.markdown(
-            f"<div style='text-align: center; font-size: 24px; font-weight: bold; color: green;'>Predicted Price: ${round(predicted_price / 1000)}k</div>",
+            f"<div style='text-align: center; font-size: 24px; font-weight: bold; color: green;'>Predicted Price: ${predicted_price/1000}k</div>",
             unsafe_allow_html=True
-        )
+        ) 
         
 if __name__ == "__main__":
     main()
