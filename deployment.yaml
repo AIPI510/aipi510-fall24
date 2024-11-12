@@ -1,0 +1,43 @@
+---
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "deployment-9"
+  namespace: "default"
+  labels:
+    app: "deployment-9"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: "deployment-9"
+  template:
+    metadata:
+      labels:
+        app: "deployment-9"
+    spec:
+      containers:
+      - name: "ta8-ml-deployment"
+        image: "gcr.io/ml-deployment-440703/ta8-ml-deployment:v1"
+---
+apiVersion: "autoscaling/v2"
+kind: "HorizontalPodAutoscaler"
+metadata:
+  name: "deployment-9-hpa-jsun"
+  namespace: "default"
+  labels:
+    app: "deployment-9"
+spec:
+  scaleTargetRef:
+    kind: "Deployment"
+    name: "deployment-9"
+    apiVersion: "apps/v1"
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: "Resource"
+    resource:
+      name: "cpu"
+      target:
+        type: "Utilization"
+        averageUtilization: 80
