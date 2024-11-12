@@ -76,7 +76,7 @@ def main():
         
         # Display the predicted price in a formatted style
         st.markdown(
-            f"<div style='text-align: center; font-size: 24px; font-weight: bold; color: green;'>Predicted Price: ${predicted_price/1000}k</div>",
+            f"<div style='text-align: center; font-size: 24px; font-weight: bold; color: green;'>Predicted Price: ${round(predicted_price/1000)}k</div>",
             unsafe_allow_html=True
         ) 
         
