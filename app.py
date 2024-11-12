@@ -70,16 +70,23 @@ def predict(model, transformed):
     return output
 
 def main():
-    # A confirmation so the user knows what the input row looks like
-    x_input = user_inputs(df)
+    st.title("How much $ is your car NOW?")
+    st.write("This application predicts the price of your vehicle in just a minute, with minimal information provided. Note that results are only estimations and real-world numbers differ case-by-case.")
 
-    # design user interface
+    # Collect user inputs
+    user_data = user_inputs(df)
+
+    # When the "Find out" button is pressed
     if st.button("Find out"):
-        transformed = data_transform(x_input, processor)
-        prediction = predict(model, transformed)
-        st.subheader("Estimate based on your inputs:")
-        # here, define more informative statements, such as recommended actions, cautions, statistics you want to include, etc...
-        st.write(f"{prediction}") # customize this 
+        # Transform user data and make prediction
+        transformed_data = data_transform(user_data, processor)
+        predicted_price = predict_price(model, transformed_data)[0]
+        
+        # Display the predicted price in a formatted style
+        st.markdown(
+            f"<div style='text-align: center; font-size: 24px; font-weight: bold; color: green;'>Predicted Price: ${round(predicted_price / 1000)}k</div>",
+            unsafe_allow_html=True
+        )
         
 if __name__ == "__main__":
     main()
