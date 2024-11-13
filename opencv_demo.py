@@ -1,6 +1,9 @@
 import cv2
 import math
 import matplotlib.pyplot as plt
+from PIL import Image
+import numpy as np
+import requests
 
 
 def extract_pupil(image):
@@ -10,7 +13,7 @@ def extract_pupil(image):
     Paramaters
     ---------
     image: numpy array
-        a BGR array representation of our input image
+        a RGB array representation of our input image
     
     Returns
     ---------
@@ -45,7 +48,7 @@ def _feature_engineering(image):
     ## Step 1: Apply Gaussian Blur – helps smoothen the images 
     blurred = cv2.GaussianBlur(image, (11, 11), 0)
     ## Step 2: Retrieve grayscale image (e.x. red channel)
-    grayscale = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY)
+    grayscale = cv2.cvtColor(blurred, cv2.COLOR_RGB2GRAY)
     ## Step 3: Improve image contrast using CLAHE 
     clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(5,5))
     standardized = clahe.apply(grayscale)
@@ -124,13 +127,11 @@ def _draw_output(image_sequences, output_file='output.jpg'):
             if i == 0:
                 ax.set_title(column_titles[j], fontsize=12, weight='bold')
             if j == 0:  # Input image (BGR to RGB)
-                image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-                ax.imshow(image_rgb)
+                ax.imshow(image)
             elif j == 1:  # Binary mask
                 ax.imshow(image, cmap='gray')
             elif j == 2:  # Annotated image (BGR to RGB)
-                image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-                ax.imshow(image_rgb)
+                ax.imshow(image)
             ax.axis('off')
 
     
@@ -141,11 +142,15 @@ def _draw_output(image_sequences, output_file='output.jpg'):
     print(f'Output successfully written to {output_file}')
 
 
+def _read_from_url(url):
+    im = Image.open(requests.get(url, stream=True).raw)
+    return np.asarray(im)
+
 
 if __name__ == "__main__":
-    img1 = cv2.imread('./data/test_img_1.jpg')
-    img2 = cv2.imread('./data/test_img_2.jpg')
-    img3 = cv2.imread('./data/test_img_3.jpg')
+    img1 = _read_from_url('https://i0.wp.com/post.healthline.com/wp-content/uploads/2019/03/Human_Eye_Closeup_1296x728-header-1024x575.jpg?w=1155&h=1528')
+    img2 = _read_from_url('https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Eye_iris.jpg/320px-Eye_iris.jpg')
+    img3 = _read_from_url('https://www.promises.com/wp-content/uploads/2022/05/Constricted-Pupil-1024x538.jpg')
     mask1, annotated1 = extract_pupil(img1)
     mask2, annotated2 = extract_pupil(img2)
     mask3, annotated3 = extract_pupil(img3)
