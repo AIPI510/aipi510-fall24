@@ -1,6 +1,17 @@
 # Team Assignment #8
 ## Data Engineering
 
+## Author: Haochen Li
+
+## Instructions
+
+* Steps taken for Extract are documented
+* Steps taken for Transform are documented
+* Steps taken for Load are documented
+* The Step Functions state machine is documented
+
+# Following are the requirements by assignments
+
 ## Instructions
 Design and implement a serverless ETL data pipeline using AWS Lambda and Step Functions to process data from a source, transform it, and load it into a destination.
 ### Requirements:
