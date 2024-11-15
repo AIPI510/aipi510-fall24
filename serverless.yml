@@ -1,0 +1,52 @@
+service: cat-dog-lover-predictor
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: us-east-1
+  environment:
+    MODEL_BUCKET: harrybucket-aipi510
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:GetObject"
+      Resource:
+        - "arn:aws:s3:::harrybucket-aipi510/*"
+
+functions:
+  main:
+    handler: main.lambda_handler
+    events:
+      - http:
+          path: predict
+          method: post
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    dockerizePip: true
+    slim: true
+    strip: true
+    
+package:
+  individually: true
+
+  exclude:
+    - node_modules/**  # Exclude node modules (not needed for Python Lambda)
+    - .git/**  # Exclude git history and configurations
+    - .serverless/**  # Exclude Serverless build artifacts
+    - aws/**  
+    - model/training.py  # Exclude training script (only inference needed)
+    - model/cat_dog_model.onnx  # Exclude ONNX model 
+    - model/cat_dog_model.pkl  # Exclude the other model
+    - _pycache_  # Exclude Python cache files
+    - awscliv2.zip  # Exclude large AWS CLI installation file
+    - "*.md"  # Exclude markdown files
+    - "*.json"  # Exclude JSON files 
+    - "*.txt"  # Exclude any text files not required for runtime
+    - "README.md"  # Exclude README file
+    - package-lock.json  # Exclude Node.js lock files
+    - package.json  # Exclude Node.js package file
+    - .venv/**  # Exclude virtual environment
