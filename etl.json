@@ -1,0 +1,24 @@
+{
+    "Comment": "ETL Pipeline with a single Lambda function",
+    "StartAt": "ETLProcess",
+    "States": {
+      "ETLProcess": {
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:us-east-1:248189903963:function:etl",
+        "End": true,
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Next": "FailState"
+          }
+        ]
+      },
+      "FailState": {
+        "Type": "Fail",
+        "Error": "ETLFailure",
+        "Cause": "ETL process failed."
+      }
+    }
+  }
