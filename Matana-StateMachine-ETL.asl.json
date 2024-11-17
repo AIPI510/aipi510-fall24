@@ -1,0 +1,172 @@
+{
+  "StartAt": "Extract Lambda Invoke",
+  "States": {
+    "Extract Lambda Invoke": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "OutputPath": "$.Payload",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "arn:aws:lambda:us-east-1:864899863392:function:matana-extract-lambda:1"
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2,
+          "JitterStrategy": "FULL"
+        },
+        {
+          "ErrorEquals": [
+            "States.TaskFailed"
+          ],
+          "BackoffRate": 2,
+          "IntervalSeconds": 30,
+          "MaxAttempts": 3,
+          "JitterStrategy": "FULL"
+        },
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "BackoffRate": 2,
+          "IntervalSeconds": 5,
+          "MaxAttempts": 5,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "Next": "Transform Lambda Invoke",
+      "TimeoutSeconds": 180,
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "Next": "Extract-Fail"
+        }
+      ]
+    },
+    "Extract-Fail": {
+      "Type": "Pass",
+      "End": true
+    },
+    "Transform Lambda Invoke": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "OutputPath": "$.Payload",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "arn:aws:lambda:us-east-1:864899863392:function:matana-transform-lambda:1"
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2,
+          "JitterStrategy": "FULL"
+        },
+        {
+          "ErrorEquals": [
+            "States.TaskFailed"
+          ],
+          "BackoffRate": 2,
+          "IntervalSeconds": 30,
+          "MaxAttempts": 3,
+          "JitterStrategy": "FULL"
+        },
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "BackoffRate": 2,
+          "IntervalSeconds": 5,
+          "MaxAttempts": 5,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "Next": "Load Lambda Invoke",
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "Next": "Transform-Fail"
+        }
+      ],
+      "TimeoutSeconds": 900
+    },
+    "Transform-Fail": {
+      "Type": "Pass",
+      "End": true
+    },
+    "Load Lambda Invoke": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "OutputPath": "$.Payload",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "arn:aws:lambda:us-east-1:864899863392:function:matana-load-lambda:1"
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2,
+          "JitterStrategy": "FULL"
+        },
+        {
+          "ErrorEquals": [
+            "States.TaskFailed"
+          ],
+          "BackoffRate": 2,
+          "IntervalSeconds": 30,
+          "MaxAttempts": 3,
+          "JitterStrategy": "FULL"
+        },
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "BackoffRate": 2,
+          "IntervalSeconds": 5,
+          "MaxAttempts": 5,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "End": true,
+      "TimeoutSeconds": 180,
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "Next": "Load-Fail"
+        }
+      ]
+    },
+    "Load-Fail": {
+      "Type": "Pass",
+      "End": true
+    }
+  },
+  "Comment": "Step Function state machine that extracts GDP data from World Bank API, transforms (remove country aggregates, remove non-relevant columns, get top 20 countries by GDP), loads transformed data and save as CSV in output S3 Bucket",
+  "TimeoutSeconds": 3000
+}
