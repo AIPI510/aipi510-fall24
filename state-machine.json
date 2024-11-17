@@ -1,0 +1,38 @@
+{
+    "Comment": "Step Function for CSV Transformation",
+    "StartAt": "InvokeLambda",
+    "States": {
+      "InvokeLambda": {
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:us-east-2:490004614075:function:CSVTransfFunc",
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.TaskFailed"
+            ],
+            "IntervalSeconds": 2,
+            "MaxAttempts": 3,
+            "BackoffRate": 2
+          }
+        ],
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "ResultPath": "$.error",
+            "Next": "ErrorHandler"
+          }
+        ],
+        "Next": "SuccessState"
+      },
+      "ErrorHandler": {
+        "Type": "Fail",
+        "Error": "LambdaInvocationFailed",
+        "Cause": "The Lambda function failed to process the file."
+      },
+      "SuccessState": {
+        "Type": "Succeed"
+      }
+    }
+  }
