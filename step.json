@@ -1,0 +1,70 @@
+{
+  "Comment": "A simple AWS Step Functions state machine that chains three Lambda functions",
+  "StartAt": "ExtractFunction",
+  "States": {
+    "ExtractFunction": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:463470957084:function:ExtractFunction:$LATEST",
+      "Next": "TransformFunction",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "States.Timeout"
+          ],
+          "BackoffRate": 2,
+          "IntervalSeconds": 1,
+          "MaxAttempts": 2,
+          "MaxDelaySeconds": 1
+        }
+      ]
+    },
+    "TransformFunction": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:463470957084:function:TransformFunction:$LATEST",
+      "Next": "LoadFunction",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "States.Timeout"
+          ],
+          "BackoffRate": 2,
+          "IntervalSeconds": 1,
+          "MaxAttempts": 2,
+          "MaxDelaySeconds": 1
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.Timeout"
+          ],
+          "Next": "ExtractFunction"
+        }
+      ]
+    },
+    "LoadFunction": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:463470957084:function:LoadFunction:$LATEST",
+      "End": true,
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "States.Timeout"
+          ],
+          "BackoffRate": 2,
+          "IntervalSeconds": 1,
+          "MaxAttempts": 2,
+          "MaxDelaySeconds": 1
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.Timeout"
+          ],
+          "Next": "TransformFunction"
+        }
+      ]
+    }
+  }
+}
