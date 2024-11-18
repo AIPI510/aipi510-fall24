@@ -3,12 +3,15 @@ import json
 import requests
 
 def lambda_handler(event, context):
+    '''
+    Lambda function handler to extract data from the MarketStack API.
+    '''
 
     # Retrieve the environment variable
     api_key = os.environ.get('MARKETSTACK_API_KEY', 'default_value')
 
      # Use the environment variable in your code
-    url = F"https://api.marketstack.com/v1/eod?access_key={api_key}"
+    url = f"https://api.marketstack.com/v1/eod?access_key={api_key}"
 
     querystring = {"symbols":"AAPL,MSFT,AMZN,TSLA,NVDA"}
 
