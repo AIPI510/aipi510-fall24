@@ -1,0 +1,49 @@
+{
+    "Comment": "ETL Data Pipeline",
+    "StartAt": "Extract",
+    "States": {
+        "Extract": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:us-east-1:484907485342:function:etl-pipeline-ExtractFunction-i4HDbxpUI79s",
+            "Next": "Transform",
+            "Catch": [
+                {
+                    "ErrorEquals": ["States.ALL"],
+                    "ResultPath": "$.error",
+                    "Next": "LogError"
+                }
+            ]
+            },
+        "Transform": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:us-east-1:484907485342:function:etl-pipeline-TransformFunction-uU83pxSwfLeo",
+            "Next": "Load",
+            "ResultPath": "$.transformed_data",
+            "Catch": [
+                {
+                    "ErrorEquals": ["States.ALL"],
+                    "ResultPath": "$.error",
+                    "Next": "LogError"
+                }
+            ]
+        },
+        "Load": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:us-east-1:484907485342:function:etl-pipeline-LoadFunction-mcIkgdZb2Ayp",
+            "End": true,
+            "Catch": [
+                {
+                    "ErrorEquals": ["States.ALL"],
+                    "ResultPath": "$.error",
+                    "Next": "LogError"
+                }
+            ]
+        },
+        "LogError": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:us-east-1:484907485342:function:etl-pipeline-LogErrorFunction-BNvChurMM8Am",
+            "End": true
+        }
+
+    }
+}
