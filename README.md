@@ -1,49 +1,6 @@
 # Team Assignment #8
 ## Data Engineering
-
-## Author: Haochen Li
-
-Reference: https://medium.com/@akhilxox/deploying-the-ultimate-dog-vs-384bc7a920ed
-
-Instruction for the whole process:
-- step0 set up aws bucket, aws access key and secret
-- step1 install CLI. For code space bash: 
-`curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install`
-
-- step2 follow the instructions on reference (thanks to Akhil), but remember to change the bucket name and resource, function name (change to the same of the filename where the lambda_handler rest), then add the following code to the end of yml to avoid oversize error.
-```yml
-package:
-  individually: true
-
-  exclude:
-    - node_modules/**  # Exclude node modules (not needed for Python Lambda)
-    - .git/**  # Exclude git history and configurations
-    - .serverless/**  # Exclude Serverless build artifacts
-    - aws/**  
-    - model/training.py  # Exclude training script (only inference needed)
-    - model/cat_dog_model.onnx  # Exclude ONNX model 
-    - model/cat_dog_model.pkl  # Exclude the other model
-    - _pycache_  # Exclude Python cache files
-    - awscliv2.zip  # Exclude large AWS CLI installation file
-    - "*.md"  # Exclude markdown files
-    - "*.json"  # Exclude JSON files 
-    - "*.txt"  # Exclude any text files not required for runtime
-    - "README.md"  # Exclude README file
-    - package-lock.json  # Exclude Node.js lock files
-    - package.json  # Exclude Node.js package file
-    - .venv/**  # Exclude virtual environment
-```
-
-- step3 run the following code to check the result `curl -X POST https://2vyc0ptf3g.execute-api.us-east-1.amazonaws.com/dev/predict -H "Content-Type: application/json" -d '{"features": [28, 3, 8, 1, 5]}'`
-
-* Steps taken for Extract are documented
-* Steps taken for Transform are documented
-* Steps taken for Load are documented
-* The Step Functions state machine is documented
-
-# Following are the requirements by assignments
+# Author- Haochen Li
 
 ## Instructions
 Design and implement a serverless ETL data pipeline using AWS Lambda and Step Functions to process data from a source, transform it, and load it into a destination.
@@ -92,5 +49,4 @@ Submit a video (<3 mins) demonstrating that your Lambda functions work as expect
 * Steps taken for Transform are documented
 * Steps taken for Load are documented
 * The Step Functions state machine is documented
-
 
