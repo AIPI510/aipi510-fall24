@@ -1,32 +1,52 @@
-# Team Assignment #7
-## Feature Engineering
+# Team Assignment #8
+## Data Engineering
 
 ## Instructions
-Put together a code demo for a python feature engineering package of your choice. A few examples include: opencv, nltk, and TSfresh, although there are many domain specific ones. 
+Design and implement a serverless ETL data pipeline using AWS Lambda and Step Functions to process data from a source, transform it, and load it into a destination.
+### Requirements:
+* Use AWS Lambda functions for each step of the ETL process
+* Orchestrate the pipeline using AWS Step Functions
+* Implement error handling and logging
 
-For your example, use a built-in dataset if possible or a dataset that can be accessed through a python library. If not possible, add sample data to the data/ repository.  
-
-### Code should be:
-* Clean and well organized script
-* Using best practices (if you aren’t sure, go back to the Premodule content)
-* Well-commented
-* Contains appropriate unit testing
-* Clear name (ie ‘opencv_demo.py’)
+### Steps:
+#### Extract:
+* Create a Lambda function to extract data from a source (e.g., S3 bucket, DynamoDB table, or external API)
+* The function should retrieve the data and pass it to the next step
+#### Transform:
+* Create a Lambda function to transform the extracted data
+* Implement data transformation of your choice (ie data cleaning, formatting, or aggregation)
+#### Load:
+* Create a Lambda function to load the transformed data into a destination (e.g., another S3 bucket, DynamoDB table, or RDS instance)
+#### Orchestration:
+* Design a Step Functions state machine to coordinate the three Lambda function
+* Implement error handling and retry logic
+#### Testing and Validation:
+* Test the pipeline with sample data
+* Verify that the data is correctly processed and loaded
 
 ## Submission
-To submit your code, make a PR into the feature-engineering-ta7 branch and add me and the TA as reviewers. Also, add any requirements (and versions) that are not currently in the requirements.txt file to the text of your PR.
+### Part 1:
+Submit your Lambda function code for each step (Extract, Transform, Load) and your step functions state machine definition (JSON or YAML). 
+To submit your code, make a PR into the etl-ta8 branch and add me and the TA as reviewers. 
+### Part 2:
+Submit a video (<3 mins) demonstrating that your Lambda functions work as expected. In the video, you should test the pipeline with sample data and verify that the data is correctly processed and loaded.
 
 ## Rubric
-### Code (45 points)
-* A python package for feature engineering is demonstrated
-* A small dataset for testing purposes is either a built-in dataset, accessible via a python package, or added to the data/ repository
-* Code is a script, not a notebook
+### Video (25 points)
+* Video is <3 minutes
+* Video walks through process clearly
+* The pipeline is tested with sample data
+* The Lambda functions works as expected
+* The data is correctly processed and loaded
+
+### Code (20 points)
 * Code is clean and well organized
 * Code is documented with docstrings and comments 
 * Code is free of commented out code (ie debug print statements)
-* Script has a clear name
 * Branching and PRs were done appropriately
-* Requirements are included in the text of the PR and are correct and versioned
-* The code runs as documented
+* Steps taken for Extract are documented
+* Steps taken for Transform are documented
+* Steps taken for Load are documented
+* The Step Functions state machine is documented
 
 
