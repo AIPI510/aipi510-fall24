@@ -22,6 +22,10 @@ def convert_to_decimal(obj):
     return obj
 
 def lambda_handler(event, context):
+    """
+    This handler implements the final stage of the pipeline where data is loaded into 
+    DynamoDB for use by notional follow-on processors. 
+    """
     try:
         data = event.get("body")
         if not data:

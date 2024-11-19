@@ -3,6 +3,11 @@ import pandas as pd
 import json
 
 def lambda_handler(event, context):
+    """
+    This handler implements the transformation stage of the pipeline, accepting
+    a subset of a public dataset and transforming it for downstream use by th e
+    load stage of the pipeline.
+    """
     try:
         # Extract data from the event
         data = event.get("body")

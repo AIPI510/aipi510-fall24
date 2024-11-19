@@ -2,6 +2,11 @@ import json
 import urllib.request
 
 def lambda_handler(event, context):
+    """
+    This handler implements the extraction state of the step function. Here we access a portion
+    of the Fingertips dataset on situational life expectancy for men and women at the age of 65. 
+    Successful retrieval and reading of the dataset will pass control to the Transform step. 
+    """
     try:
         # URL to fetch data
         url = "https://fingertips.phe.org.uk/api/all_data/csv/for_one_indicator?indicator_id=93505"
