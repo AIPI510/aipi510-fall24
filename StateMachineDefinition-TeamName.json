@@ -1,0 +1,108 @@
+{
+    "Comment": "ETL pipeline with error handling and retry logic",
+    "StartAt": "Extract",
+    "States": {
+      "Extract": {
+        "Comment": "This step extracts data from the source",
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:us-east-1:637423348505:function:ExtractData:$LATEST",
+        "Next": "Transform",
+        "Retry": [
+          {
+            "Comment": "Retry on common Lambda errors",
+            "ErrorEquals": [
+              "Lambda.ServiceException",
+              "Lambda.AWSLambdaException",
+              "Lambda.SdkClientException"
+            ],
+            "IntervalSeconds": 2,
+            "MaxAttempts": 3,
+            "BackoffRate": 2
+          }
+        ],
+        "Catch": [
+          {
+            "Comment": "Handle all other errors by moving to ExtractFailureHandler",
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Next": "ExtractFailureHandler"
+          }
+        ]
+      },
+      "Transform": {
+        "Comment": "This step handles missing values for the data",
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:us-east-1:637423348505:function:TransformData:$LATEST",
+        "Next": "Load",
+        "Retry": [
+          {
+            "Comment": "Retry on common Lambda errors",
+            "ErrorEquals": [
+              "Lambda.ServiceException",
+              "Lambda.AWSLambdaException",
+              "Lambda.SdkClientException"
+            ],
+            "IntervalSeconds": 2,
+            "MaxAttempts": 3,
+            "BackoffRate": 2
+          }
+        ],
+        "Catch": [
+          {
+            "Comment": "Handle all other errors by moving to TransformFailureHandler",
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Next": "TransformFailureHandler"
+          }
+        ]
+      },
+      "Load": {
+        "Comment": "This step loads transformed data to the destination",
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:us-east-1:637423348505:function:LoadData:$LATEST",
+        "End": true,
+        "Retry": [
+          {
+            "Comment": "Retry on common Lambda errors",
+            "ErrorEquals": [
+              "Lambda.ServiceException",
+              "Lambda.AWSLambdaException",
+              "Lambda.SdkClientException"
+            ],
+            "IntervalSeconds": 2,
+            "MaxAttempts": 3,
+            "BackoffRate": 2
+          }
+        ],
+        "Catch": [
+          {
+            "Comment": "Handle all other errors by moving to LoadFailureHandler",
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Next": "LoadFailureHandler"
+          }
+        ]
+      },
+      "ExtractFailureHandler": {
+        "Comment": "This handler handles extraction failures",
+        "Type": "Pass",
+        "Result": "Extraction failed. Check logs for details.",
+        "End": true
+      },
+      "TransformFailureHandler": {
+        "Comment": "This handler handles transformation failures",
+        "Type": "Pass",
+        "Result": "Transformation failed. Check logs for details.",
+        "End": true
+      },
+      "LoadFailureHandler": {
+        "Comment": "This handler handles loading failures",
+        "Type": "Pass",
+        "Result": "Loading failed. Check logs for details.",
+        "End": true
+      }
+    }
+  }
