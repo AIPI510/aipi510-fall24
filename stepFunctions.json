@@ -1,0 +1,21 @@
+{
+    "Comment": "ETL Pipeline for Electric Vehicle Data",
+    "StartAt": "ExtractData",
+    "States": {
+      "ExtractData": {
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:us-east-2:897729144330:function:s3DataExtraction",
+        "Next": "TransformData"
+      },
+      "TransformData": {
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:us-east-2:897729144330:function:3sTransfrom:$LATEST",
+        "Next": "LoadData"
+      },
+      "LoadData": {
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:us-east-2:897729144330:function:3sLoad",
+        "End": true
+      }
+    }
+  }
