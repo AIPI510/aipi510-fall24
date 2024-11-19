@@ -1,0 +1,242 @@
+{
+  "Comment": "ETL Pipeline with comprehensive error handling",
+  "StartAt": "Read_file",
+  "States": {
+    "Read_file": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "OutputPath": "$.Payload",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "arn:aws:lambda:us-east-1:682033462186:function:read_s3:$LATEST"
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "NoSuchBucket"
+          ],
+          "Next": "Handle_Missing_Bucket_Error",
+          "ResultPath": "$.error"
+        },
+        {
+          "ErrorEquals": [
+            "NoSuchKey"
+          ],
+          "Next": "Handle_Missing_File_Error",
+          "ResultPath": "$.error"
+        },
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "Next": "Handle_Read_Error",
+          "ResultPath": "$.error"
+        }
+      ],
+      "Next": "Check_Read_Status"
+    },
+    "Check_Read_Status": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.statusCode",
+          "NumericEquals": 200,
+          "Next": "Transform_data"
+        }
+      ],
+      "Default": "Handle_Read_Error"
+    },
+    "Transform_data": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "OutputPath": "$.Payload",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "arn:aws:lambda:us-east-1:682033462186:function:transform_data:$LATEST"
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "InvalidDataFormat"
+          ],
+          "Next": "Handle_Transform_Format_Error",
+          "ResultPath": "$.error"
+        },
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "Next": "Handle_Transform_Error",
+          "ResultPath": "$.error"
+        }
+      ],
+      "Next": "Check_Transform_Status"
+    },
+    "Check_Transform_Status": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.statusCode",
+          "NumericEquals": 200,
+          "Next": "Write_to_s3"
+        }
+      ],
+      "Default": "Handle_Transform_Error"
+    },
+    "Write_to_s3": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "OutputPath": "$.Payload",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "arn:aws:lambda:us-east-1:682033462186:function:write_s3:$LATEST"
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "InsufficientPermissions"
+          ],
+          "Next": "Handle_Write_Permission_Error",
+          "ResultPath": "$.error"
+        },
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "Next": "Handle_Write_Error",
+          "ResultPath": "$.error"
+        }
+      ],
+      "Next": "Check_Write_Status"
+    },
+    "Check_Write_Status": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.statusCode",
+          "NumericEquals": 200,
+          "Next": "Success"
+        }
+      ],
+      "Default": "Handle_Write_Error"
+    },
+    "Handle_Missing_Bucket_Error": {
+      "Type": "Pass",
+      "Parameters": {
+        "error.$": "$.error",
+        "message": "S3 bucket not found",
+        "originalInput.$": "$"
+      },
+      "Next": "Execution_Failed"
+    },
+    "Handle_Missing_File_Error": {
+      "Type": "Pass",
+      "Parameters": {
+        "error.$": "$.error",
+        "message": "File not found in S3 bucket",
+        "originalInput.$": "$"
+      },
+      "Next": "Execution_Failed"
+    },
+    "Handle_Read_Error": {
+      "Type": "Pass",
+      "Parameters": {
+        "error.$": "$.error",
+        "message": "Error reading from S3",
+        "originalInput.$": "$"
+      },
+      "Next": "Execution_Failed"
+    },
+    "Handle_Transform_Format_Error": {
+      "Type": "Pass",
+      "Parameters": {
+        "error.$": "$.error",
+        "message": "Invalid data format for transformation",
+        "originalInput.$": "$"
+      },
+      "Next": "Execution_Failed"
+    },
+    "Handle_Transform_Error": {
+      "Type": "Pass",
+      "Parameters": {
+        "error.$": "$.error",
+        "message": "Error during data transformation",
+        "originalInput.$": "$"
+      },
+      "Next": "Execution_Failed"
+    },
+    "Handle_Write_Permission_Error": {
+      "Type": "Pass",
+      "Parameters": {
+        "error.$": "$.error",
+        "message": "Insufficient permissions to write to S3",
+        "originalInput.$": "$"
+      },
+      "Next": "Execution_Failed"
+    },
+    "Handle_Write_Error": {
+      "Type": "Pass",
+      "Parameters": {
+        "error.$": "$.error",
+        "message": "Error writing to S3",
+        "originalInput.$": "$"
+      },
+      "Next": "Execution_Failed"
+    },
+    "Success": {
+      "Type": "Pass",
+      "Parameters": {
+        "status": "success",
+        "message": "ETL process completed successfully",
+        "output.$": "$"
+      },
+      "End": true
+    },
+    "Execution_Failed": {
+      "Type": "Fail",
+      "Error": "ETLProcessingError"
+    }
+  }
+}
