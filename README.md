@@ -1,7 +1,5 @@
-# Team Assignment #10
+# Team Assignment #8
 ## Data Engineering
-Team RRKing
-Reina Shi, Roxanne Wang
 
 ## Instructions
 Design and implement a serverless ETL data pipeline using AWS Lambda and Step Functions to process data from a source, transform it, and load it into a destination.
@@ -50,3 +48,5 @@ Submit a video (<3 mins) demonstrating that your Lambda functions work as expect
 * Steps taken for Transform are documented
 * Steps taken for Load are documented
 * The Step Functions state machine is documented
+
+
