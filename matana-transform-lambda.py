@@ -2,8 +2,16 @@ import json
 import boto3
 import io
 import pandas as pd
+import logging
 
 def lambda_handler(event, context):
+    """ Transform the GDP data and return a JSON file 
+        with top 20 largest economies in the S3 input bucket"""
+    
+    # Add logs to the CloudWatch
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+
     # Initialize the S3 client
     s3 = boto3.client('s3')
 
@@ -20,7 +28,7 @@ def lambda_handler(event, context):
     # JSON file name for the transformed data
     file_key_gdp_transformed = 'gdp_transformeddata_' + year + '.json'
 
-    print("Input Payload loaded")
+    logger.info("Input Payload loaded")
 
     try:
         # Read from JSON files in S3 Bucket
@@ -30,7 +38,7 @@ def lambda_handler(event, context):
         response_countrylist = s3.get_object(Bucket=input_bucket_name, Key=input_file_key_countrylist)
         countrylist_data = json.loads(response_countrylist['Body'].read().decode('utf-8'))
 
-        print("JSON loaded")
+        logger.info("Two JSON files loaded")
 
         # Create pandas dataframe from GDP JSON
         country_id, gdp_value = [], []
@@ -47,7 +55,7 @@ def lambda_handler(event, context):
                 country_name.append(country_entries['name'])
             countrylist_df = pd.DataFrame([country_id, country_name], index=["country_id","country_name"]).T
 
-        print("Two dataframes created")
+        logger.info("Two dataframes created")
 
         # Merge countrylist_df and gdp_df to remove all Aggregates' GDP data, and sort the data in descending order.
         gdp_noagg_df = pd.merge(countrylist_df, gdp_df, on = "country_id", how="inner").sort_values(by="gdp_value", ascending=False).head(top)
@@ -55,11 +63,12 @@ def lambda_handler(event, context):
         gdp_noagg_df = gdp_noagg_df.reset_index(drop=True)
         gdp_noagg_df.index = gdp_noagg_df.index + 1
 
-        print("Two dataframes merged")
+        logger.info("Two dataframes merged")
 
+        # Write the merged dataframe as JSON file in the S3 Input Bucket
         s3.put_object(Bucket=input_bucket_name, Key=file_key_gdp_transformed, Body=bytes(json.dumps(gdp_noagg_df.to_json()).encode('UTF-8')))
 
-        print("Resulting dataframe written as JSON into S3 Bucket")
+        logger.info("Resulting dataframe written as JSON into S3 Bucket")
 
         # Passing key parameters to next lambda (load)
         return {
