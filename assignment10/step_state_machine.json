@@ -1,0 +1,120 @@
+{
+    "Comment": "A description of my state machine",
+    "StartAt": "load",
+    "States": {
+      "load": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "OutputPath": "$.Payload",
+        "Parameters": {
+          "FunctionName": "arn:aws:lambda:us-east-1:938460689334:function:load_demo:$LATEST",
+          "Payload": {
+            "csv": "nicu.csv",
+            "bucket_name": "davis-demo-bucket"
+          }
+        },
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "Lambda.ServiceException",
+              "Lambda.AWSLambdaException",
+              "Lambda.SdkClientException",
+              "Lambda.TooManyRequestsException",
+              "States.Timeout"
+            ],
+            "IntervalSeconds": 1,
+            "MaxAttempts": 3,
+            "BackoffRate": 2,
+            "JitterStrategy": "FULL"
+          },
+          {
+            "ErrorEquals": [
+              "States.Timeout"
+            ],
+            "BackoffRate": 2,
+            "MaxAttempts": 5,
+            "Comment": "timeout_handling",
+            "IntervalSeconds": 10
+          }
+        ],
+        "Next": "transform",
+        "TimeoutSeconds": 100,
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.Timeout",
+              "States.HeartbeatTimeout"
+            ],
+            "Next": "load"
+          }
+        ]
+      },
+      "transform": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "Parameters": {
+          "Payload.$": "$",
+          "FunctionName": "arn:aws:lambda:us-east-1:938460689334:function:transform:$LATEST"
+        },
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "Lambda.ServiceException",
+              "Lambda.AWSLambdaException",
+              "Lambda.SdkClientException",
+              "Lambda.TooManyRequestsException"
+            ],
+            "IntervalSeconds": 1,
+            "MaxAttempts": 3,
+            "BackoffRate": 2,
+            "JitterStrategy": "FULL"
+          }
+        ],
+        "Next": "save",
+        "TimeoutSeconds": 70,
+        "OutputPath": "$.Payload",
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Next": "transform"
+          }
+        ]
+      },
+      "save": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "OutputPath": "$.Payload",
+        "Parameters": {
+          "FunctionName": "arn:aws:lambda:us-east-1:938460689334:function:save:$LATEST",
+          "Payload.$": "$"
+        },
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "Lambda.ServiceException",
+              "Lambda.AWSLambdaException",
+              "Lambda.SdkClientException",
+              "Lambda.TooManyRequestsException"
+            ],
+            "IntervalSeconds": 1,
+            "MaxAttempts": 3,
+            "BackoffRate": 2,
+            "JitterStrategy": "FULL"
+          }
+        ],
+        "End": true,
+        "TimeoutSeconds": 70,
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Next": "save"
+          }
+        ]
+      }
+    },
+    "TimeoutSeconds": 100
+  }
