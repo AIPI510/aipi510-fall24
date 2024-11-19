@@ -1,0 +1,80 @@
+{
+    "Comment": "ETL Data Pipeline",
+    "StartAt": "Extract",
+    "States": {
+      "Extract": {
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:us-east-2:135808921997:function:extract",
+        "Next": "Transform",
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 2,
+            "MaxAttempts": 3,
+            "BackoffRate": 2
+          }
+        ],
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Next": "HandleError"
+          }
+        ]
+      },
+      "Transform": {
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:us-east-2:135808921997:function:transform",
+        "Next": "Load",
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 2,
+            "MaxAttempts": 3,
+            "BackoffRate": 2
+          }
+        ],
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Next": "HandleError"
+          }
+        ]
+      },
+      "Load": {
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:us-east-2:135808921997:function:load",
+        "End": true,
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 2,
+            "MaxAttempts": 3,
+            "BackoffRate": 2
+          }
+        ],
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Next": "HandleError"
+          }
+        ]
+      },
+      "HandleError": {
+        "Type": "Fail",
+        "Error": "ETLFailed",
+        "Cause": "An error occurred during the ETL process"
+      }
+    }
+  }
