@@ -1,5 +1,9 @@
-# Transform lambdafunction
+# Transform lambda function
 import json
+import logging
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 def lambda_handler(event, context):
     """
@@ -10,6 +14,7 @@ def lambda_handler(event, context):
     Returns: Transformed data
     """
     try:
+        logger.info("Initiated transform")
         forest_fires_2D = event['body']
         M = len(forest_fires_2D)
         N = len(forest_fires_2D[0])
@@ -38,11 +43,16 @@ def lambda_handler(event, context):
                 k.append((current_value - mean_csv[j]) / (var_csv[j])**0.5)
             output_csv.append(k)
 
+        logger.info("Mean: " + ','.join([str(x) for x in mean_csv]))
+        logger.info("Variance: " + ','.join([str(x) for x in var_csv]))
+        logger.info("Transform function completed!")
+
         return {
             'statusCode': 200,
             'body': output_csv
         }
     except Exception as e:
+        logger.error("Run into error! " + str(e))
         return {
             'statusCode': 500,
             'body': str(e)
