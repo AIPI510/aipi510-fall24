@@ -1,0 +1,83 @@
+{
+  "Comment": "ETL Pipeline Orchestration",
+  "StartAt": "Extract",
+  "States": {
+    "Extract": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-2:490004614075:function:extract",
+      "Next": "Transform",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "States.TaskFailed"
+          ],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 3,
+          "BackoffRate": 2
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.error",
+          "Next": "FailState"
+        }
+      ]
+    },
+    "Transform": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-2:490004614075:function:transform",
+      "Next": "Load",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "States.TaskFailed"
+          ],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 3,
+          "BackoffRate": 2
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.error",
+          "Next": "FailState"
+        }
+      ]
+    },
+    "Load": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-2:490004614075:function:load",
+      "End": true,
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "States.TaskFailed"
+          ],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 3,
+          "BackoffRate": 2
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.error",
+          "Next": "FailState"
+        }
+      ]
+    },
+    "FailState": {
+      "Type": "Fail",
+      "Error": "ETLProcessFailed",
+      "Cause": "One or more steps in the ETL process failed."
+    }
+  }
+}
