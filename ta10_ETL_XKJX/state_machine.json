@@ -1,0 +1,79 @@
+{
+    "Comment": "Serverless ETL pipeline for Bitcoin prices",
+    "StartAt": "Extract",
+    "States": {
+      "Extract": {
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:us-west-2:051826701838:function:ExtractCoinDeskCurrentPrice:$LATEST",
+        "Next": "Transform",
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 2,
+            "MaxAttempts": 3
+          }
+        ],
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "ResultPath": "$.error",
+            "Next": "HandleError"
+          }
+        ]
+      },
+      "Transform": {
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:us-west-2:051826701838:function:TransformCoinDestCurrentPrice:$LATEST",
+        "Next": "Load",
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 2,
+            "MaxAttempts": 3
+          }
+        ],
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "ResultPath": "$.error",
+            "Next": "HandleError"
+          }
+        ]
+      },
+      "Load": {
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:us-west-2:051826701838:function:LoadCoinDeskCurrentPrice2S3:$LATEST",
+        "End": true,
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 2,
+            "MaxAttempts": 3
+          }
+        ],
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "ResultPath": "$.error",
+            "Next": "HandleError"
+          }
+        ]
+      },
+      "HandleError": {
+        "Type": "Fail",
+        "Error": "Error occurred in ETL pipeline"
+      }
+    }
+  }
