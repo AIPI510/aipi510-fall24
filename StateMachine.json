@@ -1,0 +1,53 @@
+{
+  "Comment": "ETL pipeline using AWS Lambda and Step Functions",
+  "StartAt": "ExtractData",
+  "States": {
+    "ExtractData": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-2:941377142377:function:ExtractData",
+      "Next": "TransformData",
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.error",
+          "Next": "HandleError"
+        }
+      ]
+    },
+    "TransformData": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-2:941377142377:function:TransformData",
+      "Next": "LoadData",
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.error",
+          "Next": "HandleError"
+        }
+      ]
+    },
+    "LoadData": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-2:941377142377:function:LoadData",
+      "End": true,
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.error",
+          "Next": "HandleError"
+        }
+      ]
+    },
+    "HandleError": {
+      "Type": "Fail",
+      "Error": "ETLTaskFailed",
+      "Cause": "An error occurred during ETL processing."
+    }
+  }
+}
