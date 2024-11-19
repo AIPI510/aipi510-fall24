@@ -1,0 +1,51 @@
+{
+    "Comment": "ETL Pipeline (Add your own account ID)",
+    "StartAt": "Extract",
+    "States": {
+      "Extract": {
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:us-east-1:<ACCOUNT-ID>:function:extract_lambda",
+        "Next": "Transform",
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 3,
+            "MaxAttempts": 3,
+            "BackoffRate": 2
+          }
+        ]
+      },
+      "Transform": {
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:us-east-1:<ACCOUNT-ID>:function:transform_lambda",
+        "Next": "Load",
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 3,
+            "MaxAttempts": 3,
+            "BackoffRate": 2
+          }
+        ]
+      },
+      "Load": {
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:us-east-1:<ACCOUNT-ID>:function:load_lambda",
+        "End": true,
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 3,
+            "MaxAttempts": 3,
+            "BackoffRate": 2
+          }
+        ]
+      }
+    }
+  }
