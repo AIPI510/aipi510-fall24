@@ -9,3 +9,4 @@ beautifulsoup4==4.12.2
 imbalanced-learn==0.11.0
 scikit-learn==1.2.2
 statsmodels==0.14.0
+transformers==4.31.0
