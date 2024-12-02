@@ -42,4 +42,3 @@ To submit your code, make a PR into the data-sourcing-ta1 branch and add me and 
 * The video is of mid-high production quality and doesn’t contain significant background noise 
 * Video is well organized and clear
 * Video documents topic and code effectively
-
