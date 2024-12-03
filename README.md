@@ -35,3 +35,4 @@ For each assignment:
 * [data-eda-ta4]()
 * [statistical-analysis-ta5]()
 * [feature-engineering-ta7]()
+* [etl-ta8]()
